@@ -1,5 +1,8 @@
 
 #include <cstring>
+#include <iostream>
+using std::cerr;
+using std::endl;
 
 #include "window.hh"
 #include "line.hh"
@@ -29,10 +32,16 @@ Window::~Window() {
 
 bool Window::open( int xr, int yr, const char *t ) {
 
-  if(SDL_Init(SDL_INIT_VIDEO) != 0) return false;
+  if(SDL_Init(SDL_INIT_VIDEO) != 0) {
+    cerr << "Window::open could not init SDL" << endl;
+    return false;
+  }
 
   m_screen = SDL_SetVideoMode( xr, yr, 8, SDL_DOUBLEBUF | SDL_SWSURFACE );
-  if(!m_screen) return false;
+  if(!m_screen) {
+    cerr << "Window::open could not open screen" << endl;
+    return false;
+  }
 
   SDL_WM_SetCaption( t, 0 );
   
@@ -52,7 +61,10 @@ bool Window::open( int xr, int yr, const char *t ) {
   m_active = true;
 
   m_font = IMG_Load( "data/font.png" );
-  if( !m_font ) return false;
+  if( !m_font ) {
+    cerr << "Window::open could not load font" << endl;
+    return false;
+  }
 
   //SDL_SetPalette( m_font, SDL_LOGPAL, palette, 0, 256 );
 
@@ -73,10 +85,9 @@ int Window::height() {
   return m_screen->h;
 }
 
-// void Window::apply_film( std::vector<unsigned char> &film ) {
-
-
-//}
+float Window::aspect_ratio() {
+  return (float)m_screen->w / (float)m_screen->h;
+}
 
 bool Window::active() {
   return m_active;

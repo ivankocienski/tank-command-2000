@@ -17,13 +17,11 @@ bool g_capture = false;
 using namespace std;
 const int Application::XRES = 640;
 const int Application::YRES = 480;
-const float Application::screen_ratio = (float)XRES / (float)YRES;
 
 // near and far clip planes. just randomly picked
-const float Application::p_near = 0.25;
-const float Application::p_far  = 100.0;
-
-const float Application::fov = 90.0; // horizontal
+const float Application::P_NEAR = 0.25;
+const float Application::P_FAR  = 20.0;
+const float Application::FOV    = 90.0; // horizontal
 
 Application::Application( int argc, char ** argv ) { 
 }
@@ -33,49 +31,47 @@ int Application::main() {
   bool run_loop = true;
   char buffer[200];
 
-  if( !m_window.open( XRES, YRES, "wireframe demo" )) {
+  if( !m_window.open( XRES, YRES, "tc2k" )) {
     cerr << "could not open window" << endl;
     return -1;
   }
 
-  int c = 0;
+  Mesh tank_mesh;
+  tank_mesh.load_from( "data/tank.vex" );
 
-  vector<Mesh> mesh_list;
-  //for(int y = -5; y < 5; y++ ) 
-  {
-    int y = 0;
+  vector<MeshInstance> mesh_instances;
 
-    for(int x = -5; x < 5; x++ ) {
-   
-      //int x = 0;
-    
-      mesh_list.push_back( Mesh( x, y, 1 + c ));
-
-      c = (c+ 1 ) % 8;
-    }
-  }
+  mesh_instances.push_back( MeshInstance( &tank_mesh ));
 
   Camera camera(m_window);
-  camera.setup( 90, XRES, YRES, 0.25, 5 );
+  camera.setup( FOV, P_NEAR, P_FAR );
+
+  vector<MeshInstance>::iterator mi_it;
+
+  float a = 0;
+  float pos = 0;
+  float pos_inc = 0.1;
 
 
   while( m_window.active() && run_loop ) {
-    
-    m_window.begin_raster();
-    
+  
+    a += 0.1;
+
+    pos += pos_inc;
+    if( pos < -5 || pos > 5 ) pos_inc = -pos_inc;
+
+    mesh_instances[0].set_translation( 0, pos, 0 );
+    mesh_instances[0].set_rotation( 0, 0, a );
+    mesh_instances[0].transform();
+
     m_player.look( camera );
 
-    Matrix4 p_trans_matrix = camera.translation_matrix();
+    m_window.begin_raster();
 
-    if(g_capture)
-      cout << endl << "**** iterate ****" << endl;
+    for( mi_it = mesh_instances.begin(); mi_it != mesh_instances.end(); mi_it++ ) {
 
-    for( vector<Mesh>::iterator mesh = mesh_list.begin(); mesh != mesh_list.end(); mesh++ ) {
+      DrawMesh dm( *mi_it, camera );
 
-      DrawMesh dm( *mesh, camera );
-
-      dm.cull_non_facing();
-      
       dm.clip_to_frustum();
 
       if( !dm.is_visible() ) continue;
@@ -88,7 +84,6 @@ int Application::main() {
 
       // TODO ... collect draw meshes and z-sort them and paint them backward onto screen ;)
     }
-    
 
     m_window.end_raster();
 
@@ -117,11 +112,6 @@ int Application::main() {
     switch( m_window.inkey() ) {
       case Window::K_ESCAPE:
         run_loop = false;
-        break;
-
-      case Window::K_TAB:
-        cout << "capture" << endl;
-        g_capture = true;
         break;
     }
   }

@@ -1,4 +1,5 @@
 
+#include <cmath>
 #include <cstring>
 
 #include "matrix4.hh"
@@ -72,4 +73,42 @@ Matrix4 Matrix4::operator*( const Matrix4 &o ) {
 
   
   return r;
+}
+
+void Matrix4::set_translate( Vector3 &v ) {
+
+  m_v[0]  = 1;
+  m_v[5]  = 1;
+  m_v[10] = 1;
+  m_v[15] = 1;
+  
+  m_v[3] = v.x;
+  m_v[7] = v.y;
+  m_v[11] = v.z;
+}
+
+void Matrix4::set_rotation( Vector3 &v ) {
+
+  // x=heading, y=pitch, z=bank
+
+  float ch = cos(v.x);
+  float sh = sin(v.x);
+  float cp = cos(v.y);
+  float sp = sin(v.y);
+  float cb = cos(v.z);
+  float sb = sin(v.z);
+
+  m_v[0] = ch * cb + sh * sp * sb;
+  m_v[1] = -ch * sb + sh * sp * cb;
+  m_v[2] = sh + cp;
+  
+  m_v[4] = sb * cp;
+  m_v[5] = cb * cp;
+  m_v[6] = -sp;
+
+  m_v[8] = -sh * cb + ch * sp * sb;
+  m_v[9] = sb * sh + ch * sp * cb;
+  m_v[10] = ch * cp;
+
+  m_v[15] = 1;
 }

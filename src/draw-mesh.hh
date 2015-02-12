@@ -4,7 +4,7 @@
 #include <vector>
 #include <list>
 
-#include "mesh.hh"
+#include "mesh-instance.hh"
 #include "camera.hh"
 
 class DrawLine {
@@ -31,28 +31,12 @@ public:
   void remove_face();
 };
 
-class DrawFace {
-private:
-
-  const Vector3 &m_normal;
-  
-  std::list<DrawLine*> m_edges;
-
-public:
-
-  DrawFace(const Mesh::T_FACE&, const std::vector<DrawLine*>&);
-
-  bool is_facing( const Vector3& );
-  void skip_draw();
-};
-
 class DrawMesh {
 private:
 
-  Mesh   &m_mesh;
-  Camera &m_camera;
+  MeshInstance &m_mesh_instance;
+  Camera       &m_camera;
 
-  std::list<DrawFace> m_draw_faces;
   std::list<DrawLine> m_draw_lines;
   
   enum { // visibility
@@ -65,9 +49,8 @@ private:
 
 public:
 
-  DrawMesh( Mesh&, Camera& );
+  DrawMesh( MeshInstance&, Camera& );
 
-  void cull_non_facing();
   void clip_to_frustum();
 
   bool is_visible();

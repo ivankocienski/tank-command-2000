@@ -10,11 +10,10 @@ private:
 
   static const int XRES;
   static const int YRES;
-  static const float screen_ratio;
 
-  static const float p_near;
-  static const float p_far;
-  static const float fov;
+  static const float P_NEAR;
+  static const float P_FAR;
+  static const float FOV;
 
   Window m_window;
 

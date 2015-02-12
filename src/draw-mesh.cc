@@ -129,35 +129,6 @@ void DrawLine::dump() {
   if( g_capture )
     cout << "  DrawLine: m_face_count=" << m_face_count << "  m_active=" << m_active << endl;
 }
-/* 
- * draw face
- *
- */
-
-DrawFace::DrawFace( const Mesh::T_FACE& face, const std::vector<DrawLine*>& line_vector ) : m_normal( face.normal ) {
-
-  int count = face.edges.size();
-
-  for( int i = 0; i < count; i++ ) {
-    int pos = face.edges[i];
-
-    DrawLine *edge = line_vector[ pos ];
-    m_edges.push_back(edge);
-    edge->add_face();
-  }
-}
-
-bool DrawFace::is_facing( const Vector3& facing ) {
-  
-  return facing.dot( m_normal ) < 0;
-}
-
-void DrawFace::skip_draw() {
-
-  list<DrawLine*>::iterator it;
-  for( it = m_edges.begin(); it != m_edges.end(); it++ )
-    (*it)->remove_face(); 
-}
 
 /* 
  * the draw mesh code
@@ -166,64 +137,21 @@ void DrawFace::skip_draw() {
 
 // not the fastest way of doing this ...
 
-DrawMesh::DrawMesh( Mesh &m, Camera &c ) : m_mesh(m), m_camera(c) {
+DrawMesh::DrawMesh( MeshInstance &mi, Camera &c ) : m_mesh_instance(mi), m_camera(c) {
   m_visibility = V_NONE;
 
-  vector<DrawLine*> vertex_pointers;
-  int vertex_pointer_pos = 0;
+  const vector<Vector3>& v = mi.vertices();
 
-  const vector<Vector3>& v = m.vertices();
-
-  vertex_pointers.resize(v.size());
+  const Mesh *m = m_mesh_instance.mesh();
 
   vector<Mesh::T_EDGE>::const_iterator e_it; 
-  for( e_it = m_mesh.edges().begin(); e_it != m_mesh.edges().end(); e_it++ ) {
+  for( e_it = m->edges().begin(); e_it != m->edges().end(); e_it++ ) {
 
     m_draw_lines.push_back( 
       DrawLine( v[ e_it->p1 ], v[ e_it->p2 ] )
     );
 
-    vertex_pointers[vertex_pointer_pos] = &m_draw_lines.back();
-    vertex_pointer_pos++;
   }
-
-  vector<Mesh::T_FACE>::const_iterator f_it;
-  for( f_it = m_mesh.faces().begin(); f_it != m_mesh.faces().end(); f_it++ ) {
-
-    m_draw_faces.push_back( DrawFace(*f_it, vertex_pointers) );
-  }
-}
-
-void DrawMesh::cull_non_facing() {
-
-  if(g_capture)
-    cout << "DrawMesh::cull_non_facing" << endl;
-
-  list<DrawFace>::iterator f_it;
-  for(  f_it = m_draw_faces.begin(); f_it != m_draw_faces.end(); f_it++ ) {
-
-    if( f_it->is_facing(m_camera.direction()) ) continue;
-
-    if( g_capture )
-      cout << "  skip_draw" << endl;
-
-    f_it->skip_draw();
-  }
-
-  // purge lines that are back facing
-  list<DrawLine>::iterator l_it;
-  for( l_it = m_draw_lines.begin(); l_it != m_draw_lines.end(); l_it++ ) {
-
-    l_it->dump();
-
-    if( l_it->active() ) {
-      l_it++;
-      continue;
-    }
-
-    l_it = m_draw_lines.erase(l_it);
-  }
-
 }
 
 void DrawMesh::clip_to_frustum() {
@@ -235,7 +163,7 @@ void DrawMesh::clip_to_frustum() {
   //for( int i = 0; i < 6; i++ ) {
   for( int i = 0; i < 6; i++ ) {
     
-    int s = m_mesh.classify_side(clip_plane[i]);
+    int s = m_mesh_instance.classify_side(clip_plane[i]);
 
     // behind plane
     if( s < 0 ) return;
@@ -288,7 +216,7 @@ void DrawMesh::camera_transform( ) {
 
 void DrawMesh::draw() {
 
-  int c = m_mesh.color();
+  int c = 255; //m_mesh.color();
 
   for( list<DrawLine>::iterator it = m_draw_lines.begin(); it != m_draw_lines.end(); it++ ) {
     it->draw(m_camera, c);

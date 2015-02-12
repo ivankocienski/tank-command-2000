@@ -12,21 +12,20 @@ using std::endl;
 static const float DEG_2_RAD = 0.017453292;
 
 Camera::Camera(Window& w) : m_window(w) {
+  m_xres = w.width();
+  m_yres = w.height();
+  m_aspect_ratio = w.aspect_ratio();
+
   m_near = 0;
   m_far  = 0;
   m_fovy = 0;
-  m_aspect_ratio = 0;
 }
 
-void Camera::setup( float fovx, int xres, int yres, float near, float far) {
+void Camera::setup( float fovx, float near, float far) {
 
-  m_xres = xres;
-  m_yres = yres;
-
-  m_aspect_ratio = (float)xres / (float)yres;
   m_near = near;
   m_far  = far;
-  m_fovy = fovx * (1.0 / m_aspect_ratio);
+  m_fovy = fovx / m_aspect_ratio;
 }
 
 void Camera::look( const Vector3& c_pos, const Vector3& c_dir, const Vector3& c_right ) {
@@ -56,7 +55,7 @@ void Camera::look( const Vector3& c_pos, const Vector3& c_dir, const Vector3& c_
   float near_h = m_near * tang;
   float near_w = near_h * m_aspect_ratio;
 
-  float far_h = m_far * tang * 0.5;
+  float far_h = m_far * tang;
   float far_w = far_h * m_aspect_ratio;
 
   Vector3 near_tl( m_clip_plane[CP_NEAR].position() - (m_right * near_w) - (m_up * near_h) );
@@ -68,22 +67,6 @@ void Camera::look( const Vector3& c_pos, const Vector3& c_dir, const Vector3& c_
   Vector3 far_tr( m_clip_plane[CP_FAR].position() + (m_right * far_w) - (m_up * far_h) );
   Vector3 far_bl( m_clip_plane[CP_FAR].position() - (m_right * far_w) + (m_up * far_h) );
   Vector3 far_br( m_clip_plane[CP_FAR].position() + (m_right * far_w) + (m_up * far_h) );
-
-//  // near
-//  m_window.draw_line(
-//      320 + 50 * near_tl.x,
-//      240 + 50 * near_tl.z,
-//      320 + 50 * near_tr.x,
-//      240 + 50 * near_tr.z,
-//      255);
-//
-//  // far
-//  m_window.draw_line(
-//      320 + 50 * far_tl.x,
-//      240 + 50 * far_tl.z,
-//      320 + 50 * far_tr.x,
-//      240 + 50 * far_tr.z,
-//      255);
 
   Vector3 e1;
   Vector3 e2;
@@ -102,13 +85,7 @@ void Camera::look( const Vector3& c_pos, const Vector3& c_dir, const Vector3& c_
   norm = e2.cross(e1);
   norm.normalize();
 
-  m_clip_plane[CP_RIGHT].setup( (near_tr + near_br + far_tr + far_br) * 0.25, norm );
-
-
-
-
-
-
+  m_clip_plane[CP_RIGHT].setup( (near_tr + near_br + far_tr + far_br) * 0.25, norm ); 
 
   { 
     // top
@@ -119,22 +96,6 @@ void Camera::look( const Vector3& c_pos, const Vector3& c_dir, const Vector3& c_
 
     Vector3 pos = (near_tl + near_tr + far_tl + far_tr) * 0.25;
     m_clip_plane[CP_TOP].setup( pos, norm );
-
-//    // top
-//    m_window.draw_line(
-//        320 + 50 * near_tl.x,
-//        240 + 50 * near_tl.y,
-//        320 + 50 * far_tl.x,
-//        240 + 50 * far_tl.y,
-//        255);
-//
-//    m_window.draw_line(
-//        320 + 50 * pos.x,
-//        240 + 50 * pos.y,
-//        320 + 50 * pos.x + (20 * norm.x),
-//        240 + 50 * pos.y + (20 * norm.y),
-//        1
-//    );
   }
 
   {
@@ -146,26 +107,8 @@ void Camera::look( const Vector3& c_pos, const Vector3& c_dir, const Vector3& c_
 
     Vector3 pos = (near_bl + near_br + far_bl + far_br) * 0.25;
 
-    m_clip_plane[CP_BOTTOM].setup( pos, norm );
-
-//    // bottom
-//    m_window.draw_line(
-//        320 + 50 * near_br.x,
-//        240 + 50 * near_br.y,
-//        320 + 50 * far_br.x,
-//        240 + 50 * far_br.y,
-//        255);
-//
-//    m_window.draw_line(
-//        320 + 50 * pos.x,
-//        240 + 50 * pos.y,
-//        320 + 50 * pos.x + (20 * norm.x),
-//        240 + 50 * pos.y + (20 * norm.y),
-//        1
-//    );
-  }
-
-  
+    m_clip_plane[CP_BOTTOM].setup( pos, norm ); 
+  } 
 }
 
 Matrix4 Camera::translation_matrix() {
@@ -201,18 +144,7 @@ const Plane *Camera::clip_planes() {
 
 void Camera::draw_3d_line( const Vector3& p1, const Vector3& p2, int c ) {
 
-#if 0
-  int p1_x = 320 + 50 * p1.x;
-  int p1_y = 240 + 50 * p1.y;
-  int p2_x = 320 + 50 * p2.x;
-  int p2_y = 240 + 50 * p2.y;
-
-  m_window.draw_line( p1_x, p1_y, p2_x, p2_y, c ); 
-#endif
-
-
-
-    // oh the magiks...
+  // oh the magiks...
   float zoom_y =    1.0 / (tan(m_fovy / 2.0));
   float zoom_x = zoom_y / m_aspect_ratio;
 

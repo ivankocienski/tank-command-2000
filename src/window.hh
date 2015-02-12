@@ -65,6 +65,7 @@ public:
   void clear();
   int width();
   int height();
+  float aspect_ratio();
 
   bool active();
   void tick(); 

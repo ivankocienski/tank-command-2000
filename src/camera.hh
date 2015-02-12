@@ -45,7 +45,7 @@ public:
 
   Camera(Window&);
 
-  void setup( float, int, int, float, float);
+  void setup( float, float, float);
 
   void look( const Vector3&, const Vector3&, const Vector3& );
 
