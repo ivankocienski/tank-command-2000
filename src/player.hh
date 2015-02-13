@@ -25,6 +25,7 @@ public:
 
   void walk(float);
   void turn(float);
+  void strafe(float);
 
   float foot_x();
   float foot_y();

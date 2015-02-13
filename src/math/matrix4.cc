@@ -100,7 +100,7 @@ void Matrix4::set_rotation( Vector3 &v ) {
 
   m_v[0] = ch * cb + sh * sp * sb;
   m_v[1] = -ch * sb + sh * sp * cb;
-  m_v[2] = sh + cp;
+  m_v[2] = sh * cp;
   
   m_v[4] = sb * cp;
   m_v[5] = cb * cp;

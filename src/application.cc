@@ -60,8 +60,8 @@ int Application::main() {
     pos += pos_inc;
     if( pos < -5 || pos > 5 ) pos_inc = -pos_inc;
 
-    mesh_instances[0].set_translation( 0, pos, 0 );
-    mesh_instances[0].set_rotation( 0, 0, a );
+    mesh_instances[0].set_translation( 0, 0, pos );
+    //mesh_instances[0].set_rotation( 0, 0, a );
     mesh_instances[0].transform();
 
     m_player.look( camera );
@@ -107,6 +107,14 @@ int Application::main() {
 
     if( m_window.m_keys[Window::K_DOWN] ) {
       m_player.walk( -0.1 );
+    }
+
+    if( m_window.m_keys[Window::K_A] ) {
+      m_player.strafe( 0.1 );
+    }
+
+    if( m_window.m_keys[Window::K_D] ) {
+      m_player.strafe( -0.1 );
     }
 
     switch( m_window.inkey() ) {

@@ -34,7 +34,6 @@ void MeshInstance::transform() {
   translate.set_translate( m_translate );
 
   Matrix4 rotate;
-  rotate.identity();
   rotate.set_rotation( m_rotate );
 
   Matrix4 transform = translate * rotate;

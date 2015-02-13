@@ -118,6 +118,8 @@ void Window::tick() {
           case SDLK_DOWN:  m_keys[K_DOWN]  = false; break;
           case SDLK_LEFT:  m_keys[K_LEFT]  = false; break;
           case SDLK_RIGHT: m_keys[K_RIGHT] = false; break;
+          case SDLK_a:     m_keys[K_A]     = false; break;
+          case SDLK_d:     m_keys[K_D]     = false; break;
           default: break;
         }
         break;
@@ -142,6 +144,14 @@ void Window::tick() {
           case SDLK_RIGHT:
             push_key(K_RIGHT);
             m_keys[K_RIGHT] = true;
+            break;
+
+          case SDLK_a:
+            m_keys[K_A] = true;
+            break;
+
+          case SDLK_d:
+            m_keys[K_D] = true;
             break;
 
           case SDLK_ESCAPE: push_key(K_ESCAPE); break; 

@@ -18,6 +18,8 @@ public:
     K_SPACE,
     K_ENTER,
     K_TAB,
+    K_A,
+    K_D,
     K_F1,
     K_F2,
     K_F3,

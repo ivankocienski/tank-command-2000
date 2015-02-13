@@ -24,6 +24,12 @@ void Player::walk(float d) {
   m_position += Vector3( m_direction.x, 0, m_direction.z ) * d;
 }
 
+void Player::strafe( float d ) {
+
+  m_position += Vector3( -m_direction.z, 0, m_direction.x ) * d;
+
+}
+
 void Player::turn(float d) {
   m_heading += d;
 
@@ -66,6 +72,7 @@ void Player::turn(float d) {
     m_right.set(nx, ny, nz);
   }
 }
+
 
 float Player::foot_x() {
   return m_position.x;

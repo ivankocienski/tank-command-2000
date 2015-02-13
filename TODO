@@ -1,6 +1,24 @@
 
 todo:
 
-- tidy up code
-- loading of vector objects
+* tidy up code
+* loading of vector objects
 - loading of 2d shapes
+
+
+world
+  - map / world container
+  - obstacle objects
+  - enemy objects
+
+
+- shooting
+- collision detection / damage
+
+- enemy AI
+
+
+- player score / health / lives / etc
+- hud
+
+
