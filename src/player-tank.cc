@@ -4,11 +4,44 @@
 
 #include <cmath>
 
+using namespace std;
+
+static const float tank_length = 3.0;
+static const float tank_width  = 2.0;
+
 PlayerTank::PlayerTank() {
 }
 
-void PlayerTank::walk(float d) {
-  m_position += Vector3( m_direction.x, 0, m_direction.z ) * d;
+void PlayerTank::set_pos( float x, float y ) { 
+  m_position.set( x, 0, y );
+}
+
+void PlayerTank::walk(float d) { 
+  m_new_pos = m_position + Vector3( m_direction.x, 0, m_direction.z ) * d;
+}
+
+void PlayerTank::move( vector<MeshInstance> & wo ) {
+
+  Vector3 fwd = m_direction * (tank_length / 2.0);
+  Vector3 rgt = m_right     * (tank_width  / 2.0);
+
+
+  for( vector<MeshInstance>::iterator it = wo.begin(); it != wo.end(); it++ ) {
+
+    Vector3 front_left = m_new_pos + fwd - rgt; 
+    if( it->point_inside_bb( front_left )) return;
+
+    Vector3 front_right = m_new_pos + fwd + rgt;
+    if( it->point_inside_bb( front_right )) return;
+
+    Vector3 back_left = m_new_pos - fwd - rgt;
+    if( it->point_inside_bb( back_left )) return;
+
+    Vector3 back_right = m_new_pos - fwd + rgt;
+    if( it->point_inside_bb( back_right)) return;
+  } 
+  
+  m_position = m_new_pos;
 }
 
 void PlayerTank::strafe( float d ) {

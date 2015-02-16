@@ -32,6 +32,8 @@ void World::setup( Window &w, Camera &c, Player &p ) {
   spawn_obstacle(  5, 1, 2 );
   spawn_obstacle( 10, 5, 3 );
   spawn_obstacle(  4, 5, 4 );
+
+  m_player_tank->set_pos( -3, -3 );
 }
 
 void World::run() {
@@ -41,8 +43,12 @@ void World::run() {
   bool *keys = m_window->m_keys;
 
   vector<MeshInstance>::iterator mi_it;
+  void set_pos( float, float, float );
+  
   
   while( m_window->active() && run_loop ) {
+
+    m_player_tank->move( m_mesh_instances );
   
     m_player_tank->look( m_camera );
 

@@ -18,6 +18,15 @@ void MeshInstance::set_translation( float xo, float yo, float zo ) {
   m_translate.set( xo, yo, zo ); 
 }
 
+bool MeshInstance::point_inside_bb( Vector3& tp ) {
+
+  if( tp.x < m_min.x || tp.x > m_max.x ) return false;
+  if( tp.y < m_min.y || tp.y > m_max.y ) return false;
+  if( tp.z < m_min.z || tp.z > m_max.z ) return false; 
+
+  return true; 
+}
+
 void MeshInstance::set_rotation( float r, float p, float y ) {
   // TODO: use of quaternions
   m_rotate.set( r, p, y );

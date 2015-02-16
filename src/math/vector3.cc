@@ -107,3 +107,11 @@ Vector3 Vector3::operator+( const Vector3 &v ) const {
 Vector3 Vector3::operator*( float d ) const {
   return Vector3( x * d, y * d, z * d );
 }
+
+Vector3 Vector3::perpendicular() const {
+
+  // sort of a cross product with an 'up' vector
+
+  return Vector3( -z, 0, x );
+  
+}

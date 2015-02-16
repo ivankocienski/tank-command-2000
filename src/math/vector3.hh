@@ -34,6 +34,8 @@ public:
   Vector3 operator+( const Vector3 & ) const;
   Vector3 operator*( float ) const;
 
+  Vector3 perpendicular() const;
+
   //Vector4 to_vector4() const;
 
   void dump() const;

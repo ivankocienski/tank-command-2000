@@ -26,6 +26,8 @@ public:
   void set_translation( float, float, float );
   void set_rotation( float, float, float );
 
+  bool point_inside_bb( Vector3& );
+
   void transform();
 
   std::vector<Vector3> & vertices();
