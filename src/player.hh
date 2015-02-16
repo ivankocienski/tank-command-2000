@@ -1,32 +1,22 @@
 
 #pragma once
 
-#include "math/matrix4.hh"
-#include "math/vector3.hh"
-#include "mesh.hh"
-#include "camera.hh"
+#include "player-tank.hh"
 
 class Player {
 private:
 
+  int m_score;
+  int m_lives;
 
-  Vector3 m_position;
-  
-  Vector3 m_direction;
-  Vector3 m_right;
-
-  float m_heading;
+  PlayerTank m_tank;
 
 public:
 
   Player();
 
-  void look(Camera&);
+  void reset();
 
-  void walk(float);
-  void turn(float);
-  void strafe(float);
+  PlayerTank & current_tank();
 
-  float foot_x();
-  float foot_y();
 };

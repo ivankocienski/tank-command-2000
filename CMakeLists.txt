@@ -29,6 +29,9 @@ set (SRC
   src/plane.cc
   src/draw-mesh.cc
   src/mesh-instance.cc
+  src/assets.cc
+  src/world.cc
+  src/player-tank.cc
 
   src/math/matrix4.cc
   src/math/matrix3.cc

@@ -1,11 +1,13 @@
 
 #pragma once
 
+#include "math/matrix4.hh"
 #include <vector>
 #include <list>
 
 #include "mesh-instance.hh"
-#include "camera.hh"
+
+class Camera;
 
 class DrawLine {
 private:
@@ -14,7 +16,6 @@ private:
   Vector3 m_p2;
 
   bool m_active;
-  int  m_face_count;
 
   void project_and_clip( const Plane&, Vector3&, Vector3& );
 public:
@@ -25,17 +26,15 @@ public:
   void clip_to( const Plane& );
   void transform( Matrix4& );
   bool active();
-  void draw(Camera&, int);
+  void draw(Camera*, int);
 
-  void add_face();
-  void remove_face();
 };
 
 class DrawMesh {
 private:
 
   MeshInstance &m_mesh_instance;
-  Camera       &m_camera;
+  Camera       *m_camera;
 
   std::list<DrawLine> m_draw_lines;
   
@@ -49,7 +48,7 @@ private:
 
 public:
 
-  DrawMesh( MeshInstance&, Camera& );
+  DrawMesh( MeshInstance&, Camera* );
 
   void clip_to_frustum();
 

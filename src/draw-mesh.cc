@@ -3,6 +3,7 @@
 
 #include "common.hh"
 #include "draw-mesh.hh"
+#include "camera.hh"
 
 using namespace std;
 
@@ -12,8 +13,7 @@ using namespace std;
  */
 
 DrawLine::DrawLine( const Vector3 &p1, const Vector3 &p2 ) : m_p1(p1), m_p2(p2) {
-  m_active     = true;
-  m_face_count = 0;
+  m_active = true;
 }
 
 bool DrawLine::active() {
@@ -23,8 +23,6 @@ bool DrawLine::active() {
 void DrawLine::transform( Matrix4& mat ) {
 
   if( !m_active ) return;
-
-  // *cough* multiply a 3x1 vector by a 4x4 matrix *cough*
 
   {
     float nx = m_p1.x * mat[0] + m_p1.y * mat[1] + m_p1.z * mat[2]  + mat[3];
@@ -45,18 +43,8 @@ void DrawLine::transform( Matrix4& mat ) {
 
 void DrawLine::project_and_clip( const Plane &pln, Vector3& p1, Vector3& p2 ) {
 
-  // p1 is always 'in front' of the plane
-
-  //if( g_capture )
-  //  cout << "project_and_clip" << endl;
-
   Vector3 dir = (p1 - p2);
   float   len = dir.magnitude();
-
-  //if( g_capture ) {
-  //  dir.dump();
-  //  cout << "len=" << len << endl;
- // }
 
   dir.normalize();
 
@@ -65,13 +53,7 @@ void DrawLine::project_and_clip( const Plane &pln, Vector3& p1, Vector3& p2 ) {
 
   float a = (p1 - pln.position()).dot(pln.normal());
 
-  //if( g_capture )
-  //  cout << "a=" << a << "  b=" << b << endl;
-
   float d = a / b;
-  //if( g_capture ) 
-  //  cout << "len=" << len << "  d=" << d << endl;
-
   if( d > len ) return; // is beyond us.
 
   p2.set( p1 - (dir * d) );
@@ -85,20 +67,13 @@ void DrawLine::clip_to( const Plane& pln ) {
   bool b = pln.is_facing( m_p2 );
 
   if( a && b ) {
-    if( g_capture )
-      cout << "  is facing" << endl;
     return;
   }
 
   if( !(a || b )) {
-    if( g_capture )
-      cout << "  is hidden" << endl;
     m_active = false;
     return;
   }
-
-  if( g_capture ) 
-    cout << "  is partial" << endl;
 
   if(a) { 
     project_and_clip( pln, m_p1, m_p2 );
@@ -106,28 +81,16 @@ void DrawLine::clip_to( const Plane& pln ) {
   } else {
     project_and_clip( pln, m_p2, m_p1 );
   }
-  
-  // else b
-
 }
 
-void DrawLine::draw( Camera &cam, int c ) {
+void DrawLine::draw( Camera *cam, int c ) {
   if( !m_active ) return;
-  cam.draw_3d_line( m_p1, m_p2, c );
-}
-
-void DrawLine::add_face() {
-  m_face_count++;
-}
-
-void DrawLine::remove_face() {
-  m_face_count--;
-  if(!m_face_count) m_active = false;
+  cam->draw_3d_line( m_p1, m_p2, c );
 }
 
 void DrawLine::dump() {
-  if( g_capture )
-    cout << "  DrawLine: m_face_count=" << m_face_count << "  m_active=" << m_active << endl;
+//  if( g_capture )
+//    cout << "  DrawLine: m_face_count=" << m_face_count << "  m_active=" << m_active << endl;
 }
 
 /* 
@@ -135,9 +98,8 @@ void DrawLine::dump() {
  *
  */
 
-// not the fastest way of doing this ...
-
-DrawMesh::DrawMesh( MeshInstance &mi, Camera &c ) : m_mesh_instance(mi), m_camera(c) {
+DrawMesh::DrawMesh( MeshInstance &mi, Camera *c ) : m_mesh_instance(mi) {
+  m_camera = c;
   m_visibility = V_NONE;
 
   const vector<Vector3>& v = mi.vertices();
@@ -156,7 +118,7 @@ DrawMesh::DrawMesh( MeshInstance &mi, Camera &c ) : m_mesh_instance(mi), m_camer
 
 void DrawMesh::clip_to_frustum() {
 
-  const Plane *clip_plane = m_camera.clip_planes();
+  const Plane *clip_plane = m_camera->clip_planes();
   int partial_plane[6];
   int partial_plane_pos = 0;
 
@@ -181,9 +143,6 @@ void DrawMesh::clip_to_frustum() {
     return;
   }
 
-  if( g_capture )
-    cout << "  partial clip" << endl;
-
   for( int i = 0; i < partial_plane_pos; i++ ) {
 
     for( list<DrawLine>::iterator it = m_draw_lines.begin(); it != m_draw_lines.end(); ) {
@@ -207,7 +166,7 @@ bool DrawMesh::is_visible() {
 
 void DrawMesh::camera_transform( ) {
   
-  Matrix4 cam_mat = m_camera.translation_matrix();
+  Matrix4 cam_mat = m_camera->translation_matrix();
 
   for( list<DrawLine>::iterator it = m_draw_lines.begin(); it != m_draw_lines.end(); it++ ) {
     it->transform( cam_mat );
