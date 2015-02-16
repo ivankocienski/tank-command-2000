@@ -32,6 +32,7 @@ set (SRC
   src/assets.cc
   src/world.cc
   src/player-tank.cc
+  src/line-vector-sprite.cc
 
   src/math/matrix4.cc
   src/math/matrix3.cc

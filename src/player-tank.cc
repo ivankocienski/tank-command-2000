@@ -8,12 +8,14 @@ using namespace std;
 
 static const float tank_length = 3.0;
 static const float tank_width  = 2.0;
+static const float tank_view_height = 1.2;
 
 PlayerTank::PlayerTank() {
+  m_heading = 0;
 }
 
 void PlayerTank::set_pos( float x, float y ) { 
-  m_position.set( x, 0, y );
+  m_position.set( x, tank_view_height, y );
 }
 
 void PlayerTank::walk(float d) { 
@@ -50,6 +52,8 @@ void PlayerTank::strafe( float d ) {
 
 void PlayerTank::turn(float d) {
   m_heading += d;
+  if( m_heading >= 2 * M_PI ) m_heading -= 2 * M_PI;
+  if( m_heading < 0 ) m_heading += 2 * M_PI;
 
   // the long way ...
   m_direction.set( 1, 0, 0 );
@@ -98,3 +102,6 @@ void PlayerTank::look(Camera *cam ) {
   cam->look( m_position, m_direction, m_right );
 }
 
+float PlayerTank::heading() {
+  return m_heading;
+}

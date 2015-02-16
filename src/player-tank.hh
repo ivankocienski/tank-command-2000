@@ -26,6 +26,7 @@ public:
   void set_pos( float, float );
 
   void look(Camera*);
+  float heading();
 
   void move( std::vector<MeshInstance> & );
 

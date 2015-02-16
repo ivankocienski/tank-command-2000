@@ -7,13 +7,16 @@ todo:
 
 
 world
-  - map / world container
-  - obstacle objects
+  * map / world container
+  * obstacle objects
   - enemy objects
 
 
+- proper two stick tank drive
+
 - shooting
-- collision detection / damage
+* collision detection 
+  - damage
 
 - enemy AI
 
