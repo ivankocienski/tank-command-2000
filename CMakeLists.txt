@@ -34,6 +34,8 @@ set (SRC
   src/player-tank.cc
   src/line-vector-sprite.cc
 
+  src/baddies/mid-tank.cc
+
   src/math/matrix4.cc
   src/math/matrix3.cc
   src/math/operations.cc

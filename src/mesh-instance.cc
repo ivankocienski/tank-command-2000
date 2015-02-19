@@ -18,6 +18,10 @@ void MeshInstance::set_translation( float xo, float yo, float zo ) {
   m_translate.set( xo, yo, zo ); 
 }
 
+void MeshInstance::set_translation( const Vector3& p ) {
+  m_translate.set( p ); 
+}
+
 bool MeshInstance::point_inside_bb( Vector3& tp ) {
 
   if( tp.x < m_min.x || tp.x > m_max.x ) return false;

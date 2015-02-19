@@ -26,6 +26,14 @@ void World::spawn_obstacle( float x, float y, int id ) {
   mi.transform();
 }
 
+void World::spawn_tank( float x, float y ) {
+  
+  m_baddies.push_back( MidTank() );
+  MidTank &mi( m_baddies.back() );
+
+  mi.set_pos( x, y );
+}
+
 void World::setup( Window &w, Camera &c, Player &p ) {
 
   m_window = &w;
@@ -33,12 +41,14 @@ void World::setup( Window &w, Camera &c, Player &p ) {
   m_player = &p;
   m_player_tank = &p.current_tank();
 
-  spawn_obstacle(  1, 1, 1 );
-  spawn_obstacle(  5, 1, 2 );
-  spawn_obstacle( 10, 5, 3 );
-  spawn_obstacle(  4, 5, 4 );
+  spawn_obstacle(  1, 1, 0 );
+  spawn_obstacle(  5, 1, 1 );
+  spawn_obstacle( 10, 5, 2 );
+  spawn_obstacle(  4, 5, 3 );
 
   m_player_tank->set_pos( -3, -3 );
+
+  spawn_tank( 5, 10 );
 }
 
 void World::run() {
@@ -54,13 +64,17 @@ void World::run() {
   bool *keys = m_window->m_keys;
 
   vector<MeshInstance>::iterator mi_it;
-  void set_pos( float, float, float );
+  vector<MidTank>::iterator b_it;
   
   while( m_window->active() && run_loop ) {
 
     m_player_tank->move( m_mesh_instances );
+
+    for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ )
+      b_it->think_and_move();
   
     m_player_tank->look( m_camera );
+
 
     m_window->begin_raster();
 
@@ -72,7 +86,7 @@ void World::run() {
     bg4.draw( *m_window, 1920 - bgo, horizon_level - 45);
     bg1.draw( *m_window, 2560 - bgo, horizon_level - 80);
 
-
+    // TODO ... collect draw meshes and z-sort them and paint them backward onto screen ;)
 
     for( mi_it = m_mesh_instances.begin(); mi_it != m_mesh_instances.end(); mi_it++ ) {
 
@@ -82,13 +96,25 @@ void World::run() {
 
       if( !dm.is_visible() ) continue;
 
-      // TODO; translate from object space to world space
+      dm.camera_transform();
+
+      dm.draw();
+
+    }
+
+    for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ ) {
+      if( !b_it->is_active() ) continue;
+
+      DrawMesh dm( b_it->mesh_instance(), m_camera );
+
+      dm.clip_to_frustum();
+
+      if( !dm.is_visible() ) continue;
 
       dm.camera_transform();
 
       dm.draw();
 
-      // TODO ... collect draw meshes and z-sort them and paint them backward onto screen ;)
     }
 
     logo.draw( *m_window, 10, 10 );

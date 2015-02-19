@@ -8,6 +8,8 @@
 #include "camera.hh"
 #include "mesh-instance.hh"
 
+#include "baddies/mid-tank.hh"
+
 class World {
 private:
 
@@ -17,9 +19,11 @@ private:
   PlayerTank *m_player_tank;
 
   std::vector<MeshInstance> m_mesh_instances;
+  std::vector<MidTank> m_baddies;
 
   void spawn_obstacle( float, float, int );
-
+  void spawn_tank( float, float );
+  
 public:
 
   World();
