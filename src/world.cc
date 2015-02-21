@@ -71,7 +71,7 @@ void World::run() {
     m_player_tank->move( m_mesh_instances );
 
     for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ )
-      b_it->think_and_move();
+      b_it->think_and_move( m_player_tank, m_mesh_instances );
   
     m_player_tank->look( m_camera );
 
