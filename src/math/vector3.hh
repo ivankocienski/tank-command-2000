@@ -17,6 +17,8 @@ public:
   void set( float, float, float );
   void set( const Vector3& );
 
+  void set_as_angle(float);
+
   void  normalize();
   float magnitude() const;
   float dot( const Vector3 & ) const;

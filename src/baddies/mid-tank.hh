@@ -10,14 +10,13 @@
 // REVIEW: this is ported from ruby, so it may not make so
 // much sense
 
-class MidTank;
-
 class TankMetric {
 private:
 
   float m_obs_distance;
   float m_obs_angle;
   float m_obs_side;
+  Vector3 m_obs_vector;
 
   float m_tgt_distance;
   float m_tgt_angle;
@@ -25,11 +24,12 @@ private:
 
 public:
 
-  TankMetric( Vector3&, Vector3&, PlayerTank&, std::vector<MeshInstance>& );
+  TankMetric( Vector3&, Vector3&, PlayerTank*, std::vector<MeshInstance>& );
 
   float obstacle_distance();
   float obstacle_angle();
   float obstacle_side();
+  Vector3 & obstacle_vector();
 
   float target_angle();
   float target_distance();
@@ -38,6 +38,20 @@ public:
 
 class TankFireControl {
 private:
+
+  typedef struct _S_FIRE_TABLE {
+    int   pos;
+    float distance;
+    int   hold;
+  } T_FIRE_TABLE, *PT_FIRE_TABLE;
+
+  static T_FIRE_TABLE s_fire_table[];
+
+  PT_FIRE_TABLE m_fire_entry;
+  int  m_fire_hold;
+  bool m_is_locked_on;
+  bool m_should_fire;
+  
 public:
 
   TankFireControl();
@@ -53,15 +67,16 @@ private:
 
   bool m_active;
   Vector3 m_mark_point;
-  Vector3 m_dir_to;
+  Vector3 m_obs_vector;
   float m_side;
   
 public:
 
   TankObstacle();
 
-  void set( TankMetric& );
+  void set( Vector3&, TankMetric& );
   void clear();
+  bool is_active();
 
   float distance_to( Vector3& );
   float angle_to( Vector3& );
@@ -85,7 +100,7 @@ private:
   
   bool shoot_at_target( TankMetric&, float&, Vector3& );
   bool sidestep_obstacle( TankMetric&, float&, Vector3& );
-  bool turn_away_from_obstacle( TankMetric&, float&, Vector3& );
+  bool turn_away_from_obstacle( Vector3&, TankMetric&, float&, Vector3& );
   bool turn_toward_target( TankMetric&, float&, Vector3& );
   bool move_toward_target( TankMetric&, float&, Vector3& );
 
@@ -94,8 +109,9 @@ public:
   MidTank();
 
   void set_pos( float, float );
-  void think_and_move( PlayerTank&, std::vector<MeshInstance>& );
+  void think_and_move( PlayerTank*, std::vector<MeshInstance>& );
   bool is_active();
+  void fire();
 
   MeshInstance & mesh_instance();
 };

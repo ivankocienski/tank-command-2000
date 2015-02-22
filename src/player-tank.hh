@@ -23,6 +23,7 @@ public:
 
   PlayerTank();
 
+  Vector3& position();
   void set_pos( float, float );
 
   void look(Camera*);

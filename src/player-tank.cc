@@ -22,6 +22,10 @@ void PlayerTank::walk(float d) {
   m_new_pos = m_position + Vector3( m_direction.x, 0, m_direction.z ) * d;
 }
 
+Vector3 & PlayerTank::position() {
+  return m_position;
+}
+
 void PlayerTank::move( vector<MeshInstance> & wo ) {
 
   Vector3 fwd = m_direction * (tank_length / 2.0);

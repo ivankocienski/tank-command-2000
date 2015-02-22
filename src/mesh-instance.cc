@@ -22,6 +22,10 @@ void MeshInstance::set_translation( const Vector3& p ) {
   m_translate.set( p ); 
 }
 
+Vector3 & MeshInstance::position() {
+  return m_translate;
+}
+
 bool MeshInstance::point_inside_bb( Vector3& tp ) {
 
   if( tp.x < m_min.x || tp.x > m_max.x ) return false;

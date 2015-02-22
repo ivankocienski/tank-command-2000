@@ -29,6 +29,12 @@ void Vector3::set( const Vector3 &v ) {
   z = v.z; 
 }
 
+void Vector3::set_as_angle( float a ) {
+  x = cos(a);
+  y = 0;
+  z = sin(a);
+}
+
 float Vector3::magnitude() const {
   return sqrt( x * x + y * y + z * z );
 }

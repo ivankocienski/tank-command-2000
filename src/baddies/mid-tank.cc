@@ -2,6 +2,8 @@
 #include "mid-tank.hh"
 #include "../assets.hh"
 
+using namespace std;
+
 static const float NEAR_MAX = 1000000;
 
 /* TankMetric
@@ -10,7 +12,7 @@ static const float NEAR_MAX = 1000000;
  *
  */
 
-TankMetric::TankMetric( Vector3 &me_pos, Vector3 &me_dir, PlayerTank& tgt, std::vector<MeshInstance>& obs ) {
+TankMetric::TankMetric( Vector3 &me_pos, Vector3 &me_dir, PlayerTank *tgt, std::vector<MeshInstance>& obs ) {
 
   m_obs_distance = NEAR_MAX;
   m_obs_angle    = 0;
@@ -24,10 +26,11 @@ TankMetric::TankMetric( Vector3 &me_pos, Vector3 &me_dir, PlayerTank& tgt, std::
 
   // target
 
-  Vector3 tgt_vector tgt.position() - me_pos;
+  Vector3 tgt_vector = tgt->position() - me_pos;
 
   m_tgt_distance = tgt_vector.magnitude();
-  m_tgt_angle    = me->direction().dot(tgt_vector.normalize()); 
+  tgt_vector.normalize();
+  m_tgt_angle    = me_dir.dot(tgt_vector); 
   m_tgt_side     = tgt_vector.dot(me_dir_perp);
 
   // obstacles
@@ -38,7 +41,7 @@ TankMetric::TankMetric( Vector3 &me_pos, Vector3 &me_dir, PlayerTank& tgt, std::
   vector<MeshInstance>::iterator it;
   for( it = obs.begin(); it != obs.end(); it++ ) {
 
-    Vector3 vector = obs->position() - tgt.position();
+    Vector3 vector = it->position() - me_pos;
     float dist = vector.magnitude();
 
     if( dist >= near ) continue;
@@ -48,9 +51,10 @@ TankMetric::TankMetric( Vector3 &me_pos, Vector3 &me_dir, PlayerTank& tgt, std::
   }
 
   if( near < NEAR_MAX) {
-    m_obs_vector   = near_vto.normalize();
     m_obs_angle    = me_dir.dot(m_obs_vector);
     m_obs_side     = near_vto.dot(me_dir_perp);
+    near_vto.normalize();
+    m_obs_vector   = near_vto;
     m_obs_distance = near;
   }
 }
@@ -69,7 +73,7 @@ float TankMetric::target_side()       { return m_tgt_side; }
  * Wraps the control of the tanks gun
  */
 
-const TankFireControl::s_fire_table = {
+TankFireControl::T_FIRE_TABLE TankFireControl::s_fire_table [] = {
   /* distance, hold */
   {  0,  20, 50 },
   {  1,  50, 30 },
@@ -92,11 +96,11 @@ void TankFireControl::scan( TankMetric& tm ) {
 
   if( !m_fire_entry ) {
 
-    PT_FIRE_TABLE entry = s_fire_table;
+    T_FIRE_TABLE * entry(s_fire_table);
 
     while( entry->pos >= 0 ) {
 
-      if( dtt < entry ) {
+      if( dtt < entry->distance ) {
         entry++;
         continue;
       }
@@ -110,7 +114,7 @@ void TankFireControl::scan( TankMetric& tm ) {
   }
 
   // when in range- fire at them
-  if( dtt <= m_fire_entry->didstance ) {
+  if( dtt <= m_fire_entry->distance ) {
     if( m_fire_hold ) {
       m_is_locked_on = true;
       m_should_fire  = (m_fire_hold % 10);
@@ -127,7 +131,7 @@ void TankFireControl::scan( TankMetric& tm ) {
 
   // moving away?
   if( dtt > m_fire_entry->distance ) {
-    if( m_fire_entry-pos < 3 ) m_fire_entry++;
+    if( m_fire_entry->pos < 3 ) m_fire_entry++;
     m_fire_hold = m_fire_entry->hold;
   }
 }
@@ -147,6 +151,10 @@ TankObstacle::TankObstacle() {
 void TankObstacle::clear() {
   m_active = false;
   m_side   = 0;
+}
+
+bool TankObstacle::is_active() {
+  return m_active;
 }
 
 void TankObstacle::set( Vector3 &my_pos, TankMetric &tm ) {
@@ -178,6 +186,9 @@ MidTank::MidTank() : m_mesh_instance( &g_mesh_list[ A_MID_TANK ]) {
   m_active = true;
 }
 
+void MidTank::fire() {
+}
+
 void MidTank::set_pos( float x, float y ) {
   m_position.set( x, 0, y );
 
@@ -194,7 +205,7 @@ MeshInstance & MidTank::mesh_instance() {
   return m_mesh_instance;
 }
 
-void MidTank::think_and_move( PlayerTank &pt, vector<MeshInstance> &obs ) {
+void MidTank::think_and_move( PlayerTank *pt, vector<MeshInstance> &obs ) {
 
   if( !m_active ) return;
 
@@ -224,7 +235,7 @@ void MidTank::think_and_move( PlayerTank &pt, vector<MeshInstance> &obs ) {
   m_position += p_inc;
 
   m_mesh_instance.set_translation( m_position );
-  m_mesh_instance.set_rotation( m_heading );
+  m_mesh_instance.set_rotation( m_heading, 0, 0 );
 
   m_mesh_instance.transform();
 }
@@ -242,7 +253,7 @@ bool MidTank::shoot_at_target( TankMetric& tm, float &h_inc, Vector3 &p_inc ) {
 
 bool MidTank::sidestep_obstacle( TankMetric& tm, float &h_inc, Vector3 &p_inc ) {
 
-  if( !m_obstacle.active() ) return false;
+  if( !m_obstacle.is_active() ) return false;
 
   if( m_obstacle.distance_to( m_position ) < 25 ) {
     p_inc = m_direction;
@@ -256,7 +267,7 @@ bool MidTank::sidestep_obstacle( TankMetric& tm, float &h_inc, Vector3 &p_inc ) 
 
 bool MidTank::turn_away_from_obstacle( Vector3& dir, TankMetric& tm, float &h_inc, Vector3 &p_inc ) {
 
-  if( !m_obstacle.active() ) {
+  if( !m_obstacle.is_active() ) {
 
     if( tm.obstacle_distance() > 50 ) return false;
 
@@ -290,19 +301,19 @@ bool MidTank::turn_toward_target( TankMetric& tm, float &h_inc, Vector3 &p_inc )
 bool MidTank::move_toward_target( TankMetric& tm, float &h_inc, Vector3 &p_inc ) {
   
   if( tm.target_distance() < 20 ) {
-    if( tm.angle_to_target() < 0.995 ) return false;
+    if( tm.target_angle() < 0.995 ) return false;
   }
 
   if( tm.target_distance() < 50 ) {
-    if( tm.angle_to_target() < 0.98 ) return false;
+    if( tm.target_angle() < 0.98 ) return false;
   }
 
   if( tm.target_distance() < 100 ) {
-    if( tm.angle_to_target() < 0.95 ) return false;
+    if( tm.target_angle() < 0.95 ) return false;
   }
 
   if( tm.target_distance() < 170 ) {
-    if( tm.angle_to_target < 0.88 ) return false;
+    if( tm.target_angle() < 0.88 ) return false;
   }
 
   if( tm.target_angle() < 0.7 ) return false;
