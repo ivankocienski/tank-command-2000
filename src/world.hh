@@ -10,9 +10,12 @@
 #include "obstacle.hh" 
 #include "baddies/mid-tank.hh"
 
+class Application;
+
 class World {
 private:
 
+  Application *m_app;
   Window *m_window;
   Camera *m_camera;
   Player *m_player;
@@ -28,7 +31,7 @@ public:
 
   World();
 
-  void setup( Window&, Camera&, Player& );
+  void setup( Application*, Window&, Camera&, Player& );
 
   void run();
 };

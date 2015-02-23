@@ -34,6 +34,44 @@ bool load_assets() {
   LOAD_SPRITE( S_BG3, "bg3.lvs" );
   LOAD_SPRITE( S_BG4, "bg4.lvs" );
 
+  LOAD_SPRITE( S_CHAR_0, "char-0.lvs" );
+  LOAD_SPRITE( S_CHAR_1, "char-1.lvs" );
+  LOAD_SPRITE( S_CHAR_2, "char-2.lvs" );
+  LOAD_SPRITE( S_CHAR_3, "char-3.lvs" );
+  LOAD_SPRITE( S_CHAR_4, "char-4.lvs" );
+  LOAD_SPRITE( S_CHAR_5, "char-5.lvs" );
+  LOAD_SPRITE( S_CHAR_6, "char-6.lvs" );
+  LOAD_SPRITE( S_CHAR_7, "char-7.lvs" );
+  LOAD_SPRITE( S_CHAR_8, "char-8.lvs" );
+  LOAD_SPRITE( S_CHAR_9, "char-9.lvs" );
+
+  LOAD_SPRITE( S_CHAR_A, "char-a.lvs" );
+  LOAD_SPRITE( S_CHAR_B, "char-b.lvs" );
+  LOAD_SPRITE( S_CHAR_C, "char-c.lvs" );
+  LOAD_SPRITE( S_CHAR_D, "char-d.lvs" );
+  LOAD_SPRITE( S_CHAR_E, "char-e.lvs" );
+  LOAD_SPRITE( S_CHAR_F, "char-f.lvs" );
+  LOAD_SPRITE( S_CHAR_G, "char-g.lvs" );
+  LOAD_SPRITE( S_CHAR_H, "char-h.lvs" );
+  LOAD_SPRITE( S_CHAR_I, "char-i.lvs" );
+  LOAD_SPRITE( S_CHAR_J, "char-j.lvs" );
+  LOAD_SPRITE( S_CHAR_K, "char-k.lvs" );
+  LOAD_SPRITE( S_CHAR_L, "char-l.lvs" );
+  LOAD_SPRITE( S_CHAR_M, "char-m.lvs" );
+  LOAD_SPRITE( S_CHAR_N, "char-n.lvs" );
+  LOAD_SPRITE( S_CHAR_O, "char-o.lvs" );
+  LOAD_SPRITE( S_CHAR_P, "char-p.lvs" );
+  LOAD_SPRITE( S_CHAR_Q, "char-q.lvs" );
+  LOAD_SPRITE( S_CHAR_R, "char-r.lvs" );
+  LOAD_SPRITE( S_CHAR_S, "char-s.lvs" );
+  LOAD_SPRITE( S_CHAR_T, "char-t.lvs" );
+  LOAD_SPRITE( S_CHAR_U, "char-u.lvs" );
+  LOAD_SPRITE( S_CHAR_V, "char-v.lvs" );
+  LOAD_SPRITE( S_CHAR_W, "char-w.lvs" );
+  LOAD_SPRITE( S_CHAR_X, "char-x.lvs" );
+  LOAD_SPRITE( S_CHAR_Y, "char-y.lvs" );
+  LOAD_SPRITE( S_CHAR_Z, "char-z.lvs" );
+
   return true;
 }
 

@@ -79,15 +79,15 @@ void PlayerTank::turn(float d) {
   // ugh. transform a 2x1 vector by a 4x4 matrix. ignore Z component. W is always 1
 
   {
-    float nx = m_direction.x * rot_mat[0] + m_direction.y * rot_mat[1] + rot_mat[3];
-    float ny = m_direction.x * rot_mat[4] + m_direction.y * rot_mat[5] + rot_mat[7];
+    float nx = m_direction.x * rot_mat[0] + m_direction.y * rot_mat[2]  + rot_mat[3];
+    float ny = m_direction.x * rot_mat[8] + m_direction.y * rot_mat[10] + rot_mat[11];
 
     m_direction.set(nx, ny );
   }
 
   {
-    float nx = m_right.x * rot_mat[0] + m_right.y * rot_mat[1] + rot_mat[3];
-    float ny = m_right.x * rot_mat[4] + m_right.y * rot_mat[5] + rot_mat[7];
+    float nx = m_right.x * rot_mat[0] + m_right.y * rot_mat[2]  + rot_mat[3];
+    float ny = m_right.x * rot_mat[8] + m_right.y * rot_mat[10] + rot_mat[11];
 
     m_right.set(nx, ny );
   }

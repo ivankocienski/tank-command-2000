@@ -19,14 +19,14 @@ static const float P_NEAR = 0.25;
 static const float P_FAR  = 20.0;
 static const float FOV    = 90.0; // horizontal
 
+#include "char-table.hh"
+
 Application::Application( int argc, char ** argv ) { 
 }
 
 int Application::main() {
 
-  Window window;
-
-  if( !window.open( XRES, YRES, "tc2k" )) {
+  if( !m_window.open( XRES, YRES, "tc2k" )) {
     cerr << "could not open window" << endl;
     return -1;
   }
@@ -36,18 +36,28 @@ int Application::main() {
     return -1;
   }
 
-  Camera camera(window);
+  Camera camera(m_window);
   camera.setup( FOV, P_NEAR, P_FAR );
 
   Player player;
 
   World world;
 
-  world.setup( window, camera, player );
+  world.setup( this, m_window, camera, player );
 
   world.run();
 
   return 0;
 }
 
+void Application::draw_text(int x, int y, const char *c ) {
+  
+  while( *c ) {
+    if( char_table[*c] != -1 ) {
+      g_sprite_list[ char_table[*c] ].draw( m_window, x, y );
+    }
 
+    c++;
+    x += 6;
+  }
+}

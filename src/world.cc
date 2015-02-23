@@ -4,6 +4,7 @@
 #include "mesh-instance.hh"
 #include "draw-mesh.hh"
 #include "assets.hh"
+#include "application.hh"
 
 #include "line-vector-sprite.hh"
 
@@ -30,8 +31,9 @@ void World::spawn_tank( float x, float y ) {
   mi.set_pos( x, y );
 }
 
-void World::setup( Window &w, Camera &c, Player &p ) {
+void World::setup( Application *a, Window &w, Camera &c, Player &p ) {
 
+  m_app    = a;
   m_window = &w;
   m_camera = &c;
   m_player = &p;
@@ -66,8 +68,8 @@ void World::run() {
 
     m_player_tank->move( m_obstacles );
 
-    for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ )
-      b_it->think_and_move( m_player_tank, m_obstacles );
+    //for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ )
+    //  b_it->think_and_move( m_player_tank, m_obstacles );
   
     m_player_tank->look( m_camera );
 
@@ -112,6 +114,8 @@ void World::run() {
     }
 
     logo.draw( *m_window, 10, 10 );
+
+    //m_app->draw_text( 20, 50, "ABCD 1234   HELLO WORLD" );
 
     m_window->end_raster();
 
