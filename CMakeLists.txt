@@ -33,6 +33,7 @@ set (SRC
   src/world.cc
   src/player-tank.cc
   src/line-vector-sprite.cc
+  src/obstacle.cc
 
   src/baddies/mid-tank.cc
 
@@ -40,6 +41,7 @@ set (SRC
   src/math/matrix3.cc
   src/math/operations.cc
   src/math/vector3.cc
+  src/math/vector2.cc
 )
 
 link_libraries(

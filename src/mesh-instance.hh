@@ -5,6 +5,7 @@
 
 #include "mesh.hh"
 #include "math/vector3.hh"
+#include "math/vector2.hh"
 
 class MeshInstance {
 private:
@@ -30,6 +31,7 @@ public:
   void set_rotation( float, float, float );
 
   bool point_inside_bb( Vector3& );
+  bool point_inside_bb( Vector2& );
 
   void transform();
 

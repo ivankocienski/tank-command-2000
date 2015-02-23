@@ -35,6 +35,14 @@ bool MeshInstance::point_inside_bb( Vector3& tp ) {
   return true; 
 }
 
+bool MeshInstance::point_inside_bb( Vector2& tp ) {
+
+  if( tp.x < m_min.x || tp.x > m_max.x ) return false;
+  if( tp.y < m_min.y || tp.y > m_max.y ) return false;
+
+  return true; 
+}
+
 void MeshInstance::set_rotation( float r, float p, float y ) {
   // TODO: use of quaternions
   m_rotate.set( r, p, y );

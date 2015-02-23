@@ -3,39 +3,38 @@
 
 #include <vector>
 
-#include "math/vector3.hh"
+#include "math/vector2.hh"
 #include "mesh-instance.hh"
+#include "obstacle.hh"
 
 class Camera;
 
 class PlayerTank {
 private:
 
-  Vector3 m_position;
-  Vector3 m_new_pos;
+  Vector2 m_position;
+  Vector2 m_new_pos;
   
-  Vector3 m_direction;
-  Vector3 m_right;
+  Vector2 m_direction;
+  Vector2 m_right;
 
   float m_heading;
+  float m_height;
   
 public:
 
   PlayerTank();
 
-  Vector3& position();
+  Vector2& position();
   void set_pos( float, float );
 
   void look(Camera*);
   float heading();
 
-  void move( std::vector<MeshInstance> & );
+  void move( std::vector<Obstacle> & );
 
   void walk(float);
   void turn(float);
   void strafe(float);
-
-  float foot_x();
-  float foot_y();
 };
 

@@ -4,10 +4,10 @@
 #include <vector>
 
 #include "window.hh"
-#include "player.hh"
 #include "camera.hh"
-#include "mesh-instance.hh"
 
+#include "player.hh"
+#include "obstacle.hh" 
 #include "baddies/mid-tank.hh"
 
 class World {
@@ -18,7 +18,7 @@ private:
   Player *m_player;
   PlayerTank *m_player_tank;
 
-  std::vector<MeshInstance> m_mesh_instances;
+  std::vector<Obstacle> m_obstacles;
   std::vector<MidTank> m_baddies;
 
   void spawn_obstacle( float, float, int );

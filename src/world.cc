@@ -1,8 +1,7 @@
 
 #include "world.hh"
-
-#include "math/vector3.hh"
 #include "mesh.hh"
+#include "mesh-instance.hh"
 #include "draw-mesh.hh"
 #include "assets.hh"
 
@@ -18,12 +17,9 @@ World::World() {
 
 void World::spawn_obstacle( float x, float y, int id ) {
 
-  m_mesh_instances.push_back( MeshInstance( &g_mesh_list[id]));
+  m_obstacles.push_back( Obstacle(id) );
   
-  MeshInstance &mi( m_mesh_instances.back() );
-
-  mi.set_translation( x, 0, y );
-  mi.transform();
+  m_obstacles.back().set_pos( x, y, 0, 0 );
 }
 
 void World::spawn_tank( float x, float y ) {
@@ -63,15 +59,15 @@ void World::run() {
 
   bool *keys = m_window->m_keys;
 
-  vector<MeshInstance>::iterator mi_it;
+  vector<Obstacle>::iterator ob_it;
   vector<MidTank>::iterator b_it;
   
   while( m_window->active() && run_loop ) {
 
-    m_player_tank->move( m_mesh_instances );
+    m_player_tank->move( m_obstacles );
 
     for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ )
-      b_it->think_and_move( m_player_tank, m_mesh_instances );
+      b_it->think_and_move( m_player_tank, m_obstacles );
   
     m_player_tank->look( m_camera );
 
@@ -88,9 +84,9 @@ void World::run() {
 
     // TODO ... collect draw meshes and z-sort them and paint them backward onto screen ;)
 
-    for( mi_it = m_mesh_instances.begin(); mi_it != m_mesh_instances.end(); mi_it++ ) {
+    for( ob_it = m_obstacles.begin(); ob_it != m_obstacles.end(); ob_it++ ) {
 
-      DrawMesh dm( *mi_it, m_camera );
+      DrawMesh dm( ob_it->mesh(), m_camera );
 
       dm.clip_to_frustum();
 
@@ -98,8 +94,7 @@ void World::run() {
 
       dm.camera_transform();
 
-      dm.draw();
-
+      dm.draw(); 
     }
 
     for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ ) {
@@ -113,8 +108,7 @@ void World::run() {
 
       dm.camera_transform();
 
-      dm.draw();
-
+      dm.draw(); 
     }
 
     logo.draw( *m_window, 10, 10 );

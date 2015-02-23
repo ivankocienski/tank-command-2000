@@ -12,7 +12,7 @@ static const float NEAR_MAX = 1000000;
  *
  */
 
-TankMetric::TankMetric( Vector3 &me_pos, Vector3 &me_dir, PlayerTank *tgt, std::vector<MeshInstance>& obs ) {
+TankMetric::TankMetric( Vector2 &me_pos, Vector2 &me_dir, PlayerTank *tgt, std::vector<Obstacle>& obs ) {
 
   m_obs_distance = NEAR_MAX;
   m_obs_angle    = 0;
@@ -22,11 +22,11 @@ TankMetric::TankMetric( Vector3 &me_pos, Vector3 &me_dir, PlayerTank *tgt, std::
   m_tgt_angle    = 0;
   m_tgt_side     = 0;
 
-  Vector3 me_dir_perp = me_dir.perpendicular();
+  Vector2 me_dir_perp = me_dir.perpendicular();
 
   // target
 
-  Vector3 tgt_vector = tgt->position() - me_pos;
+  Vector2 tgt_vector = tgt->position() - me_pos;
 
   m_tgt_distance = tgt_vector.magnitude();
   tgt_vector.normalize();
@@ -36,12 +36,12 @@ TankMetric::TankMetric( Vector3 &me_pos, Vector3 &me_dir, PlayerTank *tgt, std::
   // obstacles
 
   float near = NEAR_MAX;
-  Vector3 near_vto;
+  Vector2 near_vto;
 
-  vector<MeshInstance>::iterator it;
+  vector<Obstacle>::iterator it;
   for( it = obs.begin(); it != obs.end(); it++ ) {
 
-    Vector3 vector = it->position() - me_pos;
+    Vector2 vector = it->position() - me_pos;
     float dist = vector.magnitude();
 
     if( dist >= near ) continue;
@@ -62,7 +62,7 @@ TankMetric::TankMetric( Vector3 &me_pos, Vector3 &me_dir, PlayerTank *tgt, std::
 float TankMetric::obstacle_distance()   { return m_obs_distance; } 
 float TankMetric::obstacle_angle()      { return m_obs_angle; } 
 float TankMetric::obstacle_side()       { return m_obs_side; } 
-Vector3 & TankMetric::obstacle_vector() { return m_obs_vector; }
+Vector2 & TankMetric::obstacle_vector() { return m_obs_vector; }
 
 float TankMetric::target_angle()      { return m_tgt_angle; } 
 float TankMetric::target_distance()   { return m_tgt_distance; } 
@@ -157,18 +157,18 @@ bool TankObstacle::is_active() {
   return m_active;
 }
 
-void TankObstacle::set( Vector3 &my_pos, TankMetric &tm ) {
+void TankObstacle::set( Vector2 &my_pos, TankMetric &tm ) {
   m_active     = true;
   m_mark_point = my_pos;
   m_obs_vector = tm.obstacle_vector();
   m_side       = tm.obstacle_side();
 }
 
-float TankObstacle::distance_to( Vector3& p ) {
+float TankObstacle::distance_to( Vector2& p ) {
   return (m_mark_point - p).magnitude();
 }
 
-float TankObstacle::angle_to( Vector3& d ) {
+float TankObstacle::angle_to( Vector2& d ) {
   return m_obs_vector.dot(d);
 }
 
@@ -183,16 +183,17 @@ float TankObstacle::side() {
 
 MidTank::MidTank() : m_mesh_instance( &g_mesh_list[ A_MID_TANK ]) {
   m_heading = 0;
-  m_active = true;
+  m_height  = 0;
+  m_active  = true;
 }
 
 void MidTank::fire() {
 }
 
 void MidTank::set_pos( float x, float y ) {
-  m_position.set( x, 0, y );
+  m_position.set( x, y );
 
-  m_mesh_instance.set_translation( m_position );
+  m_mesh_instance.set_translation( m_position.to_vector3(m_height) );
 
   m_mesh_instance.transform();
 }
@@ -205,14 +206,14 @@ MeshInstance & MidTank::mesh_instance() {
   return m_mesh_instance;
 }
 
-void MidTank::think_and_move( PlayerTank *pt, vector<MeshInstance> &obs ) {
+void MidTank::think_and_move( PlayerTank *pt, vector<Obstacle> &obs ) {
 
   if( !m_active ) return;
 
   float h_inc = 0;
-  Vector3 p_inc;
+  Vector2 p_inc;
 
-  Vector3 dir;
+  Vector2 dir;
   dir.set_as_angle(m_heading);
 
   TankMetric tm(m_position, dir, pt, obs);
@@ -234,13 +235,13 @@ void MidTank::think_and_move( PlayerTank *pt, vector<MeshInstance> &obs ) {
   m_heading  += h_inc;
   m_position += p_inc;
 
-  m_mesh_instance.set_translation( m_position );
-  m_mesh_instance.set_rotation( m_heading, 0, 0 );
+  m_mesh_instance.set_translation( m_position.to_vector3(m_height) );
+  m_mesh_instance.set_rotation( 0, m_heading, 0 );
 
   m_mesh_instance.transform();
 }
 
-bool MidTank::shoot_at_target( TankMetric& tm, float &h_inc, Vector3 &p_inc ) {
+bool MidTank::shoot_at_target( TankMetric& tm, float &h_inc, Vector2 &p_inc ) {
   
   m_fire_control.scan(tm);
 
@@ -251,7 +252,7 @@ bool MidTank::shoot_at_target( TankMetric& tm, float &h_inc, Vector3 &p_inc ) {
   return true;
 }
 
-bool MidTank::sidestep_obstacle( TankMetric& tm, float &h_inc, Vector3 &p_inc ) {
+bool MidTank::sidestep_obstacle( TankMetric& tm, float &h_inc, Vector2 &p_inc ) {
 
   if( !m_obstacle.is_active() ) return false;
 
@@ -265,7 +266,7 @@ bool MidTank::sidestep_obstacle( TankMetric& tm, float &h_inc, Vector3 &p_inc ) 
   return false;
 }
 
-bool MidTank::turn_away_from_obstacle( Vector3& dir, TankMetric& tm, float &h_inc, Vector3 &p_inc ) {
+bool MidTank::turn_away_from_obstacle( Vector2& dir, TankMetric& tm, float &h_inc, Vector2 &p_inc ) {
 
   if( !m_obstacle.is_active() ) {
 
@@ -286,7 +287,7 @@ bool MidTank::turn_away_from_obstacle( Vector3& dir, TankMetric& tm, float &h_in
   return true;
 }
 
-bool MidTank::turn_toward_target( TankMetric& tm, float &h_inc, Vector3 &p_inc ) {
+bool MidTank::turn_toward_target( TankMetric& tm, float &h_inc, Vector2 &p_inc ) {
 
   if( tm.target_angle() > 0.99 ) return false;
 
@@ -298,7 +299,7 @@ bool MidTank::turn_toward_target( TankMetric& tm, float &h_inc, Vector3 &p_inc )
   return true; 
 }
 
-bool MidTank::move_toward_target( TankMetric& tm, float &h_inc, Vector3 &p_inc ) {
+bool MidTank::move_toward_target( TankMetric& tm, float &h_inc, Vector2 &p_inc ) {
   
   if( tm.target_distance() < 20 ) {
     if( tm.target_angle() < 0.995 ) return false;
