@@ -56,8 +56,8 @@ bool LineVectorSprite::load( const char* filepath ) {
     break;
   }
 
-  cout << "line vector sprite load " << (okay ? "okay" : "fail") << endl;
-  cout << "  lines.size=" << m_lines.size() << endl;
+//  cout << "line vector sprite load " << (okay ? "okay" : "fail") << endl;
+//  cout << "  lines.size=" << m_lines.size() << endl;
 
   if(file) fclose(file);
   if(line_buffer) free( line_buffer ); 

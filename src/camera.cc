@@ -12,20 +12,42 @@ using std::endl;
 static const float DEG_2_RAD = 0.017453292;
 
 Camera::Camera(Window& w) : m_window(w) {
-  m_xres = w.width();
-  m_yres = w.height();
-  m_aspect_ratio = w.aspect_ratio();
+  m_xres = 640; //w.width();
+  m_yres = 400; //w.height();
+  m_aspect_ratio = 1.6; //w.aspect_ratio();
 
   m_near = 0;
   m_far  = 0;
-  m_fovy = 0;
+  m_fovx = 0;
 }
+
+// to try: !!!!!!!!!!!!!!!!!!!!!!! <<<<<<<<-------------------
+//   lets try storing fov as x (90 degrees) and doing the Y fov
+//   conversion thingy
 
 void Camera::setup( float fovx, float near, float far) {
 
   m_near = near;
   m_far  = far;
-  m_fovy = fovx / m_aspect_ratio;
+  m_fovx = fovx;
+
+  // oh the magiks...
+  m_zoom_x = 1.0 / tan(DEG_2_RAD * m_fovx * 0.7);
+  m_zoom_y = m_zoom_x * m_aspect_ratio; 
+
+  cout << "camera setup" << endl;
+  cout << "  xres         =" << m_xres << endl;
+  cout << "  yres         =" << m_yres << endl;
+  cout << "  aspect_ratio =" << m_aspect_ratio << endl;
+  cout << "  near         =" << m_near << endl;
+  cout << "  far          =" << m_far << endl;
+  cout << "  fovx         =" << m_fovx << endl;
+  //cout << "  fovy         =" << m_fovy << endl;
+  cout << "  zoom_x       =" << m_zoom_x << endl;
+  cout << "  zoom_y       =" << m_zoom_y << endl;
+  cout << endl;
+  cout << "  zx/zy=" << (m_zoom_x / m_zoom_y) << endl;
+  cout << "  zy/zx=" << (m_zoom_y / m_zoom_x) << endl;
 }
 
 void Camera::look( const Vector3& c_pos, const Vector3& c_dir, const Vector3& c_right ) {
@@ -51,12 +73,12 @@ void Camera::look( const Vector3& c_pos, const Vector3& c_dir, const Vector3& c_
 
   // some values
 
-  float tang   = tan( DEG_2_RAD * m_fovy * 0.5 );
-  float near_h = m_near * tang;
-  float near_w = near_h * m_aspect_ratio;
+  float tang   = tan( DEG_2_RAD * m_fovx * 0.5 );
+  float near_w = m_near * tang;
+  float near_h = near_w / m_aspect_ratio;
 
-  float far_h = m_far * tang;
-  float far_w = far_h * m_aspect_ratio;
+  float far_w = m_far * tang; 
+  float far_h = far_w / m_aspect_ratio;
 
   Vector3 near_tl( m_clip_plane[CP_NEAR].position() - (m_right * near_w) - (m_up * near_h) );
   Vector3 near_tr( m_clip_plane[CP_NEAR].position() + (m_right * near_w) - (m_up * near_h) );
@@ -144,10 +166,6 @@ const Plane *Camera::clip_planes() {
 
 void Camera::draw_3d_line( const Vector3& p1, const Vector3& p2, int c ) {
 
-  // oh the magiks...
-  float zoom_y =    1.0 / (tan(m_fovy / 2.0));
-  float zoom_x = zoom_y / m_aspect_ratio;
-
   // precompute clip matrix elements
   float c10 = (m_far + m_near) / (m_far - m_near);
   float c14 = (2 * m_near * m_far ) / (m_near - m_far);
@@ -158,32 +176,36 @@ void Camera::draw_3d_line( const Vector3& p1, const Vector3& p2, int c ) {
   // p1
   {
     // clip_matrix * p1
-    float p1_a = p1.x * zoom_x;
-    float p1_b = p1.y * zoom_y;
+    float p1_a = p1.x * m_zoom_x;
+    float p1_b = p1.y * m_zoom_y;
     float p1_c = p1.z * c10 + 1;
     float p1_d = p1.z * c14;
 
     if( p1_c < p1_d ) return;
 
     // project p1 to screen ...
-    p1_x =   (p1_a * m_xres) / (2 * p1_d)  + (m_xres / 2);
-    p1_y = -((p1_b * m_yres) / (2 * p1_d)) + (m_yres / 2); 
+    p1_x = -(p1_a * m_xres) / (2 * p1_d)  + (m_xres / 2);
+    p1_y = ((p1_b * m_yres) / (2 * p1_d)) + (m_yres / 2); 
   }
 
   // p2
   {
     // clip_matrix * p1
-    float p2_a = p2.x * zoom_x;
-    float p2_b = p2.y * zoom_y;
+    float p2_a = p2.x * m_zoom_x;
+    float p2_b = p2.y * m_zoom_y;
     float p2_c = p2.z * c10 + 1;
     float p2_d = p2.z * c14;
 
     if( p2_c < p2_d ) return;
 
     // project p1 to screen ...
-    p2_x =   (p2_a * m_xres) / (2 * p2_d)  + (m_xres / 2);
-    p2_y = -((p2_b * m_yres) / (2 * p2_d)) + (m_yres / 2); 
+    p2_x = -(p2_a * m_xres) / (2 * p2_d)  + (m_xres / 2);
+    p2_y = ((p2_b * m_yres) / (2 * p2_d)) + (m_yres / 2); 
   }
+
+
+  p1_y += 80;
+  p2_y += 80;
 
   m_window.draw_line( p1_x, p1_y, p2_x, p2_y, c ); 
 }

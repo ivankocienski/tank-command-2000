@@ -65,9 +65,9 @@ bool Mesh::load_from( const char *filepath ) {
     break;
   }
 
-  cout << "mesh load " << (okay ? "okay" : "fail") << endl;
-  cout << "  vertex.size=" << m_vertices.size() << endl;
-  cout << "  edge.count=" << m_edges.size() << endl;
+//  cout << "mesh load " << (okay ? "okay" : "fail") << endl;
+//  cout << "  vertex.size=" << m_vertices.size() << endl;
+//  cout << "  edge.count=" << m_edges.size() << endl;
 
   if(file) fclose(file);
   if(vert_read_buffer) free( vert_read_buffer );

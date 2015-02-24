@@ -13,7 +13,6 @@ Obstacle::Obstacle( int m ) : m_mesh( &g_mesh_list[m] ) {
   m_angle  = 0;
 }
 
-
 void Obstacle::set_pos( float x, float y, float z, float a ) {
   m_position.set( x, y );
   m_height = z;

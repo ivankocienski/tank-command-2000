@@ -17,6 +17,7 @@ PlayerTank::PlayerTank() {
 
 void PlayerTank::set_pos( float x, float y ) { 
   m_position.set( x, y );
+  m_new_pos.set( x, y );
 }
 
 void PlayerTank::walk(float d) { 
@@ -38,15 +39,15 @@ void PlayerTank::move( vector<Obstacle> & wo ) {
   Vector2 back_right  = m_new_pos - fwd + rgt;
 
   
-  for( vector<Obstacle>::iterator it = wo.begin(); it != wo.end(); it++ ) {
-
-    MeshInstance &mi = it->mesh();
-    
-    if( mi.point_inside_bb( front_left ))  return;
-    if( mi.point_inside_bb( front_right )) return;
-    if( mi.point_inside_bb( back_left ))   return;
-    if( mi.point_inside_bb( back_right))   return;
-  } 
+//  for( vector<Obstacle>::iterator it = wo.begin(); it != wo.end(); it++ ) {
+//
+//    MeshInstance &mi = it->mesh();
+//    
+//    if( mi.point_inside_bb( front_left ))  return;
+//    if( mi.point_inside_bb( front_right )) return;
+//    if( mi.point_inside_bb( back_left ))   return;
+//    if( mi.point_inside_bb( back_right))   return;
+//  } 
   
   m_position = m_new_pos;
 }
@@ -76,7 +77,7 @@ void PlayerTank::turn(float d) {
   rot_mat.m_v[8]  =  s;
   rot_mat.m_v[10] =  c;
 
-  // ugh. transform a 2x1 vector by a 4x4 matrix. ignore Z component. W is always 1
+  // ugh. transform a 2x1 vector by a 4x4 matrix. ignore Y component. W is always 1
 
   {
     float nx = m_direction.x * rot_mat[0] + m_direction.y * rot_mat[2]  + rot_mat[3];

@@ -78,11 +78,12 @@ void World::run() {
 
     int bgo = 2560 - (tank_heading_to_bg_offset * m_player_tank->heading());
 
-    bg1.draw( *m_window,    0 - bgo, horizon_level - 80 );
-    bg2.draw( *m_window,  640 - bgo, horizon_level - 80);
-    bg3.draw( *m_window, 1280 - bgo, horizon_level - 65);
-    bg4.draw( *m_window, 1920 - bgo, horizon_level - 45);
-    bg1.draw( *m_window, 2560 - bgo, horizon_level - 80);
+/*     bg1.draw( *m_window,    0 - bgo, horizon_level - 80 );
+ *     bg2.draw( *m_window,  640 - bgo, horizon_level - 80);
+ *     bg3.draw( *m_window, 1280 - bgo, horizon_level - 65);
+ *     bg4.draw( *m_window, 1920 - bgo, horizon_level - 45);
+ *     bg1.draw( *m_window, 2560 - bgo, horizon_level - 80);
+ */
 
     // TODO ... collect draw meshes and z-sort them and paint them backward onto screen ;)
 
@@ -114,6 +115,12 @@ void World::run() {
     }
 
     logo.draw( *m_window, 10, 10 );
+
+
+//    m_window->draw_line( 100, 100, 420, 100, 2 );
+//    m_window->draw_line( 100, 100, 100, 300, 2 );
+//    m_window->draw_line( 420, 100, 420, 300, 2 );
+//    m_window->draw_line( 100, 300, 420, 300, 2 );
 
     //m_app->draw_text( 20, 50, "ABCD 1234   HELLO WORLD" );
 

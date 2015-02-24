@@ -38,9 +38,11 @@ private:
 
   float m_near;
   float m_far;
-  float m_fovy;
+  float m_fovx;
   float m_aspect_ratio;
-
+  float m_zoom_x;
+  float m_zoom_y;
+  
 public:
 
   Camera(Window&);
