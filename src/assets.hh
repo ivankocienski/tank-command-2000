@@ -22,6 +22,20 @@ enum {
   S_BG3,
   S_BG4,
 
+  S_CANNON_RETICULE,
+  S_HUD_BG,
+
+  S_HUD_NUM_0,
+  S_HUD_NUM_1,
+  S_HUD_NUM_2,
+  S_HUD_NUM_3,
+  S_HUD_NUM_4,
+  S_HUD_NUM_5,
+  S_HUD_NUM_6,
+  S_HUD_NUM_7,
+  S_HUD_NUM_8,
+  S_HUD_NUM_9,
+
   S_CHAR_0,
   S_CHAR_1,
   S_CHAR_2,

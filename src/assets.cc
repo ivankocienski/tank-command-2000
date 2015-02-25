@@ -34,6 +34,20 @@ bool load_assets() {
   LOAD_SPRITE( S_BG3, "bg3.lvs" );
   LOAD_SPRITE( S_BG4, "bg4.lvs" );
 
+  LOAD_SPRITE( S_CANNON_RETICULE, "cannon-reticule.lvs" );
+  LOAD_SPRITE( S_HUD_BG, "hud-bg.lvs" );
+
+  LOAD_SPRITE( S_HUD_NUM_0, "hud-num-0.lvs" );
+  LOAD_SPRITE( S_HUD_NUM_1, "hud-num-1.lvs" );
+  LOAD_SPRITE( S_HUD_NUM_2, "hud-num-2.lvs" );
+  LOAD_SPRITE( S_HUD_NUM_3, "hud-num-3.lvs" );
+  LOAD_SPRITE( S_HUD_NUM_4, "hud-num-4.lvs" );
+  LOAD_SPRITE( S_HUD_NUM_5, "hud-num-5.lvs" );
+  LOAD_SPRITE( S_HUD_NUM_6, "hud-num-6.lvs" );
+  LOAD_SPRITE( S_HUD_NUM_7, "hud-num-7.lvs" );
+  LOAD_SPRITE( S_HUD_NUM_8, "hud-num-8.lvs" );
+  LOAD_SPRITE( S_HUD_NUM_9, "hud-num-9.lvs" );
+
   LOAD_SPRITE( S_CHAR_0, "char-0.lvs" );
   LOAD_SPRITE( S_CHAR_1, "char-1.lvs" );
   LOAD_SPRITE( S_CHAR_2, "char-2.lvs" );

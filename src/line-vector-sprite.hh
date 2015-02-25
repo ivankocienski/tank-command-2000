@@ -28,5 +28,6 @@ public:
   bool load( const char* );
 
   void draw( Window&, int, int );
+  void draw( Window&, int, int, int );
 };
 

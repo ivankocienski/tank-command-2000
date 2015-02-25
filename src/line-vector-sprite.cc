@@ -69,7 +69,11 @@ bool LineVectorSprite::load( const char* filepath ) {
 }
 
 void LineVectorSprite::draw( Window & w, int x, int y ) {
-  
+  draw( w, x, y, 255 );
+}
+
+void LineVectorSprite::draw( Window& w, int x, int y, int c ) {
+
   vector<T_LINE>::iterator it;
 
   if( x < -m_width )   return;
@@ -85,7 +89,7 @@ void LineVectorSprite::draw( Window & w, int x, int y ) {
         y + it->y1,
         x + it->x2,
         y + it->y2,
-        255
+        c
         );
   }
 }

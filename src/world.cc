@@ -9,7 +9,7 @@
 #include "line-vector-sprite.hh"
 
 const float tank_heading_to_bg_offset = 407.4366;
-const int horizon_level = 250;
+const int horizon_level = 270;
 
 using namespace std;
 
@@ -57,6 +57,9 @@ void World::run() {
   LineVectorSprite &bg3  = g_sprite_list[S_BG3];
   LineVectorSprite &bg4  = g_sprite_list[S_BG4];
 
+  LineVectorSprite &aimer = g_sprite_list[S_CANNON_RETICULE];
+  LineVectorSprite &hud_bg = g_sprite_list[S_HUD_BG];
+
   bool run_loop = true;
 
   bool *keys = m_window->m_keys;
@@ -78,12 +81,12 @@ void World::run() {
 
     int bgo = 2560 - (tank_heading_to_bg_offset * m_player_tank->heading());
 
-/*     bg1.draw( *m_window,    0 - bgo, horizon_level - 80 );
- *     bg2.draw( *m_window,  640 - bgo, horizon_level - 80);
- *     bg3.draw( *m_window, 1280 - bgo, horizon_level - 65);
- *     bg4.draw( *m_window, 1920 - bgo, horizon_level - 45);
- *     bg1.draw( *m_window, 2560 - bgo, horizon_level - 80);
- */
+    bg1.draw( *m_window,    0 - bgo, horizon_level - 80, 100 );
+    bg2.draw( *m_window,  640 - bgo, horizon_level - 80, 100 );
+    bg3.draw( *m_window, 1280 - bgo, horizon_level - 65, 100 );
+    bg4.draw( *m_window, 1920 - bgo, horizon_level - 45, 100 );
+    bg1.draw( *m_window, 2560 - bgo, horizon_level - 80, 100 );
+
 
     // TODO ... collect draw meshes and z-sort them and paint them backward onto screen ;)
 
@@ -114,8 +117,28 @@ void World::run() {
       dm.draw(); 
     }
 
-    logo.draw( *m_window, 10, 10 );
+//    logo.draw( *m_window, 10, 10 );
+    aimer.draw( *m_window, 270, 173 );
+    hud_bg.draw( *m_window, 15, 10, 100 );
 
+    // score
+    m_app->draw_hud_number( 94, 45, 123456 );
+
+    // tanks
+    m_app->draw_hud_number( 625, 11, 123 );
+
+    // armour
+    m_app->draw_hud_number( 625, 46, 123 );
+
+    // hud
+    //   radar
+    //   lives
+    //   damage
+    //   ammo
+    //     shells
+    //     ATG (anti tank guns)
+    //     missiles
+    //   score
 
 //    m_window->draw_line( 100, 100, 420, 100, 2 );
 //    m_window->draw_line( 100, 100, 100, 300, 2 );

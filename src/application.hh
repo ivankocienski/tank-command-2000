@@ -13,6 +13,8 @@ public:
   Application( int, char** );
 
   void draw_text( int, int, const char* );
+  void draw_hud_number(int, int, unsigned int );
+
   int main();
 };
 

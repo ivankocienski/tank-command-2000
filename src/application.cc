@@ -61,3 +61,25 @@ void Application::draw_text(int x, int y, const char *c ) {
     x += 6;
   }
 }
+
+static int fudgex[10] = { 3, 12, 3, 4, 3, 3, 3, 3, 3, 3 };
+static int fudgey[10] = { 0,  1, 0, 0, 1, 0, 1, 0, 0, 0 };
+
+void Application::draw_hud_number(int x, int y, unsigned int n ) {
+  
+  int sprite;
+  int d;
+
+  x -= 12;
+
+  while( n ) {
+
+    d = n % 10;
+    sprite = d + S_HUD_NUM_0;
+
+    g_sprite_list[ sprite ].draw( m_window, x + fudgex[d], y + fudgey[d] );
+
+    n /= 10;
+    x -= 14;
+  }
+}
