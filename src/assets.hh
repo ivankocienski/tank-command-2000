@@ -12,6 +12,8 @@ enum {
   A_OBSTACLE3,
   A_OBSTACLE4,
   A_MID_TANK,
+  A_BULLET,
+  
   A_MAX
 };
 
@@ -24,6 +26,8 @@ enum {
 
   S_CANNON_RETICULE,
   S_HUD_BG,
+
+  S_SCREEN_CRACK,
 
   S_HUD_NUM_0,
   S_HUD_NUM_1,

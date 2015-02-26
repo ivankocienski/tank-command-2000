@@ -25,6 +25,7 @@ bool load_assets() {
   LOAD_MESH( A_OBSTACLE3, "obstacle-3.vex" );
   LOAD_MESH( A_OBSTACLE4, "obstacle-4.vex" );
   LOAD_MESH( A_MID_TANK, "tank.vex" );
+  LOAD_MESH( A_BULLET, "bullet.vex" );
 
   g_sprite_list.resize( S_MAX );
 
@@ -35,7 +36,8 @@ bool load_assets() {
   LOAD_SPRITE( S_BG4, "bg4.lvs" );
 
   LOAD_SPRITE( S_CANNON_RETICULE, "cannon-reticule.lvs" );
-  LOAD_SPRITE( S_HUD_BG, "hud-bg.lvs" );
+  LOAD_SPRITE( S_HUD_BG, "hud-bg.lvs" ); 
+  LOAD_SPRITE( S_SCREEN_CRACK, "screen-crash.lvs" );
 
   LOAD_SPRITE( S_HUD_NUM_0, "hud-num-0.lvs" );
   LOAD_SPRITE( S_HUD_NUM_1, "hud-num-1.lvs" );

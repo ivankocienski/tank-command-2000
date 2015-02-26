@@ -183,7 +183,7 @@ float TankObstacle::side() {
 
 MidTank::MidTank() : m_mesh_instance( &g_mesh_list[ A_MID_TANK ]) {
   m_heading = 0;
-  m_height  = 0;
+  m_height  = 0.5;
   m_active  = true;
 }
 
@@ -200,6 +200,10 @@ void MidTank::set_pos( float x, float y ) {
 
 bool MidTank::is_active() {
   return m_active;
+}
+
+void MidTank::deactivate() {
+  m_active = false;
 }
 
 MeshInstance & MidTank::mesh_instance() {

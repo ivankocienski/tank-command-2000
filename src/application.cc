@@ -39,9 +39,9 @@ int Application::main() {
   Camera camera(m_window);
   camera.setup( FOV, P_NEAR, P_FAR );
 
-  Player player;
-
   World world;
+
+  Player player(&world); 
 
   world.setup( this, m_window, camera, player );
 
@@ -71,6 +71,11 @@ void Application::draw_hud_number(int x, int y, unsigned int n ) {
   int d;
 
   x -= 12;
+
+  if( !n ) {
+    g_sprite_list[ S_HUD_NUM_0 ].draw( m_window, x + fudgex[0], y + fudgey[0] );
+    return; 
+  }
 
   while( n ) {
 

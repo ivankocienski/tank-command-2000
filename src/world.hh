@@ -2,14 +2,17 @@
 #pragma once
 
 #include <vector>
+#include <list>
 
 #include "window.hh"
 #include "camera.hh"
 
-#include "player.hh"
 #include "obstacle.hh" 
 #include "baddies/mid-tank.hh"
+#include "bullet.hh"
 
+class Player;
+class PlayerTank;
 class Application;
 
 class World {
@@ -23,7 +26,8 @@ private:
 
   std::vector<Obstacle> m_obstacles;
   std::vector<MidTank> m_baddies;
-
+  std::list<Bullet> m_bullets;
+  
   void spawn_obstacle( float, float, int );
   void spawn_tank( float, float );
   
@@ -32,6 +36,10 @@ public:
   World();
 
   void setup( Application*, Window&, Camera&, Player& );
+
+  void shoot_bullet( Vector2&, float );
+
+  Bullet* first_bullet();
 
   void run();
 };

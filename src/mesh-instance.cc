@@ -38,7 +38,7 @@ bool MeshInstance::point_inside_bb( Vector3& tp ) {
 bool MeshInstance::point_inside_bb( Vector2& tp ) {
 
   if( tp.x < m_min.x || tp.x > m_max.x ) return false;
-  if( tp.y < m_min.y || tp.y > m_max.y ) return false;
+  if( -tp.y < m_min.y || -tp.y > m_max.y ) return false;
 
   return true; 
 }

@@ -1,7 +1,9 @@
 
+#include "world.hh"
 #include "player.hh"
 
-Player::Player() {
+Player::Player(World* w) : m_tank(w) {
+  //m_world = w;
   reset();
 }
 
@@ -12,4 +14,12 @@ void Player::reset() {
 
 PlayerTank & Player::current_tank() {
   return m_tank;
+}
+
+int Player::tank_count() {
+  return m_lives;
+}
+
+int Player::current_score() {
+  return m_score;
 }

@@ -34,6 +34,7 @@ set (SRC
   src/player-tank.cc
   src/line-vector-sprite.cc
   src/obstacle.cc
+  src/bullet.cc
 
   src/baddies/mid-tank.cc
 

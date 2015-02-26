@@ -3,9 +3,13 @@
 
 #include "player-tank.hh"
 
+class World;
+
 class Player {
 private:
 
+  //World *m_world;
+  
   int m_score;
   int m_lives;
 
@@ -13,10 +17,13 @@ private:
 
 public:
 
-  Player();
+  Player(World*);
 
   void reset();
 
   PlayerTank & current_tank();
+
+  int tank_count();
+  int current_score();
 
 };

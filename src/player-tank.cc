@@ -1,6 +1,7 @@
 
 #include "player-tank.hh"
 #include "camera.hh"
+#include "world.hh"
 
 #include <cmath>
 
@@ -10,9 +11,15 @@ static const float tank_length = 3.0;
 static const float tank_width  = 2.0;
 static const float tank_view_height = 1.2;
 
-PlayerTank::PlayerTank() {
+PlayerTank::PlayerTank(World *w) {
+  m_world   = w;
   m_heading = 0;
   m_height  = tank_view_height;
+  m_armour  = 100;
+}
+
+int PlayerTank::armour() {
+  return m_armour;
 }
 
 void PlayerTank::set_pos( float x, float y ) { 
@@ -66,29 +73,21 @@ void PlayerTank::turn(float d) {
   m_direction.set( 1, 0 );
   m_right.set( 0, 1 );
   
-  Matrix4 rot_mat;
-  rot_mat.identity();
-
   float s = sin(m_heading);
   float c = cos(m_heading);
-
-  rot_mat.m_v[0]  =  c;
-  rot_mat.m_v[2]  = -s;
-  rot_mat.m_v[8]  =  s;
-  rot_mat.m_v[10] =  c;
 
   // ugh. transform a 2x1 vector by a 4x4 matrix. ignore Y component. W is always 1
 
   {
-    float nx = m_direction.x * rot_mat[0] + m_direction.y * rot_mat[2]  + rot_mat[3];
-    float ny = m_direction.x * rot_mat[8] + m_direction.y * rot_mat[10] + rot_mat[11];
+    float nx = m_direction.x * c + m_direction.y * -s;
+    float ny = m_direction.x * s + m_direction.y *  c;
 
     m_direction.set(nx, ny );
   }
 
   {
-    float nx = m_right.x * rot_mat[0] + m_right.y * rot_mat[2]  + rot_mat[3];
-    float ny = m_right.x * rot_mat[8] + m_right.y * rot_mat[10] + rot_mat[11];
+    float nx = m_right.x * c + m_right.y * -s;
+    float ny = m_right.x * s + m_right.y *  c;
 
     m_right.set(nx, ny );
   }
@@ -103,4 +102,11 @@ void PlayerTank::look(Camera *cam ) {
 
 float PlayerTank::heading() {
   return m_heading;
+}
+
+void PlayerTank::fire( bool d ) {
+
+  if( d && !m_fire_now ) m_world->shoot_bullet( m_position, m_heading );
+
+  m_fire_now = d; 
 }

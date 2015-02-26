@@ -1,10 +1,16 @@
 
+#include <iostream>
+using std::cout;
+using std::endl;
+
 #include "world.hh"
 #include "mesh.hh"
 #include "mesh-instance.hh"
 #include "draw-mesh.hh"
 #include "assets.hh"
 #include "application.hh"
+
+#include "player.hh"
 
 #include "line-vector-sprite.hh"
 
@@ -57,8 +63,9 @@ void World::run() {
   LineVectorSprite &bg3  = g_sprite_list[S_BG3];
   LineVectorSprite &bg4  = g_sprite_list[S_BG4];
 
-  LineVectorSprite &aimer = g_sprite_list[S_CANNON_RETICULE];
-  LineVectorSprite &hud_bg = g_sprite_list[S_HUD_BG];
+  LineVectorSprite &aimer        = g_sprite_list[S_CANNON_RETICULE];
+  LineVectorSprite &hud_bg       = g_sprite_list[S_HUD_BG];
+  LineVectorSprite &screen_crack = g_sprite_list[S_SCREEN_CRACK];
 
   bool run_loop = true;
 
@@ -66,6 +73,7 @@ void World::run() {
 
   vector<Obstacle>::iterator ob_it;
   vector<MidTank>::iterator b_it;
+  list<Bullet>::iterator bu_it;
   
   while( m_window->active() && run_loop ) {
 
@@ -74,6 +82,33 @@ void World::run() {
     //for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ )
     //  b_it->think_and_move( m_player_tank, m_obstacles );
   
+    for( bu_it = m_bullets.begin(); bu_it != m_bullets.end(); ) {
+
+      bu_it->move();
+
+      if( !bu_it->is_active() ) {
+        cout << "bullet expired" << endl;
+        bu_it = m_bullets.erase(bu_it);
+        continue;
+      }
+
+      if( bu_it->has_hit_obstacle( m_obstacles )) {
+        cout << "bullet hit obstacle" << endl;
+        bu_it = m_bullets.erase(bu_it);
+        continue; 
+      }
+
+      MidTank *hit = bu_it->has_hit_enemy( m_baddies );
+      if(hit) { 
+        cout << "bullet hit baddie" << endl;
+        //hit->deactivate();
+        bu_it = m_bullets.erase(bu_it);
+        continue; 
+      }
+
+      bu_it++;
+    }
+
     m_player_tank->look( m_camera );
 
 
@@ -117,18 +152,34 @@ void World::run() {
       dm.draw(); 
     }
 
-//    logo.draw( *m_window, 10, 10 );
-    aimer.draw( *m_window, 270, 173 );
+    for( bu_it = m_bullets.begin(); bu_it != m_bullets.end(); bu_it++ ) {
+
+      DrawMesh dm( bu_it->mesh(), m_camera );
+
+      dm.clip_to_frustum();
+
+      if( !dm.is_visible() ) continue;
+
+      dm.camera_transform();
+
+      dm.draw(); 
+    }
+
+    if( m_player_tank->armour() > 0 ) 
+      aimer.draw( *m_window, 270, 173 );
+    else
+      screen_crack.draw( *m_window, 88, 80 );
+
     hud_bg.draw( *m_window, 15, 10, 100 );
 
     // score
-    m_app->draw_hud_number( 94, 45, 123456 );
+    m_app->draw_hud_number( 94, 45, m_player->current_score() );
 
     // tanks
-    m_app->draw_hud_number( 625, 11, 123 );
+    m_app->draw_hud_number( 625, 11, m_player->tank_count() );
 
     // armour
-    m_app->draw_hud_number( 625, 46, 123 );
+    m_app->draw_hud_number( 625, 46, m_player_tank->armour() );
 
     // hud
     //   radar
@@ -173,13 +224,20 @@ void World::run() {
       m_player_tank->walk( -0.1 );
     }
 
-    if( keys[Window::K_A] ) {
-      m_player_tank->strafe( 0.1 );
+    if( keys[Window::K_SPACE ]) {
+      m_player_tank->fire( true );
+
+    } else {
+      m_player_tank->fire( false );
     }
 
-    if( keys[Window::K_D] ) {
-      m_player_tank->strafe( -0.1 );
-    }
+//    if( keys[Window::K_A] ) {
+//      m_player_tank->strafe( 0.1 );
+//    }
+//
+//    if( keys[Window::K_D] ) {
+//      m_player_tank->strafe( -0.1 );
+//    }
 
     switch( m_window->inkey() ) {
       case Window::K_ESCAPE:
@@ -188,3 +246,11 @@ void World::run() {
     }
   }
 }
+
+void World::shoot_bullet( Vector2 &pos, float heading ) {
+  cout << "player shoot" << endl;
+  m_bullets.push_back( Bullet( pos, heading, 100 ));
+}
+
+// debug bullet rotation diggity
+//Bullet*

@@ -1,5 +1,5 @@
 
-#pragma
+#pragma once
 
 #include <vector>
 
@@ -114,6 +114,7 @@ public:
   void think_and_move( PlayerTank*, std::vector<Obstacle>& );
   bool is_active();
   void fire();
+  void deactivate();
 
   MeshInstance & mesh_instance();
 };

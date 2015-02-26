@@ -8,9 +8,12 @@
 #include "obstacle.hh"
 
 class Camera;
+class World;
 
 class PlayerTank {
 private:
+
+  World *m_world;
 
   Vector2 m_position;
   Vector2 m_new_pos;
@@ -20,10 +23,15 @@ private:
 
   float m_heading;
   float m_height;
+
+  int m_armour;
+  bool m_fire_now;
   
 public:
 
-  PlayerTank();
+  PlayerTank(World*);
+
+  int armour();
 
   Vector2& position();
   void set_pos( float, float );
@@ -32,6 +40,7 @@ public:
   float heading();
 
   void move( std::vector<Obstacle> & );
+  void fire(bool);
 
   void walk(float);
   void turn(float);
