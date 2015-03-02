@@ -7,6 +7,7 @@ using std::endl;
 
 #include "bullet.hh"
 #include "assets.hh"
+#include "bounding-box-2.hh"
 
 static const float c_bullet_speed = 1;
 static const float c_bullet_height = 1.3;
@@ -47,12 +48,12 @@ void Bullet::move() {
 
 MidTank* Bullet::has_hit_enemy( vector<MidTank> & el ) {
 
-  for( vector<MidTank>::iterator it = el.begin(); it != el.end(); it++ ) {
+  // for( vector<MidTank>::iterator it = el.begin(); it != el.end(); it++ ) {
 
-    MeshInstance &mi = it->mesh_instance();
+  //   MeshInstance &mi = it->mesh_instance();
     
-    if( mi.point_inside_bb( m_position )) return &(*it);
-  }
+  //   if( mi.point_inside( m_position )) return &(*it);
+  // }
 
   return NULL;
 }
@@ -61,9 +62,9 @@ bool Bullet::has_hit_obstacle( vector<Obstacle> & wo ) {
 
   for( vector<Obstacle>::iterator it = wo.begin(); it != wo.end(); it++ ) {
 
-    MeshInstance &mi = it->mesh();
+    const BoundingBox2D &bb = it->mesh().bounds();
     
-    if( mi.point_inside_bb( m_position )) return true;
+    if( bb.point_inside( m_position )) return true;
   }
 
   return false;

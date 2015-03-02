@@ -8,10 +8,12 @@
 #include "../player-tank.hh"
 #include "../obstacle.hh"
 
+class MidTank;
 class World;
 
 // REVIEW: this is ported from ruby, so it may not make so
 // much sense
+
 
 class TankMetric {
 private:
@@ -27,7 +29,7 @@ private:
 
 public:
 
-  TankMetric( Vector2&, Vector2&, PlayerTank*, std::vector<Obstacle>& );
+  TankMetric( MidTank*, PlayerTank*, std::vector<Obstacle>& );
 
   float obstacle_distance();
   float obstacle_angle();
@@ -125,5 +127,8 @@ public:
   void deactivate();
 
   MeshInstance & mesh_instance();
+
+  const Vector2 & position() const;
+  const Vector2 & direction() const;
 };
 

@@ -49,15 +49,16 @@ void PlayerTank::move( vector<Obstacle> & wo ) {
   Vector2 back_left   = m_new_pos - fwd - rgt;
   Vector2 back_right  = m_new_pos - fwd + rgt;
 
+
   
 //  for( vector<Obstacle>::iterator it = wo.begin(); it != wo.end(); it++ ) {
 //
-//    MeshInstance &mi = it->mesh();
-//    
-//    if( mi.point_inside_bb( front_left ))  return;
-//    if( mi.point_inside_bb( front_right )) return;
-//    if( mi.point_inside_bb( back_left ))   return;
-//    if( mi.point_inside_bb( back_right))   return;
+//    const BoundingBox2 &bb = it->mesh()->bounds();
+//     
+//    if( bb.point_inside( front_left ))  return;
+//    if( bb.point_inside( front_right )) return;
+//    if( bb.point_inside( back_left ))   return;
+//    if( bb.point_inside( back_right))   return;
 //  } 
   
   m_position = m_new_pos;

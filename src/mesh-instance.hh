@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "mesh.hh"
+#include "bounding-box-2.hh"
 #include "math/vector3.hh"
 #include "math/vector2.hh"
 
@@ -16,9 +17,8 @@ private:
   Vector3 m_translate;
   Vector3 m_rotate;
 
-  Vector3 m_min;
-  Vector3 m_max;
-
+  BoundingBox2D m_bounds;
+    
   int m_color;
 
 public:
@@ -34,9 +34,8 @@ public:
   void set_color( int );
   int color();
 
-  bool point_inside_bb( Vector3& );
-  bool point_inside_bb( Vector2& );
-
+  const BoundingBox2D & bounds() const;
+  
   void transform();
 
   std::vector<Vector3> & vertices();

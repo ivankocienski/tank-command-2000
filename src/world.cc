@@ -79,8 +79,8 @@ void World::run() {
 
     m_player_tank->move( m_obstacles );
 
-    for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ )
-      b_it->think_and_move( m_player_tank, m_obstacles );
+    //    for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ )
+    //  b_it->think_and_move( m_player_tank, m_obstacles );
   
     for( bu_it = m_bullets.begin(); bu_it != m_bullets.end(); ) {
 
@@ -147,19 +147,19 @@ void World::run() {
     }
 
 
-    for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ ) {
-      if( !b_it->is_active() ) continue;
+    //    for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ ) {
+    // if( !b_it->is_active() ) continue;
 
-      DrawMesh dm( b_it->mesh_instance(), m_camera );
+    //DrawMesh dm( b_it->mesh_instance(), m_camera );
 
-      dm.clip_to_frustum();
+    //dm.clip_to_frustum();
 
-      if( !dm.is_visible() ) continue;
+    //if( !dm.is_visible() ) continue;
 
-      dm.camera_transform();
+    //dm.camera_transform();
 
-      dm.draw(); 
-    }
+    //dm.draw(); 
+    //}
 
     for( bu_it = m_bullets.begin(); bu_it != m_bullets.end(); bu_it++ ) {
 

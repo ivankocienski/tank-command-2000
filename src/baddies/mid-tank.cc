@@ -17,7 +17,7 @@ static const float NEAR_MAX = 1000000;
  *
  */
 
-TankMetric::TankMetric( Vector2 &me_pos, Vector2 &me_dir, PlayerTank *tgt, std::vector<Obstacle>& obs ) {
+TankMetric::TankMetric( MidTank *me, PlayerTank *tgt, std::vector<Obstacle>& obs ) {
 
   m_obs_distance = NEAR_MAX;
   m_obs_angle    = 0;
@@ -27,7 +27,9 @@ TankMetric::TankMetric( Vector2 &me_pos, Vector2 &me_dir, PlayerTank *tgt, std::
   m_tgt_angle    = 0;
   m_tgt_side     = 0;
 
-  Vector2 me_dir_perp = me_dir.perpendicular();
+  const Vector2 & me_pos    = me->position();
+  const Vector2 & me_dir    = me->direction();
+  const Vector2 me_dir_perp = me_pos.perpendicular();
 
   // target
 
@@ -35,7 +37,7 @@ TankMetric::TankMetric( Vector2 &me_pos, Vector2 &me_dir, PlayerTank *tgt, std::
 
   m_tgt_distance = tgt_vector.magnitude();
   tgt_vector.normalize();
-  m_tgt_angle    = me_dir.dot(tgt_vector); 
+  m_tgt_angle    = me->direction().dot(tgt_vector); 
   m_tgt_side     = tgt_vector.dot(me_dir_perp);
 
   // obstacles
@@ -49,8 +51,8 @@ TankMetric::TankMetric( Vector2 &me_pos, Vector2 &me_dir, PlayerTank *tgt, std::
     // convert this over to
     // AABB intersection tests.
 
-    Vector2 vector = it->position() - me_pos;
-    float dist = vector.magnitude();
+    Vector2 vector = it->position() - me->position();
+    float dist = vector.magnitude() - it->mesh().bounds().radius();
 
     if( dist >= near ) continue;
 
@@ -235,6 +237,14 @@ void MidTank::deactivate() {
   m_active = false;
 }
 
+const Vector2 & MidTank::position() const {
+  return m_position;
+}
+
+const Vector2 & MidTank::direction() const {
+  return m_direction;
+}
+
 MeshInstance & MidTank::mesh_instance() {
   return m_mesh_instance;
 }
@@ -249,7 +259,7 @@ void MidTank::think_and_move( PlayerTank *pt, vector<Obstacle> &obs ) {
   Vector2 dir;
   dir.set_as_angle(m_heading);
 
-  TankMetric tm(m_position, dir, pt, obs);
+  TankMetric tm(this, pt, obs);
 
   cout << "target:"
     " d=" << tm.target_distance() <<
