@@ -35,6 +35,7 @@ set (SRC
   src/line-vector-sprite.cc
   src/obstacle.cc
   src/bullet.cc
+  src/bounding-box-2.cc
 
   src/baddies/mid-tank.cc
 

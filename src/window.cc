@@ -10,14 +10,14 @@ using std::endl;
 
 SDL_Color colors[] = {
   { 0x00, 0x00, 0x00 },
-  { 0xff, 0x01, 0x35 }, // red
-  { 0xd7, 0xfb, 0x37 }, // yellow
-  { 0xfe, 0x01, 0xcd }, // pink
-  { 0x02, 0x01, 0x9d }, // blue
-  { 0x34, 0xDD, 0xDD }, // turquoise
-  { 0xfb, 0x8e, 0x04 }, // orange
-  { 0x00, 0xf2, 0x00 }, // green
-  { 0x91, 0x02, 0xca }  // purple
+  { 0xff, 0x01, 0x35 }, // 1 red
+  { 0xd7, 0xfb, 0x37 }, // 2 yellow
+  { 0xfe, 0x01, 0xcd }, // 3 pink
+  { 0x02, 0x01, 0x9d }, // 4 blue
+  { 0x34, 0xDD, 0xDD }, // 5 turquoise
+  { 0xfb, 0x8e, 0x04 }, // 6 orange
+  { 0x00, 0xf2, 0x00 }, // 7 green
+  { 0x91, 0x02, 0xca }  // 8 purple
 };
 
 Window::Window() {
@@ -118,8 +118,11 @@ void Window::tick() {
           case SDLK_DOWN:  m_keys[K_DOWN]  = false; break;
           case SDLK_LEFT:  m_keys[K_LEFT]  = false; break;
           case SDLK_RIGHT: m_keys[K_RIGHT] = false; break;
-          case SDLK_a:     m_keys[K_A]     = false; break;
-          case SDLK_d:     m_keys[K_D]     = false; break;
+          case SDLK_z:     m_keys[K_Z]     = false; break;
+          case SDLK_x:     m_keys[K_X]     = false; break;
+          case SDLK_c:     m_keys[K_C]     = false; break;
+          case SDLK_s:     m_keys[K_S]     = false; break;
+          case SDLK_q:     m_keys[K_Q]     = false; break;
           case SDLK_SPACE: m_keys[K_SPACE] = false; break;
           default: break;
         }
@@ -147,12 +150,24 @@ void Window::tick() {
             m_keys[K_RIGHT] = true;
             break;
 
-          case SDLK_a:
-            m_keys[K_A] = true;
+          case SDLK_s:
+            m_keys[K_S] = true;
             break;
 
-          case SDLK_d:
-            m_keys[K_D] = true;
+          case SDLK_x:
+            m_keys[K_X] = true;
+            break;
+
+          case SDLK_z:
+            m_keys[K_Z] = true;
+            break;
+
+          case SDLK_c:
+            m_keys[K_C] = true;
+            break;
+
+          case SDLK_q:
+            m_keys[K_Q] = true;
             break;
 
           case SDLK_SPACE: 

@@ -11,7 +11,6 @@ public:
 
   float x;
   float y;
-  float z;
 
   Vector2( float, float );
   Vector2();

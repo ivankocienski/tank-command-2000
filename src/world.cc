@@ -31,7 +31,7 @@ void World::spawn_obstacle( float x, float y, int id ) {
 
 void World::spawn_tank( float x, float y ) {
   
-  m_baddies.push_back( MidTank() );
+  m_baddies.push_back( MidTank(this) );
   MidTank &mi( m_baddies.back() );
 
   mi.set_pos( x, y );
@@ -52,7 +52,7 @@ void World::setup( Application *a, Window &w, Camera &c, Player &p ) {
 
   m_player_tank->set_pos( -3, -3 );
 
-  spawn_tank( 5, 10 );
+  spawn_tank( 5, 15 );
 }
 
 void World::run() {
@@ -79,8 +79,8 @@ void World::run() {
 
     m_player_tank->move( m_obstacles );
 
-    //for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ )
-    //  b_it->think_and_move( m_player_tank, m_obstacles );
+    for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ )
+      b_it->think_and_move( m_player_tank, m_obstacles );
   
     for( bu_it = m_bullets.begin(); bu_it != m_bullets.end(); ) {
 
@@ -93,17 +93,25 @@ void World::run() {
       }
 
       if( bu_it->has_hit_obstacle( m_obstacles )) {
-        cout << "bullet hit obstacle" << endl;
         bu_it = m_bullets.erase(bu_it);
         continue; 
       }
 
-      MidTank *hit = bu_it->has_hit_enemy( m_baddies );
-      if(hit) { 
-        cout << "bullet hit baddie" << endl;
-        //hit->deactivate();
-        bu_it = m_bullets.erase(bu_it);
-        continue; 
+      if( bu_it->owner() == Bullet::B_PLAYER ) {
+
+        MidTank *hit = bu_it->has_hit_enemy( m_baddies );
+        if(hit) { 
+          hit->deactivate();
+          bu_it = m_bullets.erase(bu_it);
+          continue; 
+        }
+
+      } else {
+
+        if( m_player_tank->is_hit_by( bu_it->position())) {
+          bu_it = m_bullets.erase(bu_it);
+          continue; 
+        } 
       }
 
       bu_it++;
@@ -137,6 +145,7 @@ void World::run() {
 
       dm.draw(); 
     }
+
 
     for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ ) {
       if( !b_it->is_active() ) continue;
@@ -174,7 +183,7 @@ void World::run() {
 
     // score
     m_app->draw_hud_number( 94, 45, m_player->current_score() );
-
+ 
     // tanks
     m_app->draw_hud_number( 625, 11, m_player->tank_count() );
 
@@ -231,26 +240,42 @@ void World::run() {
       m_player_tank->fire( false );
     }
 
-//    if( keys[Window::K_A] ) {
-//      m_player_tank->strafe( 0.1 );
-//    }
-//
-//    if( keys[Window::K_D] ) {
-//      m_player_tank->strafe( -0.1 );
-//    }
+    if( keys[Window::K_S] ) 
+      m_player_tank->raise( 0.1 );
+
+    if( keys[Window::K_X] )
+      m_player_tank->raise( -0.1 );
+    
+    if( keys[Window::K_Q] )
+      m_player_tank->zero_y();
+
+    if( keys[Window::K_Z] ) {
+      m_player_tank->strafe( 0.1 );
+    }
+
+    if( keys[Window::K_C] ) {
+      m_player_tank->strafe( -0.1 );
+    }
 
     switch( m_window->inkey() ) {
       case Window::K_ESCAPE:
         run_loop = false;
         break;
+        
+      case Window::K_TAB:
+        m_baddies[0].reset();
+        break;
     }
   }
 }
 
-void World::shoot_bullet( Vector2 &pos, float heading ) {
+void World::shoot_player_bullet( const Vector2 &pos, float heading ) {
   cout << "player shoot" << endl;
-  m_bullets.push_back( Bullet( pos, heading, 100 ));
+  m_bullets.push_back( Bullet( pos, heading, 100, Bullet::B_PLAYER ));
 }
 
-// debug bullet rotation diggity
-//Bullet*
+void World::shoot_enemy_bullet( const Vector2 &pos, float heading ) {
+  cout << "player shoot" << endl;
+  m_bullets.push_back( Bullet( pos, heading, 100, Bullet::B_ENEMY ));
+}
+

@@ -17,12 +17,20 @@ private:
   Vector2 m_direction;
 
   float m_angle;
-  int m_alive;
+  int   m_alive;
+  int   m_owner;
 
 public:
 
+  enum {
+    B_PLAYER,
+    B_ENEMY
+  };
+  
   Bullet();
-  Bullet( Vector2&, float, int );
+  Bullet( const Vector2&, float, int, int );
+
+  int owner();
 
   void move();
   bool is_active();
@@ -31,5 +39,7 @@ public:
   MidTank* has_hit_enemy( std::vector<MidTank>& );
   
   MeshInstance & mesh();
+
+  const Vector2 & position();
 };
 

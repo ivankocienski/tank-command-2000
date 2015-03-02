@@ -8,6 +8,8 @@
 #include "../player-tank.hh"
 #include "../obstacle.hh"
 
+class World;
+
 // REVIEW: this is ported from ruby, so it may not make so
 // much sense
 
@@ -87,6 +89,9 @@ public:
 class MidTank {
 private:
 
+  World* m_world;
+
+  Vector2 m_start_pos;
   Vector2 m_position;
   Vector2 m_direction;
 
@@ -109,8 +114,11 @@ private:
 public:
 
   MidTank();
+  MidTank(World*);
 
   void set_pos( float, float );
+  void reset();
+  
   void think_and_move( PlayerTank*, std::vector<Obstacle>& );
   bool is_active();
   void fire();

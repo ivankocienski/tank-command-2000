@@ -39,11 +39,16 @@ public:
   void look(Camera*);
   float heading();
 
+  bool is_hit_by( const Vector2& );
+  
   void move( std::vector<Obstacle> & );
   void fire(bool);
 
   void walk(float);
   void turn(float);
+
   void strafe(float);
+  void raise(float);
+  void zero_y();
 };
 

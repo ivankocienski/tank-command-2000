@@ -19,6 +19,8 @@ private:
   Vector3 m_min;
   Vector3 m_max;
 
+  int m_color;
+
 public:
 
   MeshInstance();
@@ -29,6 +31,8 @@ public:
   void set_translation( float, float, float );
   void set_translation( const Vector3& );
   void set_rotation( float, float, float );
+  void set_color( int );
+  int color();
 
   bool point_inside_bb( Vector3& );
   bool point_inside_bb( Vector2& );

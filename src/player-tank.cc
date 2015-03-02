@@ -31,6 +31,10 @@ void PlayerTank::walk(float d) {
   m_new_pos = m_position + m_direction * d;
 }
 
+void PlayerTank::strafe( float d ) {
+  m_new_pos = m_position + m_direction.perpendicular() * d;
+}
+
 Vector2 & PlayerTank::position() {
   return m_position;
 }
@@ -59,9 +63,6 @@ void PlayerTank::move( vector<Obstacle> & wo ) {
   m_position = m_new_pos;
 }
 
-void PlayerTank::strafe( float d ) {
-  m_position += m_direction.perpendicular() * d;
-}
 
 void PlayerTank::turn(float d) {
 
@@ -106,7 +107,24 @@ float PlayerTank::heading() {
 
 void PlayerTank::fire( bool d ) {
 
-  if( d && !m_fire_now ) m_world->shoot_bullet( m_position, m_heading );
+  if( d && !m_fire_now ) m_world->shoot_player_bullet( m_position, m_heading );
 
   m_fire_now = d; 
+}
+
+void PlayerTank::raise( float f) {
+  m_height += f;
+}
+
+bool PlayerTank::is_hit_by( const Vector2& p ) {
+  if( p.x < m_position.x - 0.5 ) return false;
+  if( p.x > m_position.x + 0.5 ) return false;
+  if( p.y < m_position.y - 0.5 ) return false;
+  if( p.y > m_position.y + 0.5 ) return false;
+
+  return true; 
+}
+
+void PlayerTank::zero_y() {
+  m_height = tank_view_height;
 }

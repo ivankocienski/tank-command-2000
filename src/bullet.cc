@@ -16,12 +16,14 @@ using namespace std;
 Bullet::Bullet() {
   m_angle = 0;
   m_alive = 0;
+  m_owner = -1;
 }
 
-Bullet::Bullet( Vector2& pos, float an, int al ) : m_mesh_instance( &g_mesh_list[ A_BULLET ]) {
+Bullet::Bullet( const Vector2& pos, float an, int al, int ow ) : m_mesh_instance( &g_mesh_list[ A_BULLET ]) {
   m_position = pos;
   m_angle    = an;
   m_alive    = al;
+  m_owner    = ow;
 
   m_direction.set_as_angle(m_angle); 
 
@@ -68,11 +70,17 @@ bool Bullet::has_hit_obstacle( vector<Obstacle> & wo ) {
 }
 
 bool Bullet::is_active() {
-  return m_alive > 0;
-  
+  return m_alive > 0; 
 }
 
 MeshInstance & Bullet::mesh() {
   return m_mesh_instance; 
 }
 
+int Bullet::owner() {
+  return m_owner;
+}
+
+const Vector2 & Bullet::position() {
+  return m_position;
+}

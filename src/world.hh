@@ -37,7 +37,8 @@ public:
 
   void setup( Application*, Window&, Camera&, Player& );
 
-  void shoot_bullet( Vector2&, float );
+  void shoot_player_bullet( const Vector2&, float );
+  void shoot_enemy_bullet( const Vector2&, float );
 
   Bullet* first_bullet();
 

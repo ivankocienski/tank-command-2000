@@ -7,11 +7,13 @@ using namespace std;
 #include "math/operations.hh"
 
 MeshInstance::MeshInstance() {
-  m_mesh = NULL;
+  m_mesh  = NULL;
+  m_color = 255;
 }
 
 MeshInstance::MeshInstance( Mesh* m ) {
-  m_mesh = m;
+  m_mesh  = m;
+  m_color = 255;
 }
 
 void MeshInstance::set_translation( float xo, float yo, float zo ) {
@@ -26,6 +28,14 @@ Vector3 & MeshInstance::position() {
   return m_translate;
 }
 
+void MeshInstance::set_color( int c ) {
+  m_color = c;
+}
+
+int MeshInstance::color() {
+  return m_color;
+}
+
 bool MeshInstance::point_inside_bb( Vector3& tp ) {
 
   if( tp.x < m_min.x || tp.x > m_max.x ) return false;
@@ -38,7 +48,7 @@ bool MeshInstance::point_inside_bb( Vector3& tp ) {
 bool MeshInstance::point_inside_bb( Vector2& tp ) {
 
   if( tp.x < m_min.x || tp.x > m_max.x ) return false;
-  if( -tp.y < m_min.y || -tp.y > m_max.y ) return false;
+  if( tp.y < m_min.z || tp.y > m_max.z ) return false;
 
   return true; 
 }

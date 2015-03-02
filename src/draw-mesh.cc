@@ -175,7 +175,7 @@ void DrawMesh::camera_transform( ) {
 
 void DrawMesh::draw() {
 
-  int c = 255; //m_mesh.color();
+  int c = m_mesh_instance.color();
 
   for( list<DrawLine>::iterator it = m_draw_lines.begin(); it != m_draw_lines.end(); it++ ) {
     it->draw(m_camera, c);
