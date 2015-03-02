@@ -40,9 +40,4 @@ public:
 
   std::vector<Vector3> & vertices();
   const Mesh * mesh();
-
-  // -1 hidden
-  //  0 partial
-  // +1 visible
-  int classify_side( const Plane& );
 };

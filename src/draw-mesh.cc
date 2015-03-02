@@ -125,7 +125,7 @@ void DrawMesh::clip_to_frustum() {
   //for( int i = 0; i < 6; i++ ) {
   for( int i = 0; i < 6; i++ ) {
     
-    int s = m_mesh_instance.classify_side(clip_plane[i]);
+    int s = m_mesh_instance.bounds().classify_side(clip_plane[i]);
 
     // behind plane
     if( s < 0 ) return;

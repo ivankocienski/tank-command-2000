@@ -26,8 +26,11 @@ public:
   bool point_inside( float, float ) const;
   bool point_inside( const Vector2& ) const;
   float distance_to( const BoundingBox2D& ) const;
-
-  int classify_side( const Plane & );
+  
+  // -1 hidden
+  //  0 partial
+  // +1 visible
+  int classify_side( const Plane & ) const;
   
   const Vector2 & min() const;
   const Vector2 & max() const;

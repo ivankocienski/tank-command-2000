@@ -78,48 +78,31 @@ float BoundingBox2D::radius() const {
   return m_radius;
 }
 
-int BoundingBox2D::classify_side( const Plane &pln ) {
+int BoundingBox2D::classify_side( const Plane &pln ) const {
 
-  // TODO: this needs to operate on 2D.
+  // TODO: this needs to operate better on 2D.
   int i;
 
   Vector3 v;
 
   // left top back
-  v.set( m_min.x, m_max.y, m_min.z );
+  v.set( m_min.x, 0, m_min.y );
   i += pln.is_facing(v);
 
   // right top back
-  v.set( m_max.x, m_max.y, m_min.z );
+  v.set( m_max.x, 0, m_min.y );
   i += pln.is_facing(v);
 
   // left top front
-  v.set( m_min.x, m_max.y, m_max.z );
+  v.set( m_min.x, 0, m_max.y );
   i += pln.is_facing(v);
 
   // right top front
-  v.set( m_max.x, m_max.y, m_max.z );
+  v.set( m_max.x, 0, m_max.y );
   i += pln.is_facing(v);
 
-
-  // left bottom back
-  v.set( m_min.x, m_min.y, m_min.z );
-  i += pln.is_facing(v);
-
-  // right bottom back
-  v.set( m_max.x, m_min.y, m_min.z );
-  i += pln.is_facing(v);
-
-  // left bottom front
-  v.set( m_min.x, m_min.y, m_max.z );
-  i += pln.is_facing(v);
-
-  // right bottom front
-  v.set( m_max.x, m_min.y, m_max.z );
-  i += pln.is_facing(v);
-
-  if( i == 8 ) return 1;
+  if( i == 4 ) return 1;
   if( i == 0 ) return -1;
 
-   return 0;
+  return 0;
 }

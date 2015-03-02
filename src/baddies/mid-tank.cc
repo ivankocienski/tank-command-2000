@@ -330,7 +330,7 @@ bool MidTank::turn_away_from_obstacle( Vector2& dir, TankMetric& tm, float &h_in
   }
 
   if( m_obstacle.angle_to( dir ) > 0.01 ) {
-    if( m_obstacle.side() > 0 )
+    if( m_obstacle.side() < 0 )
       h_inc = 0.05;
     else
       h_inc = -0.05;
@@ -343,7 +343,7 @@ bool MidTank::turn_toward_target( TankMetric& tm, float &h_inc, Vector2 &p_inc )
 
   if( tm.target_angle() > 0.99 ) return false;
 
-  if( tm.target_side() > 0 )
+  if( tm.target_side() < 0 )
     h_inc = 0.01;
   else
     h_inc = -0.01;
