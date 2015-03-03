@@ -70,18 +70,27 @@ public:
 class TankObstacle {
 private:
 
-  bool m_active;
   Vector2 m_mark_point;
   Vector2 m_obs_vector;
   float m_side;
+  int m_mode;
   
 public:
 
+  enum {
+    OM_INACTIVE,
+    OM_TURN,
+    OM_MOVE,
+    OM_MAX
+  };
+  
   TankObstacle();
 
   void set( Vector2&, TankMetric& );
   void clear();
   bool is_active();
+  int mode();
+  void next_mode();
 
   float distance_to( Vector2& );
   float angle_to( Vector2& );
@@ -110,6 +119,7 @@ private:
   bool shoot_at_target( TankMetric&, float&, Vector2& );
   bool sidestep_obstacle( TankMetric&, float&, Vector2& );
   bool turn_away_from_obstacle( Vector2&, TankMetric&, float&, Vector2& );
+  bool detect_obstacle( TankMetric& );
   bool turn_toward_target( TankMetric&, float&, Vector2& );
   bool move_toward_target( TankMetric&, float&, Vector2& );
 

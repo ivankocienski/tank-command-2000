@@ -52,7 +52,7 @@ TankMetric::TankMetric( MidTank *me, PlayerTank *tgt, std::vector<Obstacle>& obs
     // AABB intersection tests.
 
     Vector2 vector = it->position() - me->position();
-    float dist = vector.magnitude() - it->mesh().bounds().radius();
+    float dist = vector.magnitude();// - it->mesh().bounds().radius();
 
     if( dist >= near ) continue;
 
@@ -61,10 +61,10 @@ TankMetric::TankMetric( MidTank *me, PlayerTank *tgt, std::vector<Obstacle>& obs
   }
 
   if( near < NEAR_MAX) {
-    m_obs_angle    = me_dir.dot(m_obs_vector);
-    m_obs_side     = near_vto.dot(me_dir_perp);
     near_vto.normalize();
+    m_obs_side     = near_vto.dot(me_dir_perp);
     m_obs_vector   = near_vto;
+    m_obs_angle    = me_dir.dot(near_vto);
     m_obs_distance = near;
   }
 }
@@ -160,19 +160,19 @@ TankObstacle::TankObstacle() {
 }
 
 void TankObstacle::clear() {
-  m_active = false;
-  m_side   = 0;
+  m_side = 0;
+  m_mode = OM_INACTIVE;
 }
 
 bool TankObstacle::is_active() {
-  return m_active;
+  return m_mode == OM_TURN || m_mode == OM_MOVE;
 }
 
 void TankObstacle::set( Vector2 &my_pos, TankMetric &tm ) {
-  m_active     = true;
   m_mark_point = my_pos;
   m_obs_vector = tm.obstacle_vector();
   m_side       = tm.obstacle_side();
+  m_mode       = OM_TURN;
 }
 
 float TankObstacle::distance_to( Vector2& p ) {
@@ -185,6 +185,14 @@ float TankObstacle::angle_to( Vector2& d ) {
 
 float TankObstacle::side() {
   return m_side;
+}
+
+int TankObstacle::mode() {
+  return m_mode;
+}
+
+void TankObstacle::next_mode() {
+  m_mode = (m_mode + 1) % OM_MAX;
 }
 
 /* MidTank
@@ -261,11 +269,11 @@ void MidTank::think_and_move( PlayerTank *pt, vector<Obstacle> &obs ) {
 
   TankMetric tm(this, pt, obs);
 
-  cout << "target:"
-    " d=" << tm.target_distance() <<
-    " a=" << tm.target_angle() <<
-    " s=" << tm.target_side() <<
-    endl;
+  // cout << "target:"
+  //   " d=" << tm.target_distance() <<
+  //   " a=" << tm.target_angle() <<
+  //   " s=" << tm.target_side() <<
+  //   endl;
   
   for(;;) {
 
@@ -273,6 +281,8 @@ void MidTank::think_and_move( PlayerTank *pt, vector<Obstacle> &obs ) {
 
     if( turn_away_from_obstacle(dir, tm, h_inc, p_inc) ) break;
 
+    if( detect_obstacle( tm )) break;
+	
     if( turn_toward_target(tm, h_inc, p_inc) ) break;
 
     if( move_toward_target(tm, h_inc, p_inc) ) break;
@@ -306,10 +316,10 @@ bool MidTank::shoot_at_target( TankMetric& tm, float &h_inc, Vector2 &p_inc ) {
 
 bool MidTank::sidestep_obstacle( TankMetric& tm, float &h_inc, Vector2 &p_inc ) {
 
-  if( !m_obstacle.is_active() ) return false;
+  if( m_obstacle.mode() != TankObstacle::OM_MOVE ) return false;
 
-  if( m_obstacle.distance_to( m_position ) < 5 ) {
-    p_inc = m_direction;
+  if( m_obstacle.distance_to( m_position ) < 8 ) {
+    p_inc = m_direction * 0.2;
     return true;
   }
 
@@ -320,21 +330,33 @@ bool MidTank::sidestep_obstacle( TankMetric& tm, float &h_inc, Vector2 &p_inc ) 
 
 bool MidTank::turn_away_from_obstacle( Vector2& dir, TankMetric& tm, float &h_inc, Vector2 &p_inc ) {
 
-  if( !m_obstacle.is_active() ) {
+  if( m_obstacle.mode() != TankObstacle::OM_TURN ) return false;
 
-    if( tm.obstacle_distance() > 5 ) return false;
-
-    if( tm.obstacle_angle() < 0.5 ) return false;
-
-    m_obstacle.set(m_position, tm);
-  }
-
-  if( m_obstacle.angle_to( dir ) > 0.01 ) {
+  cout << "turn_away_from_obstacle: angle_to="
+       << m_obstacle.angle_to(dir)
+       << endl;
+  
+  if( m_obstacle.angle_to( dir ) < 0.4 ) {
     if( m_obstacle.side() < 0 )
       h_inc = 0.05;
     else
       h_inc = -0.05;
-  }
+    
+  } else
+    m_obstacle.next_mode();
+
+  return true;
+}
+
+bool MidTank::detect_obstacle( TankMetric &tm ) {
+
+  if( m_obstacle.mode() != TankObstacle::OM_INACTIVE ) return false;
+  
+  if( tm.obstacle_distance() > 5 ) return false;
+
+  if( tm.obstacle_angle() > 0.5 ) return false;
+
+  m_obstacle.set(m_position, tm);
 
   return true;
 }
@@ -344,9 +366,9 @@ bool MidTank::turn_toward_target( TankMetric& tm, float &h_inc, Vector2 &p_inc )
   if( tm.target_angle() > 0.99 ) return false;
 
   if( tm.target_side() < 0 )
-    h_inc = 0.01;
+    h_inc = 0.05;
   else
-    h_inc = -0.01;
+    h_inc = -0.05;
 
   return true; 
 }

@@ -1,4 +1,8 @@
 
+#include <iostream>
+using std::cout;
+using std::endl;
+
 #include "obstacle.hh"
 
 #include "assets.hh"
@@ -22,6 +26,8 @@ void Obstacle::set_pos( float x, float y, float z, float a ) {
   m_mesh.set_rotation( 0, a, 0 );
 
   m_mesh.transform();
+
+  cout << "Obstacle::set_pos radius=" << m_mesh.bounds().radius() << endl;
 }
 
 MeshInstance & Obstacle::mesh() {
