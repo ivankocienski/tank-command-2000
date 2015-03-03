@@ -3,6 +3,8 @@
 using std::cout;
 using std::endl;
 
+#include <stdlib.h>
+
 #include "world.hh"
 #include "mesh.hh"
 #include "mesh-instance.hh"
@@ -29,6 +31,10 @@ void World::spawn_obstacle( float x, float y, int id ) {
   m_obstacles.back().set_pos( x, y, 0, 0 );
 }
 
+void World::spawn_obstacle( int x, int y ) {
+  spawn_obstacle( (float)x, (float)y, rand() % A_OBSTACLE10 );
+}
+
 void World::spawn_tank( float x, float y ) {
   
   m_baddies.push_back( MidTank(this) );
@@ -45,14 +51,29 @@ void World::setup( Application *a, Window &w, Camera &c, Player &p ) {
   m_player = &p;
   m_player_tank = &p.current_tank();
 
-  spawn_obstacle(  1, 1, 0 );
-  spawn_obstacle(  5, 1, 1 );
-  spawn_obstacle( 10, 5, 2 );
-  spawn_obstacle(  4, 5, 3 );
+  spawn_obstacle( -50,  50 );
+  spawn_obstacle(  50,  50 );
+  spawn_obstacle( -20,  30 );
+  spawn_obstacle( -20,  20 );
+  spawn_obstacle(   0,  20 );
+  spawn_obstacle(  10,  20 );
+  spawn_obstacle(  20,  20 );
+  spawn_obstacle( -50,   0 );
+  spawn_obstacle( -20,   0 );
+  spawn_obstacle(  20,   0 );
+  spawn_obstacle(  50,   0 );
+  spawn_obstacle( -20, -20 );
+  spawn_obstacle( -10, -20 );
+  spawn_obstacle(   0, -20 );
+  spawn_obstacle( -20, -30 );
+  spawn_obstacle(  20, -30 );
+  spawn_obstacle(  20, -40 );
+  spawn_obstacle( -50, -50 );
+  spawn_obstacle(  50, -50 );
+  
+  m_player_tank->set_pos( 0, 0 );
 
-  m_player_tank->set_pos( -3, -3 );
-
-  spawn_tank( 5, 15 );
+  //  spawn_tank( 5, 15 );
 }
 
 void World::run() {

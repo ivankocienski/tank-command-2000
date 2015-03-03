@@ -29,6 +29,7 @@ private:
   std::list<Bullet> m_bullets;
   
   void spawn_obstacle( float, float, int );
+  void spawn_obstacle( int, int );
   void spawn_tank( float, float );
   
 public:

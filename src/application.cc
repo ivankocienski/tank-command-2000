@@ -16,7 +16,7 @@ static const int YRES = 480;
 
 // near and far clip planes. just randomly picked
 static const float P_NEAR = 0.25;
-static const float P_FAR  = 20.0;
+static const float P_FAR  = 100.0;
 static const float FOV    = 90.0; // horizontal
 
 #include "char-table.hh"

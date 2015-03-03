@@ -20,10 +20,17 @@ bool load_assets() {
 
   g_mesh_list.resize(A_MAX);
 
-  LOAD_MESH( A_OBSTACLE1, "obstacle-1.vex" );
-  LOAD_MESH( A_OBSTACLE2, "obstacle-2.vex" );
-  LOAD_MESH( A_OBSTACLE3, "obstacle-3.vex" );
-  LOAD_MESH( A_OBSTACLE4, "obstacle-4.vex" );
+  LOAD_MESH( A_OBSTACLE1,  "obstacle-1.vex" );
+  LOAD_MESH( A_OBSTACLE2,  "obstacle-2.vex" );
+  LOAD_MESH( A_OBSTACLE3,  "obstacle-3.vex" );
+  LOAD_MESH( A_OBSTACLE4,  "obstacle-4.vex" );
+  LOAD_MESH( A_OBSTACLE5,  "obstacle-5.vex" );
+  LOAD_MESH( A_OBSTACLE6,  "obstacle-6.vex" );
+  LOAD_MESH( A_OBSTACLE7,  "obstacle-7.vex" );
+  LOAD_MESH( A_OBSTACLE8,  "obstacle-8.vex" );
+  LOAD_MESH( A_OBSTACLE9,  "obstacle-9.vex" );
+  LOAD_MESH( A_OBSTACLE10, "obstacle-10.vex" );
+
   LOAD_MESH( A_MID_TANK, "tank.vex" );
   LOAD_MESH( A_BULLET, "bullet.vex" );
 
