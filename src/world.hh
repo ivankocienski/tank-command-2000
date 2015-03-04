@@ -6,6 +6,7 @@
 
 #include "window.hh"
 #include "camera.hh"
+#include "math/vector2.hh"
 
 #include "obstacle.hh" 
 #include "baddies/mid-tank.hh"
@@ -27,10 +28,22 @@ private:
   std::vector<Obstacle> m_obstacles;
   std::vector<MidTank> m_baddies;
   std::list<Bullet> m_bullets;
+
+  std::vector<Vector2> m_baddie_spawn_point;
+  std::vector< std::vector<int> > m_spawn_zones;
+
+  enum { // spawn zone
+    SZ_TOP_LEFT,
+    SZ_TOP_RIGHT,
+    SZ_BOTTOM_LEFT,
+    SZ_BOTTOM_RIGHT,
+    SZ_OUTER,
+    SZ_COUNT
+  };
   
   void spawn_obstacle( float, float, int );
   void spawn_obstacle( int, int );
-  void spawn_tank( float, float );
+  void spawn_tank( MidTank& );
   
 public:
 

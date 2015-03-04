@@ -102,7 +102,6 @@ private:
 
   World* m_world;
 
-  Vector2 m_start_pos;
   Vector2 m_position;
   Vector2 m_direction;
 
@@ -115,6 +114,8 @@ private:
   TankObstacle m_obstacle;
 
   TankFireControl m_fire_control;
+
+  void fire();
   
   bool shoot_at_target( TankMetric&, float&, Vector2& );
   bool sidestep_obstacle( TankMetric&, float&, Vector2& );
@@ -128,12 +129,10 @@ public:
   MidTank();
   MidTank(World*);
 
-  void set_pos( float, float );
-  void reset();
-  
   void think_and_move( PlayerTank*, std::vector<Obstacle>& );
+
+  void activate( const Vector2& );
   bool is_active();
-  void fire();
   void deactivate();
 
   MeshInstance & mesh_instance();

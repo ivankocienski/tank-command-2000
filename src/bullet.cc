@@ -48,12 +48,12 @@ void Bullet::move() {
 
 MidTank* Bullet::has_hit_enemy( vector<MidTank> & el ) {
 
-  // for( vector<MidTank>::iterator it = el.begin(); it != el.end(); it++ ) {
+  for( vector<MidTank>::iterator it = el.begin(); it != el.end(); it++ ) {
 
-  //   MeshInstance &mi = it->mesh_instance();
+    const BoundingBox2D &bb = it->mesh_instance().bounds();
     
-  //   if( mi.point_inside( m_position )) return &(*it);
-  // }
+    if( bb.point_inside( m_position )) return &(*it);
+  }
 
   return NULL;
 }

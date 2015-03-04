@@ -211,30 +211,28 @@ MidTank::MidTank( World *w ) : m_mesh_instance( &g_mesh_list[ A_MID_TANK ]) {
   m_world   = w;
   m_heading = 0;
   m_height  = 0.5;
-  m_active  = true;
+  m_active  = false;
+  
+  m_mesh_instance.set_color(1); // red
 }
 
 void MidTank::fire() {
   m_world->shoot_enemy_bullet( m_position + m_direction * 2.3, m_heading );
 }
 
-void MidTank::reset() {
+void MidTank::activate( const Vector2 &p ) {
 
+  cout << "baddie activated" << endl;
+  
   m_heading = 0;
-  m_position.set( m_start_pos );
+  m_position.set(p);
+  m_active = true;
+  m_obstacle.clear();
 
   m_mesh_instance.set_translation( m_position.to_vector3(m_height) );
   m_mesh_instance.set_rotation( M_PI - m_heading, 0, 0 );
 
   m_mesh_instance.transform();
-  m_mesh_instance.set_color(200);
-  
-  m_obstacle.clear();
-}
-
-void MidTank::set_pos( float x, float y ) {
-  m_start_pos.set( x, y );
-  reset();
 }
 
 bool MidTank::is_active() {
@@ -242,6 +240,7 @@ bool MidTank::is_active() {
 }
 
 void MidTank::deactivate() {
+  cout << "baddie de-activated" << endl;
   m_active = false;
 }
 
