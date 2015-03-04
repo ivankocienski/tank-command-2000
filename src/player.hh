@@ -24,6 +24,9 @@ public:
   PlayerTank & current_tank();
 
   int tank_count();
+  void take_tank();
+  
   int current_score();
+  void add_score(int);
 
 };

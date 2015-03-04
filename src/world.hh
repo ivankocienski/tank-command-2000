@@ -11,6 +11,7 @@
 #include "obstacle.hh" 
 #include "baddies/mid-tank.hh"
 #include "bullet.hh"
+#include "line-vector-sprite.hh"
 
 class Player;
 class PlayerTank;
@@ -32,6 +33,8 @@ private:
   std::vector<Vector2> m_baddie_spawn_point;
   std::vector< std::vector<int> > m_spawn_zones;
 
+  LineVectorSprite *m_hud_bg;
+
   enum { // spawn zone
     SZ_TOP_LEFT,
     SZ_TOP_RIGHT,
@@ -44,6 +47,11 @@ private:
   void spawn_obstacle( float, float, int );
   void spawn_obstacle( int, int );
   void spawn_tank( MidTank& );
+
+  void draw_hud();
+  void do_play();
+  void do_crash();
+  void do_game_over();
   
 public:
 
@@ -56,6 +64,7 @@ public:
 
   Bullet* first_bullet();
 
+  
   void run();
 };
 

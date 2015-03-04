@@ -30,9 +30,11 @@ private:
 public:
 
   PlayerTank(World*);
+  void reset();
 
   int armour();
-
+  void do_damage(int);
+  
   Vector2& position();
   void set_pos( float, float );
 

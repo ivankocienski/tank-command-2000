@@ -14,14 +14,13 @@ using std::endl;
 
 #include "player.hh"
 
-#include "line-vector-sprite.hh"
 
 const float tank_heading_to_bg_offset = 407.4366;
 const int horizon_level = 270;
 
 using namespace std;
 
-World::World() { 
+World::World() {
 }
 
 void World::spawn_obstacle( float x, float y, int id ) {
@@ -83,6 +82,8 @@ void World::setup( Application *a, Window &w, Camera &c, Player &p ) {
   m_camera = &c;
   m_player = &p;
   m_player_tank = &p.current_tank();
+
+  m_hud_bg = &g_sprite_list[S_HUD_BG];
 
   spawn_obstacle( -50,  50 );
   spawn_obstacle(  50,  50 );
@@ -157,7 +158,31 @@ void World::setup( Application *a, Window &w, Camera &c, Player &p ) {
   m_baddies.push_back( MidTank(this) );
 }
 
-void World::run() {
+void World::draw_hud() {
+
+  m_hud_bg->draw( *m_window, 15, 10, 100 );
+
+  // score
+  m_app->draw_hud_number( 94, 45, m_player->current_score() );
+ 
+  // tanks
+  m_app->draw_hud_number( 625, 11, m_player->tank_count() );
+
+  // armour
+  m_app->draw_hud_number( 625, 46, m_player_tank->armour() );
+
+  // hud
+  //   radar
+  //   lives
+  //   damage
+  //   ammo
+  //     shells
+  //     ATG (anti tank guns)
+  //     missiles
+  //   score
+}
+
+void World::do_play() {
 
   LineVectorSprite &logo = g_sprite_list[S_MINI_LOGO];
   LineVectorSprite &bg1  = g_sprite_list[S_BG1];
@@ -166,8 +191,6 @@ void World::run() {
   LineVectorSprite &bg4  = g_sprite_list[S_BG4];
 
   LineVectorSprite &aimer        = g_sprite_list[S_CANNON_RETICULE];
-  LineVectorSprite &hud_bg       = g_sprite_list[S_HUD_BG];
-  LineVectorSprite &screen_crack = g_sprite_list[S_SCREEN_CRACK];
 
   bool run_loop = true;
 
@@ -180,6 +203,9 @@ void World::run() {
   cout << "map has " << m_baddies.size() << " baddies" << endl;
   
   while( m_window->active() && run_loop ) {
+
+    if( m_player_tank->armour() == 0 )
+      break;
 
     m_player_tank->move( m_obstacles );
 
@@ -206,6 +232,7 @@ void World::run() {
         MidTank *hit = bu_it->has_hit_enemy( m_baddies );
         if(hit) { 
           hit->deactivate();
+	  m_player->add_score(15);
           bu_it = m_bullets.erase(bu_it);
           continue; 
         }
@@ -213,6 +240,7 @@ void World::run() {
       } else {
 
         if( m_player_tank->is_hit_by( bu_it->position())) {
+	  m_player_tank->do_damage(5);
           bu_it = m_bullets.erase(bu_it);
           continue; 
         } 
@@ -245,14 +273,11 @@ void World::run() {
       DrawMesh dm( ob_it->mesh(), m_camera );
 
       dm.clip_to_frustum();
-
       if( !dm.is_visible() ) continue;
 
       dm.camera_transform();
-
       dm.draw(); 
     }
-
 
     for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ ) {
       if( !b_it->is_active() ) continue;
@@ -260,11 +285,9 @@ void World::run() {
       DrawMesh dm( b_it->mesh_instance(), m_camera );
 
       dm.clip_to_frustum();
-
       if( !dm.is_visible() ) continue;
 
       dm.camera_transform();
-
       dm.draw(); 
     }
 
@@ -273,43 +296,17 @@ void World::run() {
       DrawMesh dm( bu_it->mesh(), m_camera );
 
       dm.clip_to_frustum();
-
       if( !dm.is_visible() ) continue;
 
       dm.camera_transform();
-
       dm.draw(); 
     }
 
-    if( m_player_tank->armour() > 0 ) 
-      aimer.draw( *m_window, 270, 173 );
-    else
-      screen_crack.draw( *m_window, 88, 80 );
+    aimer.draw( *m_window, 270, 173 );
 
-    hud_bg.draw( *m_window, 15, 10, 100 );
-
-    // score
-    m_app->draw_hud_number( 94, 45, m_player->current_score() );
- 
-    // tanks
-    m_app->draw_hud_number( 625, 11, m_player->tank_count() );
-
-    // armour
-    m_app->draw_hud_number( 625, 46, m_player_tank->armour() );
-
-    // hud
-    //   radar
-    //   lives
-    //   damage
-    //   ammo
-    //     shells
-    //     ATG (anti tank guns)
-    //     missiles
-    //   score
-
+    draw_hud();
 
     m_window->end_raster();
-
     m_window->tick();
 
     if( keys[Window::K_LEFT] ) {
@@ -360,6 +357,51 @@ void World::run() {
 	//case Window::K_TAB:
 	//        m_baddies[0].reset();
         //break;
+    }
+  }
+}
+
+void World::do_crash() {
+  
+  LineVectorSprite &screen_crack = g_sprite_list[S_SCREEN_CRACK];
+  int hold = 200;
+  
+  while( hold ) {
+
+    hold--;
+
+    m_window->begin_raster();
+    
+    draw_hud();
+      
+    screen_crack.draw( *m_window, 88, 80 );
+
+    m_window->end_raster();
+
+    m_window->tick();
+
+  }
+}
+
+void World::do_game_over() {
+  cout << "You have died. Your final score is " << m_player->current_score() << endl;
+}
+
+void World::run() {
+
+  while(1) {
+    
+    do_play();
+
+    if( m_player->tank_count() > 1 ) {
+      
+      do_crash();      
+      m_player->take_tank();      
+      
+    } else {
+
+      do_game_over();      
+      break;
     }
   }
 }

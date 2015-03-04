@@ -12,7 +12,11 @@ static const float tank_width  = 2.0;
 static const float tank_view_height = 1.2;
 
 PlayerTank::PlayerTank(World *w) {
-  m_world   = w;
+  m_world = w;
+  reset();
+}
+
+void PlayerTank::reset() {
   m_heading = 0;
   m_height  = tank_view_height;
   m_armour  = 100;
@@ -20,6 +24,11 @@ PlayerTank::PlayerTank(World *w) {
 
 int PlayerTank::armour() {
   return m_armour;
+}
+
+void PlayerTank::do_damage(int d) {
+  m_armour -= d;
+  if(m_armour < 0) m_armour = 0;
 }
 
 void PlayerTank::set_pos( float x, float y ) { 
