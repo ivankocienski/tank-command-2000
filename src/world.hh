@@ -43,13 +43,18 @@ private:
     SZ_OUTER,
     SZ_COUNT
   };
+
+enum {
+PO_QUIT,
+  PO_DIED
+  };
   
   void spawn_obstacle( float, float, int );
   void spawn_obstacle( int, int );
   void spawn_tank( MidTank& );
 
   void draw_hud();
-  void do_play();
+  int  do_play();
   void do_crash();
   void do_game_over();
   

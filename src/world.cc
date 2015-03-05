@@ -180,7 +180,7 @@ void World::draw_hud() {
   //   score
 }
 
-void World::do_play() {
+int World::do_play() {
 
   LineVectorSprite &logo = g_sprite_list[S_MINI_LOGO];
   LineVectorSprite &bg1  = g_sprite_list[S_BG1];
@@ -190,8 +190,8 @@ void World::do_play() {
 
   LineVectorSprite &aimer        = g_sprite_list[S_CANNON_RETICULE];
 
-  bool run_loop = true;
-
+  bool is_paused = false;
+  unsigned char anim_count = 0;
   bool *keys = m_window->m_keys;
 
   vector<Obstacle>::iterator ob_it;
@@ -205,57 +205,62 @@ void World::do_play() {
 
   cout << "map has " << m_baddies.size() << " baddies" << endl;
   
-  while( m_window->active() && run_loop ) {
+  while( m_window->active() ) {
 
+    anim_count++;
+    
     if( m_player_tank->armour() == 0 )
-      break;
+      return PO_DIED;
 
-    m_player_tank->move( m_obstacles );
+    if( !is_paused ) {
+      
+      m_player_tank->move( m_obstacles );
 
-    for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ )
-      b_it->think_and_move( m_player_tank, m_obstacles );
+      for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ )
+	b_it->think_and_move( m_player_tank, m_obstacles );
   
-    for( bu_it = m_bullets.begin(); bu_it != m_bullets.end(); ) {
+      for( bu_it = m_bullets.begin(); bu_it != m_bullets.end(); ) {
 
-      bu_it->move();
+	bu_it->move();
 
-      if( !bu_it->is_active() ) {
-        cout << "bullet expired" << endl;
-        bu_it = m_bullets.erase(bu_it);
-        continue;
+	if( !bu_it->is_active() ) {
+	  cout << "bullet expired" << endl;
+	  bu_it = m_bullets.erase(bu_it);
+	  continue;
+	}
+
+	if( bu_it->has_hit_obstacle( m_obstacles )) {
+	  bu_it = m_bullets.erase(bu_it);
+	  continue; 
+	}
+
+	if( bu_it->owner() == Bullet::B_PLAYER ) {
+
+	  MidTank *hit = bu_it->has_hit_enemy( m_baddies );
+	  if(hit) { 
+	    hit->deactivate();
+	    m_player->add_score(15);
+	    bu_it = m_bullets.erase(bu_it);
+	    continue; 
+	  }
+
+	} else {
+
+	  if( m_player_tank->is_hit_by( bu_it->position())) {
+	    m_player_tank->do_damage(5);
+	    bu_it = m_bullets.erase(bu_it);
+	    continue; 
+	  } 
+	}
+
+	bu_it++;
       }
 
-      if( bu_it->has_hit_obstacle( m_obstacles )) {
-        bu_it = m_bullets.erase(bu_it);
-        continue; 
-      }
-
-      if( bu_it->owner() == Bullet::B_PLAYER ) {
-
-        MidTank *hit = bu_it->has_hit_enemy( m_baddies );
-        if(hit) { 
-          hit->deactivate();
-	  m_player->add_score(15);
-          bu_it = m_bullets.erase(bu_it);
-          continue; 
-        }
-
-      } else {
-
-        if( m_player_tank->is_hit_by( bu_it->position())) {
-	  m_player_tank->do_damage(5);
-          bu_it = m_bullets.erase(bu_it);
-          continue; 
-        } 
-      }
-
-      bu_it++;
+      for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ )
+	if( !b_it->is_active() )
+	  spawn_tank( *b_it );
     }
-
-    for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ )
-      if( !b_it->is_active() )
-	spawn_tank( *b_it );
-
+    
     m_player_tank->look( m_camera );
 
     m_window->begin_raster();
@@ -309,59 +314,61 @@ void World::do_play() {
 
     draw_hud();
 
+    if( is_paused )
+      if( (anim_count >> 2) & 1 ) m_app->draw_text( 263, 250, "PAUSED" );
+      
     m_window->end_raster();
     m_window->tick();
 
-    if( keys[Window::K_LEFT] ) {
-      m_player_tank->turn( 0.1 );
+    if( !is_paused ) {
+      if( keys[Window::K_LEFT] ) {
+	m_player_tank->turn( 0.1 );
+      }
+
+      if( keys[Window::K_RIGHT] ) {
+	m_player_tank->turn( -0.1 );
+      }
+
+      if( keys[Window::K_UP] ) {
+	m_player_tank->walk( 0.1 );
+      }
+
+      if( keys[Window::K_DOWN] ) {
+	m_player_tank->walk( -0.1 );
+      }
+
+      if( keys[Window::K_SPACE ]) {
+	m_player_tank->fire( true );
+
+      } else {
+	m_player_tank->fire( false );
+      }
     }
+    // if( keys[Window::K_S] ) 
+    //   m_player_tank->raise( 0.1 );
 
-    if( keys[Window::K_RIGHT] ) {
-      m_player_tank->turn( -0.1 );
-    }
-
-    if( keys[Window::K_UP] ) {
-      m_player_tank->walk( 0.1 );
-    }
-
-    if( keys[Window::K_DOWN] ) {
-      m_player_tank->walk( -0.1 );
-    }
-
-    if( keys[Window::K_SPACE ]) {
-      m_player_tank->fire( true );
-
-    } else {
-      m_player_tank->fire( false );
-    }
-
-    if( keys[Window::K_S] ) 
-      m_player_tank->raise( 0.1 );
-
-    if( keys[Window::K_X] )
-      m_player_tank->raise( -0.1 );
+    // if( keys[Window::K_X] )
+    //   m_player_tank->raise( -0.1 );
     
-    if( keys[Window::K_Q] )
-      m_player_tank->zero_y();
+    // if( keys[Window::K_Q] )
+    //   m_player_tank->zero_y();
 
-    if( keys[Window::K_Z] ) {
-      m_player_tank->strafe( 0.1 );
-    }
+    // if( keys[Window::K_Z] ) {
+    //   m_player_tank->strafe( 0.1 );
+    // }
 
-    if( keys[Window::K_C] ) {
-      m_player_tank->strafe( -0.1 );
-    }
+    // if( keys[Window::K_C] ) {
+    //   m_player_tank->strafe( -0.1 );
+    // }
 
     switch( m_window->inkey() ) {
       case Window::K_ESCAPE:
-        run_loop = false;
+	is_paused = !is_paused;
         break;
-        
-	//case Window::K_TAB:
-	//        m_baddies[0].reset();
-        //break;
     }
   }
+
+  return PO_QUIT;
 }
 
 void World::do_crash() {
@@ -387,14 +394,40 @@ void World::do_crash() {
 }
 
 void World::do_game_over() {
-  cout << "You have died. Your final score is " << m_player->current_score() << endl;
+
+  char buffer[50];
+  int pos;
+
+  snprintf( buffer, 50, "Your final score is %d", m_player->current_score() );
+  pos = (640 - (19 * strlen(buffer))) / 2;
+
+  int hold = 1000;
+  
+  while( hold ) {
+
+    hold--;
+
+    m_window->begin_raster();
+
+    m_app->draw_text( 263, 100, "GAME OVER" );
+    m_app->draw_text( pos, 200, buffer );
+
+    if( hold < 500 )
+      m_app->draw_text( 177, 300, "PRESS SPACE BAR" );
+    
+    m_window->end_raster();
+
+    m_window->tick();
+
+    if( m_window->inkey() == Window::K_SPACE ) break;
+  }
 }
 
 void World::run() {
 
   while(m_window->active()) {
     
-    do_play();
+    if( do_play() == PO_QUIT ) break;
 
     do_crash();
 
