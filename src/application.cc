@@ -57,13 +57,13 @@ void Application::do_splash(Camera &cam) {
     dm.camera_transform();
     dm.draw(); 
 
-    logo.draw( m_window, 25, 100 );
+    logo.draw( m_window, 25, 150 );
 
     if( hold < 950 )
-      draw_text( 25, 80, "A GAME BY IVAN KOCIENSKI 2015" );
+      draw_text( 25, 70, "BY IVAN KOCIENSKI 2015" );
 
     if( hold < 800 )
-      if( (hold >> 2) & 1 ) draw_text( 280, 450, "PRESS SPACE BAR TO START" );
+      if( (hold >> 2) & 1 ) draw_text( 92, 420, "PRESS SPACE BAR TO START" );
       
     m_window.end_raster();
 
@@ -114,7 +114,7 @@ void Application::draw_text(int x, int y, const char *c ) {
     }
 
     c++;
-    x += 6;
+    x += 19;
   }
 }
 
