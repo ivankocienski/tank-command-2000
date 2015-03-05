@@ -42,6 +42,7 @@ bool load_assets() {
   LOAD_SPRITE( S_BG3, "bg3.lvs" );
   LOAD_SPRITE( S_BG4, "bg4.lvs" );
 
+  LOAD_SPRITE( S_SPLASH_LOGO, "main-logo-text.lvs" );
   LOAD_SPRITE( S_CANNON_RETICULE, "cannon-reticule.lvs" );
   LOAD_SPRITE( S_HUD_BG, "hud-bg.lvs" ); 
   LOAD_SPRITE( S_SCREEN_CRACK, "screen-crash.lvs" );

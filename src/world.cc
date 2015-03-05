@@ -104,8 +104,6 @@ void World::setup( Application *a, Window &w, Camera &c, Player &p ) {
   spawn_obstacle(  20, -40 );
   spawn_obstacle( -50, -50 );
   spawn_obstacle(  50, -50 );
-  
-  m_player_tank->set_pos( 0, 0 );
 
   m_baddie_spawn_point.push_back( Vector2( -40,  40 ));
   m_baddie_spawn_point.push_back( Vector2(  40,  40 ));
@@ -199,6 +197,11 @@ void World::do_play() {
   vector<Obstacle>::iterator ob_it;
   vector<MidTank>::iterator b_it;
   list<Bullet>::iterator bu_it;
+  
+  m_player_tank->set_pos( 0, 0 );
+
+  for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ )
+    spawn_tank( *b_it );
 
   cout << "map has " << m_baddies.size() << " baddies" << endl;
   
@@ -389,20 +392,18 @@ void World::do_game_over() {
 
 void World::run() {
 
-  while(1) {
+  while(m_window->active()) {
     
     do_play();
 
-    if( m_player->tank_count() > 1 ) {
-      
-      do_crash();      
-      m_player->take_tank();      
-      
-    } else {
+    do_crash();
 
-      do_game_over();      
-      break;
-    }
+    m_player->take_tank();      
+
+    if( m_player->tank_count() ) continue;
+      
+    do_game_over();      
+    break;
   }
 }
 

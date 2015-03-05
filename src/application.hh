@@ -2,12 +2,15 @@
 #pragma once
 
 #include "window.hh"
+#include "camera.hh"
 
 class Application {
 private:
 
   Window m_window;
 
+  void do_splash( Camera& );
+  
 public:
   
   Application( int, char** );

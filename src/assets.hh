@@ -31,6 +31,8 @@ enum {
   S_BG3,
   S_BG4,
 
+  S_SPLASH_LOGO,
+  
   S_CANNON_RETICULE,
   S_HUD_BG,
 

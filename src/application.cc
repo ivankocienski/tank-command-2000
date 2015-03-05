@@ -8,6 +8,7 @@
 #include "common.hh"
 #include "application.hh"
 #include "assets.hh"
+#include "draw-mesh.hh"
 
 using namespace std;
 
@@ -22,6 +23,56 @@ static const float FOV    = 90.0; // horizontal
 #include "char-table.hh"
 
 Application::Application( int argc, char ** argv ) { 
+}
+
+void Application::do_splash(Camera &cam) {
+  
+  LineVectorSprite &logo = g_sprite_list[S_SPLASH_LOGO];
+  MeshInstance tank_mesh(&g_mesh_list[A_MID_TANK]);
+
+  int hold = 1000;
+  float angle = 0;
+
+  tank_mesh.set_color(1);
+  tank_mesh.set_translation( 0, -1.5, -6 );
+
+  cam.look(
+	   Vector3(  0, 0,  0 ),
+	   Vector3(  0, 0, -1 ),
+	   Vector3( 1, 0,  0 )
+	   );
+	   
+  while( hold && m_window.active() ) {
+    hold--;
+
+    angle += 0.02;
+    
+    tank_mesh.set_rotation( angle, 0, 0 );
+    tank_mesh.transform();
+
+    m_window.begin_raster();
+
+    DrawMesh dm( tank_mesh, &cam );
+    dm.clip_to_frustum();
+    dm.camera_transform();
+    dm.draw(); 
+
+    logo.draw( m_window, 25, 100 );
+
+    if( hold < 950 )
+      draw_text( 25, 80, "A GAME BY IVAN KOCIENSKI 2015" );
+
+    if( hold < 800 )
+      if( (hold >> 2) & 1 ) draw_text( 280, 450, "PRESS SPACE BAR TO START" );
+      
+    m_window.end_raster();
+
+    m_window.tick();
+
+    if( m_window.inkey() == Window::K_SPACE && hold < 800 )
+      break;
+  }
+
 }
 
 int Application::main() {
@@ -45,7 +96,12 @@ int Application::main() {
 
   world.setup( this, m_window, camera, player );
 
-  world.run();
+  while(m_window.active()) {
+
+    do_splash(camera);
+    
+    world.run();
+  }
 
   return 0;
 }
