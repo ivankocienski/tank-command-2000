@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "math/vector2.hh"
+#include "math/matrix3.hh"
 #include "mesh-instance.hh"
 #include "obstacle.hh"
 
@@ -16,10 +17,16 @@ private:
   World *m_world;
 
   Vector2 m_position;
-  Vector2 m_new_pos;
-  
   Vector2 m_direction;
   Vector2 m_right;
+
+  Matrix3 m_inv_model;
+
+  float m_want_walk;
+  float m_want_turn;
+
+  float m_walk_speed;
+  float m_turn_speed;
 
   float m_heading;
   float m_height;
@@ -41,16 +48,14 @@ public:
   void look(Camera*);
   float heading();
 
-  bool is_hit_by( const Vector2& );
+  bool is_touching( const Vector2& );
   
   void move( std::vector<Obstacle> & );
   void fire(bool);
 
-  void walk(float);
-  void turn(float);
+  void want_walk(float);
+  void want_turn(float);
 
-  void strafe(float);
-  void raise(float);
-  void zero_y();
+  Matrix3 & inv_model_matrix();
 };
 

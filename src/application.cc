@@ -98,7 +98,7 @@ int Application::main() {
 
   while(m_window.active()) {
 
-    do_splash(camera);
+    //do_splash(camera);
     
     world.run();
   }

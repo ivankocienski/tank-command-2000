@@ -29,3 +29,8 @@ void vec3_mat4_multiply( Vector3& v, const Matrix4& m ) {
   v.z = z;
 }
 
+void vec2_mat3_multiply( Vector2 &v, const Vector2 &vi, const Matrix3 &m ) {
+
+  v.x = m.m_v[0] * vi.x + m.m_v[1] * vi.y + m.m_v[2] * 1.0;
+  v.y = m.m_v[3] * vi.x + m.m_v[4] * vi.y + m.m_v[5] * 1.0;
+}

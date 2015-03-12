@@ -3,6 +3,8 @@
 
 #include <math.h>
 
+#include "vector2.hh"
+
 class Matrix3 {
 public:
 
@@ -12,38 +14,15 @@ public:
 
   float & operator[](int);
   
-  static Matrix3 identity() {
-    Matrix3 mat;
+  void identity();
+  void set_rotation( float );
+  void set_translation( Vector2& );
+  void invert();
 
-    mat.m_v[0] = 1;
-    mat.m_v[4] = 1;
-    mat.m_v[8] = 1;
+  float determinant();
 
-    return mat;
-  }
-
-  static Matrix3 rotation_x_matrix( Matrix3 &mat, float d ) {
-
-    float c = cos(d);
-    float s = sin(d);
-
-    mat.m_v[0] = c;
-    mat.m_v[2] = s;
-    mat.m_v[4] = 1;
-    mat.m_v[6] = -s;
-    mat.m_v[8] = c;
-
-    return mat;
-  }
-
-  static Matrix3 rotation_x_matrix( float d ) {
-    Matrix3 mat;
-
-    rotation_x_matrix( mat, d );
-
-    return mat;
-  }
-
+  void operator=( const Matrix3& );
+  void operator*=( const Matrix3& );
 };
 
 

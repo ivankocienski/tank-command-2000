@@ -44,11 +44,11 @@ private:
     SZ_COUNT
   };
 
-enum {
-PO_QUIT,
-  PO_DIED
+  enum {
+    PO_QUIT,
+    PO_DIED
   };
-  
+
   void spawn_obstacle( float, float, int );
   void spawn_obstacle( int, int );
   void spawn_tank( MidTank& );
@@ -57,7 +57,7 @@ PO_QUIT,
   int  do_play();
   void do_crash();
   void do_game_over();
-  
+
 public:
 
   World();
@@ -69,7 +69,6 @@ public:
 
   Bullet* first_bullet();
 
-  
   void run();
 };
 
