@@ -36,6 +36,14 @@ void World::spawn_obstacle( int x, int y ) {
   spawn_obstacle( (float)x, (float)y, rand() % A_OBSTACLE10 );
 }
 
+const char *zone_names [] = {
+  "SZ_TOP_LEFT",
+  "SZ_TOP_RIGHT",
+  "SZ_BOTTOM_LEFT",
+  "SZ_BOTTOM_RIGHT",
+  "SZ_OUTER"
+};
+
 void World::spawn_tank( MidTank &mt ) {
 
   int zone = -1;
@@ -54,26 +62,42 @@ void World::spawn_tank( MidTank &mt ) {
 
     if( pp.x < 0 ) {
       if( pp.y < 0 ) {
-        zone = SZ_BOTTOM_LEFT;
-        break;
-
-      } else {
-        zone = SZ_TOP_LEFT;
-        break;
+        zone = SZ_TOP_RIGHT;
+        break; 
       }
+      
+      zone = SZ_BOTTOM_RIGHT;
+      break; 
     }
 
     if( pp.y < 0 ) {
-      zone = SZ_BOTTOM_RIGHT;
+      zone = SZ_TOP_LEFT;
       break;
     }
 
-    zone = SZ_TOP_RIGHT;
+    zone = SZ_BOTTOM_LEFT;
     break;
   }
 
   int max = m_spawn_zones[zone].size();
+
+  cout 
+    << "SPAWN TANK: zone=" 
+    << zone_names[zone] 
+    << " (" 
+    << zone 
+    << ") max=" 
+    << max 
+    << endl;
+
   int pos_i = m_spawn_zones[zone][rand() % max];
+
+  cout 
+    << "  i=" << pos_i
+    << " x=" << m_baddie_spawn_point[pos_i].x
+    << " y=" << m_baddie_spawn_point[pos_i].y
+    << endl;
+
   mt.activate( m_baddie_spawn_point[pos_i] );
 }
 
@@ -107,53 +131,41 @@ void World::setup( Application *a, Window &w, Camera &c, Player &p ) {
   spawn_obstacle( -50, -50 );
   spawn_obstacle(  50, -50 );
 
-  m_baddie_spawn_point.push_back( Vector2( -40,  40 ));
-  m_baddie_spawn_point.push_back( Vector2(  40,  40 ));
-  m_baddie_spawn_point.push_back( Vector2(  20,  30 ));
-  m_baddie_spawn_point.push_back( Vector2( -10,   0 ));
-  m_baddie_spawn_point.push_back( Vector2(  20, -20 ));
-  m_baddie_spawn_point.push_back( Vector2( -10, -30 ));
-  m_baddie_spawn_point.push_back( Vector2( -40, -40 ));
-  m_baddie_spawn_point.push_back( Vector2(  40, -40 ));
+  m_baddie_spawn_point.push_back( Vector2( -40,  40 )); // 0
+  m_baddie_spawn_point.push_back( Vector2(  40,  40 )); // 1
+  m_baddie_spawn_point.push_back( Vector2(  20,  30 )); // 2
+  m_baddie_spawn_point.push_back( Vector2( -10,  20 )); // 3
+
+  m_baddie_spawn_point.push_back( Vector2(  10,  10 )); // 4
+  m_baddie_spawn_point.push_back( Vector2( -10, -10 )); // 5
+
+  m_baddie_spawn_point.push_back( Vector2(  20, -20 )); // 6
+  m_baddie_spawn_point.push_back( Vector2( -10, -30 )); // 7
+  m_baddie_spawn_point.push_back( Vector2( -40, -40 )); // 8
+  m_baddie_spawn_point.push_back( Vector2(  40, -40 )); // 9
 
   m_spawn_zones.resize(SZ_COUNT);
   m_spawn_zones[SZ_TOP_LEFT].push_back(0);
-  m_spawn_zones[SZ_TOP_LEFT].push_back(2);
   m_spawn_zones[SZ_TOP_LEFT].push_back(3);
-  m_spawn_zones[SZ_TOP_LEFT].push_back(4);
-  m_spawn_zones[SZ_TOP_LEFT].push_back(7);
-  m_spawn_zones[SZ_TOP_LEFT].push_back(8);
 
   m_spawn_zones[SZ_TOP_RIGHT].push_back(1);
+  m_spawn_zones[SZ_TOP_RIGHT].push_back(2);
   m_spawn_zones[SZ_TOP_RIGHT].push_back(4);
-  m_spawn_zones[SZ_TOP_RIGHT].push_back(5);
-  m_spawn_zones[SZ_TOP_RIGHT].push_back(6);
-  m_spawn_zones[SZ_TOP_RIGHT].push_back(9);
-  m_spawn_zones[SZ_TOP_RIGHT].push_back(10);
 
+  m_spawn_zones[SZ_BOTTOM_LEFT].push_back(5);
   m_spawn_zones[SZ_BOTTOM_LEFT].push_back(7);
   m_spawn_zones[SZ_BOTTOM_LEFT].push_back(8);
-  m_spawn_zones[SZ_BOTTOM_LEFT].push_back(11);
-  m_spawn_zones[SZ_BOTTOM_LEFT].push_back(12);
-  m_spawn_zones[SZ_BOTTOM_LEFT].push_back(13);
-  m_spawn_zones[SZ_BOTTOM_LEFT].push_back(14);
-  m_spawn_zones[SZ_BOTTOM_LEFT].push_back(17);
 
+  m_spawn_zones[SZ_BOTTOM_RIGHT].push_back(6);
   m_spawn_zones[SZ_BOTTOM_RIGHT].push_back(9);
-  m_spawn_zones[SZ_BOTTOM_RIGHT].push_back(10);
-  m_spawn_zones[SZ_BOTTOM_RIGHT].push_back(13);
-  m_spawn_zones[SZ_BOTTOM_RIGHT].push_back(15);
-  m_spawn_zones[SZ_BOTTOM_RIGHT].push_back(16);
-  m_spawn_zones[SZ_BOTTOM_RIGHT].push_back(18);
 
   m_spawn_zones[SZ_OUTER].push_back(0);
   m_spawn_zones[SZ_OUTER].push_back(1);
   m_spawn_zones[SZ_OUTER].push_back(2);
+  m_spawn_zones[SZ_OUTER].push_back(3);
   m_spawn_zones[SZ_OUTER].push_back(7);
-  m_spawn_zones[SZ_OUTER].push_back(10);
-  m_spawn_zones[SZ_OUTER].push_back(16);
-  m_spawn_zones[SZ_OUTER].push_back(17);
-  m_spawn_zones[SZ_OUTER].push_back(18);
+  m_spawn_zones[SZ_OUTER].push_back(8);
+  m_spawn_zones[SZ_OUTER].push_back(9);
 
   m_baddies.push_back( MidTank(this) );
 }
@@ -265,8 +277,8 @@ int World::do_play() {
 
       m_player_tank->move( m_obstacles );
 
-      for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ )
-        b_it->think_and_move( m_player_tank, m_obstacles );
+//      for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ )
+//        b_it->think_and_move( m_player_tank, m_obstacles );
 
       for( bu_it = m_bullets.begin(); bu_it != m_bullets.end(); ) {
 

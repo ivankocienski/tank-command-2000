@@ -1,27 +1,54 @@
 
 todo:
 
+
+fixie uppie :-
+- bug: enemy spawning too close to player
+- enemy AI tuning / debugging
+- check enemy hit player
+- player collision detection
+- player map bounding box
+- optimize bits
+
+features
+- z-sort
+- explosions
+- obstacle colors
+- distance fog fadeout
+- distance based damage 
+  - player / baddie
+- more enemies
+- enemies getting harder
+- powerups
+
+
+
+========
+= done =
+========
+
+
 * tidy up code
 * loading of vector objects
-- loading of 2d shapes
+* loading of 2d shapes
 
 
 world
   * map / world container
   * obstacle objects
-  - enemy objects
+  x enemy objects
 
 
-- proper two stick tank drive
+x proper two stick tank drive
 
-- shooting
+* shooting
 * collision detection 
   - damage
 
-- enemy AI
+~ enemy AI
 
 
-- player score / health / lives / etc
-- hud
+* player score / health / lives / etc
+* hud
 
 
