@@ -143,7 +143,7 @@ void PlayerTank::move( vector<Obstacle> & wo ) {
 
   {
     Matrix3 t;
-    t.set_rotation(  -m_heading );
+    t.set_rotation( M_PI - m_heading );
     m_inv_model *= t; 
   }
 

@@ -34,6 +34,7 @@ public:
   Vector2 operator-( const Vector2 & ) const;
   Vector2 operator+( const Vector2 & ) const;
   Vector2 operator*( float ) const;
+  Vector2 operator*( const Vector2 & ) const;
 
   Vector2 perpendicular() const;
 

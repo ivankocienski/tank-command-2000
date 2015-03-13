@@ -191,10 +191,13 @@ void World::draw_hud() {
 
     vec2_mat3_multiply( p, ob_it->position(), piv );
 
-    if( p.x < -49 || p.x > 49 ) continue;
-    if( p.y < -39 || p.y > 39 ) continue;
+    float px = p.y;
+    float py = p.x;
 
-    m_window->draw_pixel( 320 + p.x, 40 + p.y, 200 );
+    if( px < -49 || px > 49 ) continue;
+    if( py < -39 || py > 39 ) continue;
+
+    m_window->draw_pixel( 320 + px, 40 + py, 200 );
   }
 
   // hud

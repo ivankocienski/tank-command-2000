@@ -16,7 +16,7 @@ public:
   
   void identity();
   void set_rotation( float );
-  void set_translation( Vector2& );
+  void set_translation( const Vector2& );
   void invert();
 
   float determinant();

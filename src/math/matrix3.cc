@@ -41,7 +41,7 @@ void Matrix3::set_rotation( float d ) {
   M33 = 1.0;
 }
 
-void Matrix3::set_translation( Vector2 &v ) {
+void Matrix3::set_translation( const Vector2 &v ) {
   
   M13 = v.x;
   M23 = v.y;
