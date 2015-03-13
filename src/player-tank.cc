@@ -185,10 +185,10 @@ bool PlayerTank::is_touching( const Vector2& p ) {
   
   vec2_mat3_multiply( t, p, m_inv_model );
   
-  if( t.x < -(tank_width  * 0.5) ) return false;
-  if( t.x >  (tank_width  * 0.5) ) return false;
-  if( t.y < -(tank_length * 0.5) ) return false;
-  if( t.y >  (tank_length * 0.5) ) return false;
+  if( t.x < -tank_length * 0.5 ) return false;
+  if( t.x >  tank_length * 0.5 ) return false;
+  if( t.y < -tank_width  * 0.5 ) return false;
+  if( t.y >  tank_width  * 0.5 ) return false;
 
   return true; 
 }

@@ -158,7 +158,7 @@ void World::setup( Application *a, Window &w, Camera &c, Player &p ) {
   m_baddies.push_back( MidTank(this) );
 }
 
-void World::draw_hud() {
+void World::draw_hud( unsigned char anim_count ) {
 
   m_hud_bg->draw( *m_window, 15, 10, 100 );
 
@@ -177,13 +177,11 @@ void World::draw_hud() {
   m_window->draw_pixel( 270, 79, 100 );
   m_window->draw_pixel( 370, 79, 100 );
 
-  m_window->draw_pixel( 319, 39, 7 );
-  m_window->draw_pixel( 320, 39, 7 );
-  m_window->draw_pixel( 319, 40, 7 );
-  m_window->draw_pixel( 320, 40, 7 );
+  m_window->draw_pixel2( 319, 39, 7 );
 
   // obstacles
   vector<Obstacle>::iterator ob_it;
+
   Matrix3 &piv( m_player_tank->inv_model_matrix());
   Vector2 p;
 
@@ -197,7 +195,27 @@ void World::draw_hud() {
     if( px < -49 || px > 49 ) continue;
     if( py < -39 || py > 39 ) continue;
 
-    m_window->draw_pixel( 320 + px, 40 + py, 200 );
+    m_window->draw_pixel( 320 + px, 40 + py, 150 );
+  }
+
+  // enemies
+  if( (anim_count >> 2) & 1 ) {
+
+    vector<MidTank>::iterator b_it;
+
+    for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ ) {
+
+      vec2_mat3_multiply( p, b_it->position(), piv );
+
+      float px = p.y;
+      float py = p.x;
+
+      if( px < -49 || px > 49 ) continue;
+      if( py < -39 || py > 39 ) continue;
+
+      m_window->draw_pixel2( 320 + px, 40 + py, 1 );
+
+    }
   }
 
   // hud
@@ -231,8 +249,8 @@ int World::do_play() {
 
   m_player_tank->set_pos( 0, 0 );
 
-  //for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ )
-  //  spawn_tank( *b_it );
+  for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ )
+    spawn_tank( *b_it );
 
   cout << "map has " << m_baddies.size() << " baddies" << endl;
 
@@ -287,9 +305,9 @@ int World::do_play() {
         bu_it++;
       }
 
-      //for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ )
-      //  if( !b_it->is_active() )
-      //    spawn_tank( *b_it );
+      for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ )
+        if( !b_it->is_active() )
+          spawn_tank( *b_it );
     }
 
     m_player_tank->look( m_camera );
@@ -343,7 +361,7 @@ int World::do_play() {
 
     aimer.draw( *m_window, 270, 173 );
 
-    draw_hud();
+    draw_hud(anim_count);
 
     if( is_paused )
       if( (anim_count >> 2) & 1 ) m_app->draw_text( 263, 250, "PAUSED" );
@@ -413,7 +431,7 @@ void World::do_crash() {
 
     m_window->begin_raster();
 
-    draw_hud();
+    draw_hud(255);
 
     screen_crack.draw( *m_window, 88, 80 );
 
