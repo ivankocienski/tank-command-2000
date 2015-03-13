@@ -84,6 +84,7 @@ public:
 
   void begin_raster();
   void draw_line( int, int, int, int, unsigned char );
+  void draw_pixel( int, int, unsigned char );
   void end_raster();
 };
 

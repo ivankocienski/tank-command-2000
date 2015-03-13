@@ -5,6 +5,8 @@ using std::endl;
 
 #include <stdlib.h>
 
+#include "math/operations.hh"
+
 #include "world.hh"
 #include "mesh.hh"
 #include "mesh-instance.hh"
@@ -169,6 +171,32 @@ void World::draw_hud() {
   // armour
   m_app->draw_hud_number( 625, 46, m_player_tank->armour() );
 
+  // radar
+  m_window->draw_pixel( 270,  0, 100 );
+  m_window->draw_pixel( 370,  0, 100 );
+  m_window->draw_pixel( 270, 79, 100 );
+  m_window->draw_pixel( 370, 79, 100 );
+
+  m_window->draw_pixel( 319, 39, 7 );
+  m_window->draw_pixel( 320, 39, 7 );
+  m_window->draw_pixel( 319, 40, 7 );
+  m_window->draw_pixel( 320, 40, 7 );
+
+  // obstacles
+  vector<Obstacle>::iterator ob_it;
+  Matrix3 &piv( m_player_tank->inv_model_matrix());
+  Vector2 p;
+
+  for( ob_it = m_obstacles.begin(); ob_it != m_obstacles.end(); ob_it++ ) {
+
+    vec2_mat3_multiply( p, ob_it->position(), piv );
+
+    if( p.x < -49 || p.x > 49 ) continue;
+    if( p.y < -39 || p.y > 39 ) continue;
+
+    m_window->draw_pixel( 320 + p.x, 40 + p.y, 200 );
+  }
+
   // hud
   //   radar
   //   lives
@@ -200,8 +228,8 @@ int World::do_play() {
 
   m_player_tank->set_pos( 0, 0 );
 
-  for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ )
-    spawn_tank( *b_it );
+  //for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ )
+  //  spawn_tank( *b_it );
 
   cout << "map has " << m_baddies.size() << " baddies" << endl;
 
@@ -256,9 +284,9 @@ int World::do_play() {
         bu_it++;
       }
 
-      for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ )
-        if( !b_it->is_active() )
-          spawn_tank( *b_it );
+      //for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ )
+      //  if( !b_it->is_active() )
+      //    spawn_tank( *b_it );
     }
 
     m_player_tank->look( m_camera );

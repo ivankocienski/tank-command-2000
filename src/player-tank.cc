@@ -13,9 +13,10 @@ static const float tank_length = 3.0;
 static const float tank_width  = 2.0;
 static const float tank_view_height = 1.2;
 
-static const float tank_max_turn_speed = 0.3;
+static const float tank_max_turn_speed = 0.08;
+static const float tank_acc_turn = 0.025;
+
 static const float tank_max_move_speed = 0.2;
-static const float tank_acc_turn = 0.035;
 static const float tank_acc_move = 0.03;
 
 PlayerTank::PlayerTank(World *w) {
@@ -65,7 +66,7 @@ Matrix3 & PlayerTank::inv_model_matrix() {
 
 static float sign_clamp( float val, float max ) {
 
-  if( max < 0 ) if( val < -max ) return -max;
+  if( val < 0 ) if( val < -max ) return -max;
   if( val > max ) return max;
 
   return val;
@@ -142,7 +143,7 @@ void PlayerTank::move( vector<Obstacle> & wo ) {
 
   {
     Matrix3 t;
-    t.set_rotation( m_heading );
+    t.set_rotation(  -m_heading );
     m_inv_model *= t; 
   }
 
@@ -152,6 +153,7 @@ void PlayerTank::move( vector<Obstacle> & wo ) {
     m_inv_model *= t;
   }
 
+  
   m_inv_model.invert();
 
   m_want_turn = 0;

@@ -20,6 +20,8 @@ Matrix3::Matrix3() {
 }
 
 void Matrix3::identity() {
+  memset( m_v, 0, sizeof(m_v));
+
   M11 = 1;
   M22 = 1;
   M33 = 1;
@@ -30,11 +32,13 @@ void Matrix3::set_rotation( float d ) {
   float c = cos(d);
   float s = sin(d);
 
+  // this is actually a 2D rotation
+
   M11 = c;
-  M13 = s;
-  M22 = 1;
-  M31 = -s;
-  M33 = c;
+  M12 = s;
+  M21 = -s;
+  M22 = c;
+  M33 = 1.0;
 }
 
 void Matrix3::set_translation( Vector2 &v ) {
@@ -92,7 +96,7 @@ float Matrix3::determinant() {
 void Matrix3::invert() {
 
   float c11 =  DET2( M22, M23, M32, M33 );
-  float c12 = -DET2( M11, M13, M31, M33 );
+  float c12 = -DET2( M21, M23, M31, M33 );
   float c13 =  DET2( M21, M22, M31, M32 );
 
   float c21 = -DET2( M12, M13, M32, M33 );

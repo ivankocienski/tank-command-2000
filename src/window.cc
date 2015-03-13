@@ -259,6 +259,13 @@ void Window::draw_line( int x1, int y1, int x2, int y2, unsigned char c ) {
   render_line( x1, y1, x2, y2, c );
 }
 
+void Window::draw_pixel( int x, int y, unsigned char c ) {
+  if( x < 0 || x >= m_screen->w ) return;
+  if( y < 0 || y >= m_screen->h ) return;
+
+  m_vbuff[ y * m_screen->w + x ] = c;
+}
+
 void Window::end_raster() {
    SDL_UnlockSurface(m_screen); 
    m_vbuff = NULL;
