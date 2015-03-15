@@ -282,11 +282,11 @@ void MidTank::think_and_move( PlayerTank *pt, vector<Obstacle> &obs ) {
   
   for(;;) {
 
-    //if( sidestep_obstacle(tm, h_inc, p_inc) ) break;
+    if( sidestep_obstacle(tm, h_inc, p_inc) ) break;
 
-    //if( turn_away_from_obstacle(dir, tm, h_inc, p_inc) ) break;
+    if( turn_away_from_obstacle(dir, tm, h_inc, p_inc) ) break;
 
-    //if( detect_obstacle( tm )) break;
+    if( detect_obstacle( tm )) break;
 	
     if( turn_toward_target(tm, h_inc, p_inc) ) break;
 
@@ -341,7 +341,7 @@ bool MidTank::turn_away_from_obstacle( Vector2& dir, TankMetric& tm, float &h_in
        << m_obstacle.angle_to(dir)
        << endl;
   
-  if( m_obstacle.angle_to( dir ) < 0.4 ) {
+  if( m_obstacle.angle_to( dir ) > 0.5 ) {
     if( m_obstacle.side() < 0 )
       h_inc = 0.05;
     else
@@ -359,7 +359,7 @@ bool MidTank::detect_obstacle( TankMetric &tm ) {
   
   if( tm.obstacle_distance() > 5 ) return false;
 
-  if( tm.obstacle_angle() > 0.5 ) return false;
+  if( tm.obstacle_angle() < 0.9 ) return false;
 
   m_obstacle.set(m_position, tm);
 
@@ -372,22 +372,22 @@ bool MidTank::turn_toward_target( TankMetric& tm, float &h_inc, Vector2 &p_inc )
 
   for( ;; ) {
 
-    if( tm.target_distance() < 20 ) {
+    if( tm.target_distance() < 7 ) {
       tolerance = 0.995;
       break;
     }
 
-    if( tm.target_distance() < 50 ) {
+    if( tm.target_distance() < 15 ) {
       tolerance = 0.98;
       break;
     }
 
-    if( tm.target_distance() < 100 ) {
+    if( tm.target_distance() < 30 ) {
       tolerance = 0.95;
       break;
     }
 
-    if( tm.target_distance() < 170 ) {
+    if( tm.target_distance() < 60 ) {
       tolerance = 0.88;
     }
 

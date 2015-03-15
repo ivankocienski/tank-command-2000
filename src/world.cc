@@ -111,26 +111,26 @@ void World::setup( Application *a, Window &w, Camera &c, Player &p ) {
 
   m_hud_bg = &g_sprite_list[S_HUD_BG];
 
-/*   spawn_obstacle( -50,  50 );
- *   spawn_obstacle(  50,  50 );
- *   spawn_obstacle( -20,  30 );
- *   spawn_obstacle( -20,  20 );
- *   spawn_obstacle(   0,  20 );
- *   spawn_obstacle(  10,  20 );
- *   spawn_obstacle(  20,  20 );
- *   spawn_obstacle( -50,   0 );
- *   spawn_obstacle( -20,   0 );
- *   spawn_obstacle(  20,   0 );
- *   spawn_obstacle(  50,   0 );
- *   spawn_obstacle( -20, -20 );
- *   spawn_obstacle( -10, -20 );
- *   spawn_obstacle(   0, -20 );
- *   spawn_obstacle( -20, -30 );
- *   spawn_obstacle(  20, -30 );
- *   spawn_obstacle(  20, -40 );
- *   spawn_obstacle( -50, -50 );
- *   spawn_obstacle(  50, -50 );
- */
+  spawn_obstacle( -50,  50 );
+  spawn_obstacle(  50,  50 );
+  spawn_obstacle( -20,  30 );
+  spawn_obstacle( -20,  20 );
+  spawn_obstacle(   0,  20 );
+  spawn_obstacle(  10,  20 );
+  spawn_obstacle(  20,  20 );
+  spawn_obstacle( -50,   0 );
+  spawn_obstacle( -20,   0 );
+  spawn_obstacle(  20,   0 );
+  spawn_obstacle(  50,   0 );
+  spawn_obstacle( -20, -20 );
+  spawn_obstacle( -10, -20 );
+  spawn_obstacle(   0, -20 );
+  spawn_obstacle( -20, -30 );
+  spawn_obstacle(  20, -30 );
+  spawn_obstacle(  20, -40 );
+  spawn_obstacle( -50, -50 );
+  spawn_obstacle(  50, -50 );
+
 
   m_baddie_spawn_point.push_back( Vector2( -40,  40 )); // 0
   m_baddie_spawn_point.push_back( Vector2(  40,  40 )); // 1
@@ -424,6 +424,10 @@ int World::do_play() {
     // }
 
     switch( m_window->inkey() ) {
+      case Window::K_TAB:
+        spawn_tank( m_baddies.front() );
+        break;
+
       case Window::K_ESCAPE:
         is_paused = !is_paused;
         break;

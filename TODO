@@ -22,6 +22,11 @@ features
 - powerups
 
 
+idea-
+- the enemy tank target 
+  - set it to be just in front of player
+  - but oscillate it back and forth
+  - to just behind the player. hmm...
 
 ========
 = done =
