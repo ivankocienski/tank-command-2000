@@ -111,25 +111,26 @@ void World::setup( Application *a, Window &w, Camera &c, Player &p ) {
 
   m_hud_bg = &g_sprite_list[S_HUD_BG];
 
-  spawn_obstacle( -50,  50 );
-  spawn_obstacle(  50,  50 );
-  spawn_obstacle( -20,  30 );
-  spawn_obstacle( -20,  20 );
-  spawn_obstacle(   0,  20 );
-  spawn_obstacle(  10,  20 );
-  spawn_obstacle(  20,  20 );
-  spawn_obstacle( -50,   0 );
-  spawn_obstacle( -20,   0 );
-  spawn_obstacle(  20,   0 );
-  spawn_obstacle(  50,   0 );
-  spawn_obstacle( -20, -20 );
-  spawn_obstacle( -10, -20 );
-  spawn_obstacle(   0, -20 );
-  spawn_obstacle( -20, -30 );
-  spawn_obstacle(  20, -30 );
-  spawn_obstacle(  20, -40 );
-  spawn_obstacle( -50, -50 );
-  spawn_obstacle(  50, -50 );
+/*   spawn_obstacle( -50,  50 );
+ *   spawn_obstacle(  50,  50 );
+ *   spawn_obstacle( -20,  30 );
+ *   spawn_obstacle( -20,  20 );
+ *   spawn_obstacle(   0,  20 );
+ *   spawn_obstacle(  10,  20 );
+ *   spawn_obstacle(  20,  20 );
+ *   spawn_obstacle( -50,   0 );
+ *   spawn_obstacle( -20,   0 );
+ *   spawn_obstacle(  20,   0 );
+ *   spawn_obstacle(  50,   0 );
+ *   spawn_obstacle( -20, -20 );
+ *   spawn_obstacle( -10, -20 );
+ *   spawn_obstacle(   0, -20 );
+ *   spawn_obstacle( -20, -30 );
+ *   spawn_obstacle(  20, -30 );
+ *   spawn_obstacle(  20, -40 );
+ *   spawn_obstacle( -50, -50 );
+ *   spawn_obstacle(  50, -50 );
+ */
 
   m_baddie_spawn_point.push_back( Vector2( -40,  40 )); // 0
   m_baddie_spawn_point.push_back( Vector2(  40,  40 )); // 1
@@ -277,8 +278,8 @@ int World::do_play() {
 
       m_player_tank->move( m_obstacles );
 
-//      for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ )
-//        b_it->think_and_move( m_player_tank, m_obstacles );
+      for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ )
+        b_it->think_and_move( m_player_tank, m_obstacles );
 
       for( bu_it = m_bullets.begin(); bu_it != m_bullets.end(); ) {
 

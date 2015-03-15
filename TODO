@@ -3,7 +3,7 @@ todo:
 
 
 fixie uppie :-
-- bug: enemy spawning too close to player
+* bug: enemy spawning too close to player
 - enemy AI tuning / debugging
 - check enemy hit player
 - player collision detection
