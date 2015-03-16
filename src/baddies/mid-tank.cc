@@ -208,14 +208,14 @@ MidTank::MidTank( ) {
   m_world   = NULL;
   m_heading = 0;
   m_height  = 0;
-  m_active  = false;
+  m_hit_points = 3;
 }
 
 MidTank::MidTank( World *w ) : m_mesh_instance( &g_mesh_list[ A_MID_TANK ]) {
   m_world   = w;
   m_heading = 0;
   m_height  = 0.5;
-  m_active  = false;
+  m_hit_points = 3;
   
   m_mesh_instance.set_color(15); // red
 }
@@ -230,8 +230,9 @@ void MidTank::activate( const Vector2 &p ) {
   
   m_heading = 0;
   m_position.set(p);
-  m_active = true;
   m_obstacle.clear();
+
+  m_hit_points = 3;
 
   m_direction.set_as_angle( m_heading );
 
@@ -242,12 +243,17 @@ void MidTank::activate( const Vector2 &p ) {
 }
 
 bool MidTank::is_active() {
-  return m_active;
+  return m_hit_points > 0;
 }
 
 void MidTank::deactivate() {
   cout << "baddie de-activated" << endl;
   m_active = false;
+}
+
+void MidTank::give_damage( int d ) {
+  m_hit_points -= d;
+  if( m_hit_points < 0 ) m_hit_points = 0;
 }
 
 const Vector2 & MidTank::position() const {

@@ -322,9 +322,17 @@ int World::do_play() {
 
           MidTank *hit = bu_it->has_hit_enemy( m_baddies );
           if(hit) { 
-            make_boom(hit->position());
-            hit->deactivate();
-            m_player->add_score(15);
+            hit->give_damage( bu_it->damage_factor() );
+
+            if( hit->is_active() ) {
+              m_player->add_score(5);
+
+            } else {
+              make_boom(hit->position());
+              hit->deactivate();
+              m_player->add_score(15);
+            }
+
             bu_it = m_bullets.erase(bu_it);
             continue; 
           }
@@ -332,7 +340,7 @@ int World::do_play() {
         } else {
 
           if( m_player_tank->is_touching( bu_it->position())) {
-            m_player_tank->do_damage(5);
+            m_player_tank->do_damage(bu_it->damage_factor());
             bu_it = m_bullets.erase(bu_it);
             continue; 
           } 
@@ -535,12 +543,12 @@ void World::run() {
 
 void World::shoot_player_bullet( const Vector2 &pos, float heading ) {
   cout << "player shoot" << endl;
-  m_bullets.push_back( Bullet( pos, heading, 100, Bullet::B_PLAYER ));
+  m_bullets.push_back( Bullet( pos, heading, 100, Bullet::B_PLAYER, 5 ));
 }
 
 void World::shoot_enemy_bullet( const Vector2 &pos, float heading ) {
   cout << "player shoot" << endl;
-  m_bullets.push_back( Bullet( pos, heading, 100, Bullet::B_ENEMY ));
+  m_bullets.push_back( Bullet( pos, heading, 100, Bullet::B_ENEMY, 5 ));
 }
 
 void World::make_boom( const Vector2& pos ) {

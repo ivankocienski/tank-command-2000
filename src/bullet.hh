@@ -19,7 +19,9 @@ private:
   float m_angle;
   int   m_alive;
   int   m_owner;
-
+  int   m_damage_factor;
+  int   m_damage_dropper;
+  
 public:
 
   enum {
@@ -28,12 +30,13 @@ public:
   };
   
   Bullet();
-  Bullet( const Vector2&, float, int, int );
+  Bullet( const Vector2&, float, int, int, int );
 
   int owner();
 
   void move();
   bool is_active();
+  int  damage_factor();
 
   bool has_hit_obstacle( std::vector<Obstacle>& );
   MidTank* has_hit_enemy( std::vector<MidTank>& );

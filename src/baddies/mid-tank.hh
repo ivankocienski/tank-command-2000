@@ -107,7 +107,8 @@ private:
 
   float m_heading;
   float m_height;
-  bool m_active;
+  int   m_hit_points;
+  bool  m_active;
 
   MeshInstance m_mesh_instance;
   
@@ -132,6 +133,7 @@ public:
   void think_and_move( PlayerTank*, std::vector<Obstacle>& );
 
   void activate( const Vector2& );
+  void give_damage( int );
   bool is_active();
   void deactivate();
 

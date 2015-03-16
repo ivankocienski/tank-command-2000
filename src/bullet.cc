@@ -20,11 +20,13 @@ Bullet::Bullet() {
   m_owner = -1;
 }
 
-Bullet::Bullet( const Vector2& pos, float an, int al, int ow ) : m_mesh_instance( &g_mesh_list[ A_BULLET ]) {
+Bullet::Bullet( const Vector2& pos, float an, int al, int ow, int df ) : m_mesh_instance( &g_mesh_list[ A_BULLET ]) {
   m_position = pos;
   m_angle    = an;
   m_alive    = al;
   m_owner    = ow;
+  m_damage_factor  = df;
+  m_damage_dropper = 20;
 
   m_direction.set_as_angle(m_angle); 
 
@@ -45,6 +47,16 @@ void Bullet::move() {
   if( m_alive ) {
     m_position += m_direction * c_bullet_speed;
     m_alive--;
+
+    if( m_damage_factor > 1 ) {
+      if( m_damage_dropper ) {
+        m_damage_dropper--;
+
+      } else {
+        m_damage_factor--;
+        m_damage_dropper = 20;
+      }
+    }
 
     m_mesh_instance.set_translation( m_position.x, c_bullet_height, m_position.y );
 
@@ -90,4 +102,8 @@ int Bullet::owner() {
 
 const Vector2 & Bullet::position() {
   return m_position;
+}
+
+int Bullet::damage_factor() {
+  return m_damage_factor;
 }
