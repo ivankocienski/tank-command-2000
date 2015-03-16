@@ -196,7 +196,12 @@ void DrawMesh::camera_transform( ) {
 
 void DrawMesh::draw() {
 
-  int c = m_mesh_instance->color();
+  if( m_cam_dist > 100 ) return;
+
+  int fade = 16 * (m_cam_dist / 100.0);
+  
+
+  int c = m_mesh_instance->color() - fade;
 
   for( list<DrawLine>::iterator it = m_draw_lines.begin(); it != m_draw_lines.end(); it++ ) {
     it->draw(m_camera, c);
