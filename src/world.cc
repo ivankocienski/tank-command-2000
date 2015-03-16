@@ -3,6 +3,8 @@
 using std::cout;
 using std::endl;
 
+#include <algorithm>
+
 #include <stdlib.h>
 
 #include "math/operations.hh"
@@ -23,6 +25,11 @@ const int horizon_level = 270;
 using namespace std;
 
 World::World() {
+}
+
+static int draw_mesh_cmp( const DrawMesh& a, const DrawMesh &b ) {
+
+  return a.camera_distance() > b.camera_distance();
 }
 
 void World::spawn_obstacle( float x, float y, int id ) {
@@ -260,6 +267,9 @@ int World::do_play() {
   vector<MidTank>::iterator b_it;
   list<Bullet>::iterator bu_it;
 
+  vector<DrawMesh> draw_mesh_list;
+  draw_mesh_list.reserve( 200 ); // MAGIC
+
   m_player_tank->set_pos( 0, 0 );
 
   for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ )
@@ -333,42 +343,49 @@ int World::do_play() {
     bg4.draw( *m_window, 1920 - bgo, horizon_level - 45, 100 );
     bg1.draw( *m_window, 2560 - bgo, horizon_level - 80, 100 );
 
-
-    // TODO ... collect draw meshes and z-sort them and paint them backward onto screen ;)
+    draw_mesh_list.clear();
 
     for( ob_it = m_obstacles.begin(); ob_it != m_obstacles.end(); ob_it++ ) {
 
-      DrawMesh dm( ob_it->mesh(), m_camera );
+      DrawMesh dm( &(ob_it->mesh()), m_camera );
 
       dm.clip_to_frustum();
       if( !dm.is_visible() ) continue;
 
       dm.camera_transform();
-      dm.draw(); 
+      draw_mesh_list.push_back( dm );
+//      dm.draw(); 
     }
 
     for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ ) {
       if( !b_it->is_active() ) continue;
 
-      DrawMesh dm( b_it->mesh_instance(), m_camera );
+      DrawMesh dm( &(b_it->mesh_instance()), m_camera );
 
       dm.clip_to_frustum();
       if( !dm.is_visible() ) continue;
 
       dm.camera_transform();
-      dm.draw(); 
+      draw_mesh_list.push_back( dm );
+//      dm.draw(); 
     }
 
     for( bu_it = m_bullets.begin(); bu_it != m_bullets.end(); bu_it++ ) {
 
-      DrawMesh dm( bu_it->mesh(), m_camera );
+      DrawMesh dm( &(bu_it->mesh()), m_camera );
 
       dm.clip_to_frustum();
       if( !dm.is_visible() ) continue;
 
       dm.camera_transform();
-      dm.draw(); 
+      draw_mesh_list.push_back( dm );
+//      dm.draw(); 
     }
+
+    sort( draw_mesh_list.begin(), draw_mesh_list.end(), draw_mesh_cmp );
+
+    for( vector<DrawMesh>::iterator d_it = draw_mesh_list.begin(); d_it != draw_mesh_list.end(); d_it++ )
+      d_it->draw();
 
     aimer.draw( *m_window, 270, 173 );
 

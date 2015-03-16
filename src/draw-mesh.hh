@@ -28,12 +28,14 @@ public:
   bool active();
   void draw(Camera*, int);
 
+  const Vector3 & p1() const;
+  const Vector3 & p2() const;
 };
 
 class DrawMesh {
 private:
 
-  MeshInstance &m_mesh_instance;
+  MeshInstance *m_mesh_instance;
   Camera       *m_camera;
 
   std::list<DrawLine> m_draw_lines;
@@ -45,10 +47,12 @@ private:
   };
 
   int m_visibility;
+  float m_cam_dist;
 
 public:
 
-  DrawMesh( MeshInstance&, Camera* );
+  DrawMesh();
+  DrawMesh( MeshInstance*, Camera* );
 
   void clip_to_frustum();
 
@@ -58,6 +62,6 @@ public:
 
   void draw( );
 
-
+  float camera_distance() const;
 };
 

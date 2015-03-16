@@ -50,7 +50,7 @@ void Application::do_splash(Camera &cam) {
     tank_mesh.set_rotation( angle, 0, 0 );
     tank_mesh.transform();
 
-    DrawMesh dm( tank_mesh, &cam );
+    DrawMesh dm( &tank_mesh, &cam );
     dm.clip_to_frustum();
     dm.camera_transform();
     dm.draw(); 

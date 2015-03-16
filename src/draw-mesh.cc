@@ -93,18 +93,31 @@ void DrawLine::dump() {
 //    cout << "  DrawLine: m_face_count=" << m_face_count << "  m_active=" << m_active << endl;
 }
 
+const Vector3 & DrawLine::p1() const {
+  return m_p1;
+}
+
+const Vector3 & DrawLine::p2() const {
+  return m_p2;
+}
+
 /* 
  * the draw mesh code
  *
  */
 
-DrawMesh::DrawMesh( MeshInstance &mi, Camera *c ) : m_mesh_instance(mi) {
-  m_camera = c;
-  m_visibility = V_NONE;
+DrawMesh::DrawMesh() { 
+}
 
-  const vector<Vector3>& v = mi.vertices();
+DrawMesh::DrawMesh( MeshInstance *mi, Camera *c ) {
 
-  const Mesh *m = m_mesh_instance.mesh();
+  m_camera        = c;
+  m_visibility    = V_NONE;
+  m_mesh_instance = mi;
+
+  const vector<Vector3>& v = mi->vertices();
+
+  const Mesh *m = m_mesh_instance->mesh();
 
   vector<Mesh::T_EDGE>::const_iterator e_it; 
   for( e_it = m->edges().begin(); e_it != m->edges().end(); e_it++ ) {
@@ -116,6 +129,10 @@ DrawMesh::DrawMesh( MeshInstance &mi, Camera *c ) : m_mesh_instance(mi) {
   }
 }
 
+float DrawMesh::camera_distance() const {
+  return m_cam_dist;
+}
+
 void DrawMesh::clip_to_frustum() {
 
   const Plane *clip_plane = m_camera->clip_planes();
@@ -125,7 +142,7 @@ void DrawMesh::clip_to_frustum() {
   //for( int i = 0; i < 6; i++ ) {
   for( int i = 0; i < 6; i++ ) {
     
-    int s = m_mesh_instance.bounds().classify_side(clip_plane[i]);
+    int s = m_mesh_instance->bounds().classify_side(clip_plane[i]);
 
     // behind plane
     if( s < 0 ) return;
@@ -166,16 +183,20 @@ bool DrawMesh::is_visible() {
 
 void DrawMesh::camera_transform( ) {
   
+  m_cam_dist = 0;
+
   Matrix4 cam_mat = m_camera->translation_matrix();
 
   for( list<DrawLine>::iterator it = m_draw_lines.begin(); it != m_draw_lines.end(); it++ ) {
     it->transform( cam_mat );
   }
+
+  m_cam_dist = (m_mesh_instance->bounds().center() - m_camera->position2D()).magnitude();
 }
 
 void DrawMesh::draw() {
 
-  int c = m_mesh_instance.color();
+  int c = m_mesh_instance->color();
 
   for( list<DrawLine>::iterator it = m_draw_lines.begin(); it != m_draw_lines.end(); it++ ) {
     it->draw(m_camera, c);

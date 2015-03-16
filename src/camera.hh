@@ -3,6 +3,7 @@
 
 #include "math/matrix4.hh"
 #include "math/vector3.hh"
+#include "math/vector2.hh"
 #include "plane.hh"
 #include "mesh.hh"
 #include "window.hh"
@@ -33,6 +34,8 @@ private:
   Vector3 m_right;
   Vector3 m_up;
 
+  Vector2 m_pos2D;
+  
   int m_xres;
   int m_yres;
 
@@ -54,7 +57,9 @@ public:
   Matrix4 translation_matrix();
 
   const Plane* clip_planes();
-  const Vector3& direction();
+  const Vector3& direction() const; 
+  const Vector3& position() const;
+  const Vector2& position2D() const;
 
   void draw_3d_line( const Vector3&, const Vector3&, int c );
 };

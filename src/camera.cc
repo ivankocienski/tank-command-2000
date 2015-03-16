@@ -57,6 +57,8 @@ void Camera::look( const Vector3& c_pos, const Vector3& c_dir, const Vector3& c_
   m_up       = Vector3( 0, 1, 0 );
   m_right    = c_right;
 
+  m_pos2D.set( m_position.x, m_position.z );
+
   Vector3 pos;
   Vector3 norm;
 
@@ -210,7 +212,15 @@ void Camera::draw_3d_line( const Vector3& p1, const Vector3& p2, int c ) {
   m_window.draw_line( p1_x, p1_y, p2_x, p2_y, c ); 
 }
 
-const Vector3& Camera::direction() {
+const Vector3& Camera::direction() const {
   return m_forward;
+}
+
+const Vector3& Camera::position() const {
+  return m_position;
+}
+
+const Vector2& Camera::position2D() const {
+  return m_pos2D;
 }
 
