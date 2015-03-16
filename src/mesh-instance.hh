@@ -28,6 +28,7 @@ public:
 
   Vector3 & position();
 
+  void set_mesh( Mesh* );
   void set_translation( float, float, float );
   void set_translation( const Vector3& );
   void set_rotation( float, float, float );

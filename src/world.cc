@@ -251,21 +251,22 @@ void World::draw_hud( unsigned char anim_count ) {
 
 int World::do_play() {
 
-  LineVectorSprite &logo = g_sprite_list[S_MINI_LOGO];
-  LineVectorSprite &bg1  = g_sprite_list[S_BG1];
-  LineVectorSprite &bg2  = g_sprite_list[S_BG2];
-  LineVectorSprite &bg3  = g_sprite_list[S_BG3];
-  LineVectorSprite &bg4  = g_sprite_list[S_BG4];
+  LineVectorSprite &logo  = g_sprite_list[S_MINI_LOGO];
+  LineVectorSprite &bg1   = g_sprite_list[S_BG1];
+  LineVectorSprite &bg2   = g_sprite_list[S_BG2];
+  LineVectorSprite &bg3   = g_sprite_list[S_BG3];
+  LineVectorSprite &bg4   = g_sprite_list[S_BG4];
 
-  LineVectorSprite &aimer        = g_sprite_list[S_CANNON_RETICULE];
+  LineVectorSprite &aimer = g_sprite_list[S_CANNON_RETICULE];
 
   bool is_paused = false;
   unsigned char anim_count = 0;
   bool *keys = m_window->m_keys;
 
-  vector<Obstacle>::iterator ob_it;
-  vector<MidTank>::iterator b_it;
-  list<Bullet>::iterator bu_it;
+  vector<Obstacle>::iterator    ob_it;
+  vector<MidTank>::iterator     b_it;
+  list<Bullet>::iterator        bu_it;
+  list<ExplodingPart>::iterator ep_it;
 
   vector<DrawMesh> draw_mesh_list;
   draw_mesh_list.reserve( 200 ); // MAGIC
@@ -287,6 +288,17 @@ int World::do_play() {
     if( !is_paused ) {
 
       m_player_tank->move( m_obstacles );
+
+      for( ep_it = m_exploding_parts.begin(); ep_it != m_exploding_parts.end(); ) {
+
+        ep_it->update();
+
+        if(ep_it->active()) {
+          ep_it++;
+        } else
+          ep_it = m_exploding_parts.erase(ep_it);
+
+      }
 
       for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ )
         b_it->think_and_move( m_player_tank, m_obstacles );
@@ -310,6 +322,7 @@ int World::do_play() {
 
           MidTank *hit = bu_it->has_hit_enemy( m_baddies );
           if(hit) { 
+            make_boom(hit->position());
             hit->deactivate();
             m_player->add_score(15);
             bu_it = m_bullets.erase(bu_it);
@@ -354,7 +367,16 @@ int World::do_play() {
 
       dm.camera_transform();
       draw_mesh_list.push_back( dm );
-//      dm.draw(); 
+    }
+
+    for( ep_it = m_exploding_parts.begin(); ep_it != m_exploding_parts.end(); ep_it++ ) {
+      DrawMesh dm( &(ep_it->mesh_instance()), m_camera );
+
+      dm.clip_to_frustum();
+      if( !dm.is_visible() ) continue;
+
+      dm.camera_transform();
+      draw_mesh_list.push_back( dm );
     }
 
     for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ ) {
@@ -367,7 +389,6 @@ int World::do_play() {
 
       dm.camera_transform();
       draw_mesh_list.push_back( dm );
-//      dm.draw(); 
     }
 
     for( bu_it = m_bullets.begin(); bu_it != m_bullets.end(); bu_it++ ) {
@@ -379,7 +400,6 @@ int World::do_play() {
 
       dm.camera_transform();
       draw_mesh_list.push_back( dm );
-//      dm.draw(); 
     }
 
     sort( draw_mesh_list.begin(), draw_mesh_list.end(), draw_mesh_cmp );
@@ -439,7 +459,8 @@ int World::do_play() {
 
     switch( m_window->inkey() ) {
       case Window::K_TAB:
-        spawn_tank( m_baddies.front() );
+        //spawn_tank( m_baddies.front() );
+        make_boom( Vector2() );
         break;
 
       case Window::K_ESCAPE:
@@ -522,3 +543,15 @@ void World::shoot_enemy_bullet( const Vector2 &pos, float heading ) {
   m_bullets.push_back( Bullet( pos, heading, 100, Bullet::B_ENEMY ));
 }
 
+void World::make_boom( const Vector2& pos ) {
+
+  int c = 2 + rand() % 8;
+
+  for( int i = 0; i < c; i++ ) {
+    m_exploding_parts.push_back( ExplodingPart() );
+
+    ExplodingPart &ep = m_exploding_parts.back();
+    ep.init(pos);
+  }
+
+}

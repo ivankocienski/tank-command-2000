@@ -18,6 +18,12 @@ enum {
   A_OBSTACLE9,
   A_OBSTACLE10,
   
+  A_GUTS_1,
+  A_GUTS_2,
+  A_GUTS_3,
+  A_GUTS_4,
+  A_GUTS_5,
+
   A_MID_TANK,
   A_BULLET,
   

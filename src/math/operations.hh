@@ -14,3 +14,6 @@ void vec3_mat4_multiply( Vector3&, const Matrix4& );
 
 void vec2_mat3_multiply( Vector2&, const Vector2&, const Matrix3& );
 
+float frand();
+float sfrand();
+

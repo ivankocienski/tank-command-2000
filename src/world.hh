@@ -12,6 +12,7 @@
 #include "baddies/mid-tank.hh"
 #include "bullet.hh"
 #include "line-vector-sprite.hh"
+#include "exploding-part.hh"
 
 class Player;
 class PlayerTank;
@@ -21,14 +22,15 @@ class World {
 private:
 
   Application *m_app;
-  Window *m_window;
-  Camera *m_camera;
-  Player *m_player;
-  PlayerTank *m_player_tank;
+  Window      *m_window;
+  Camera      *m_camera;
+  Player      *m_player;
+  PlayerTank  *m_player_tank;
 
-  std::vector<Obstacle> m_obstacles;
-  std::vector<MidTank> m_baddies;
-  std::list<Bullet> m_bullets;
+  std::vector<Obstacle>    m_obstacles;
+  std::vector<MidTank>     m_baddies;
+  std::list<Bullet>        m_bullets;
+  std::list<ExplodingPart> m_exploding_parts;
 
   std::vector<Vector2> m_baddie_spawn_point;
   std::vector< std::vector<int> > m_spawn_zones;
@@ -66,6 +68,7 @@ public:
 
   void shoot_player_bullet( const Vector2&, float );
   void shoot_enemy_bullet( const Vector2&, float );
+  void make_boom( const Vector2& );
 
   Bullet* first_bullet();
 

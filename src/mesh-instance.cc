@@ -8,12 +8,16 @@ using namespace std;
 
 MeshInstance::MeshInstance() {
   m_mesh  = NULL;
-  m_color = 255;
+  m_color = 143;
 }
 
 MeshInstance::MeshInstance( Mesh* m ) {
   m_mesh  = m;
-  m_color = 255;
+  m_color = 143;
+}
+
+void MeshInstance::set_mesh( Mesh *m ) {
+  m_mesh = m;
 }
 
 void MeshInstance::set_translation( float xo, float yo, float zo ) {

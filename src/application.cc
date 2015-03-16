@@ -1,5 +1,7 @@
 
 #include <iostream>
+#include <stdlib.h>
+#include <time.h>
 
 #include "window.hh"
 #include "player.hh"
@@ -73,6 +75,8 @@ void Application::do_splash(Camera &cam) {
 
 int Application::main() {
 
+  srand(time(NULL));
+
   if( !m_window.open( XRES, YRES, "tc2k" )) {
     cerr << "could not open window" << endl;
     return -1;
@@ -106,7 +110,7 @@ void Application::draw_text(int x, int y, const char *c ) {
   
   while( *c ) {
     if( char_table[*c] != -1 ) {
-      g_sprite_list[ char_table[*c] ].draw( m_window, x, y );
+      g_sprite_list[ char_table[*c] ].draw( m_window, x, y, 143 );
     }
 
     c++;

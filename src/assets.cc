@@ -31,6 +31,12 @@ bool load_assets() {
   LOAD_MESH( A_OBSTACLE9,  "obstacle-9.vex" );
   LOAD_MESH( A_OBSTACLE10, "obstacle-10.vex" );
 
+  LOAD_MESH( A_GUTS_1, "tank-guts-1.vex" );
+  LOAD_MESH( A_GUTS_2, "tank-guts-2.vex" );
+  LOAD_MESH( A_GUTS_3, "tank-guts-3.vex" );
+  LOAD_MESH( A_GUTS_4, "tank-guts-4.vex" );
+  LOAD_MESH( A_GUTS_5, "tank-guts-5.vex" );
+
   LOAD_MESH( A_MID_TANK, "tank.vex" );
   LOAD_MESH( A_BULLET, "bullet.vex" );
 
