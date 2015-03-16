@@ -4,9 +4,9 @@ todo:
 
 fixie uppie :-
 * bug: enemy spawning too close to player
-- enemy AI tuning / debugging
-- check enemy hit player
-- player collision detection
+* enemy AI tuning / debugging
+x check enemy hit player
+* player collision detection
 - player map bounding box
 - optimize bits
 

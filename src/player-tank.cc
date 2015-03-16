@@ -92,6 +92,18 @@ void PlayerTank::do_move( std::vector<Obstacle> &wo ) {
 
     Vector2 new_pos = m_position + m_direction * m_walk_speed;
 
+    if( new_pos.x < -50 || new_pos.x > 50 ) {
+      m_stun_speed = m_walk_speed;
+      m_stun_dir   = -m_direction;
+      return;
+    }
+
+    if( new_pos.y < -50 || new_pos.y > 50 ) {
+      m_stun_speed = m_walk_speed;
+      m_stun_dir   = -m_direction;
+      return;
+    }
+
     Vector2 fwd = m_direction * (tank_length * 0.5);
     Vector2 rgt = m_right     * (tank_width  * 0.5);
 
