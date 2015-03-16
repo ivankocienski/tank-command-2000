@@ -22,6 +22,7 @@ void Obstacle::set_pos( float x, float y, float z, float a ) {
   m_height = z;
   m_angle  = a;
 
+  m_mesh.set_color( 2 + rand() % 7 );
   m_mesh.set_translation( m_position.to_vector3(m_height) );
   m_mesh.set_rotation( 0, a, 0 );
 

@@ -11,7 +11,7 @@ x check enemy hit player
 * optimize bits
 
 features
-- z-sort
+* z-sort
 - explosions
 - obstacle colors
 - distance fog fadeout
