@@ -125,7 +125,7 @@ void Application::draw_hud_number(int x, int y, unsigned int n ) {
   x -= 12;
 
   if( !n ) {
-    g_sprite_list[ S_HUD_NUM_0 ].draw( m_window, x + fudgex[0], y + fudgey[0] );
+    g_sprite_list[ S_HUD_NUM_0 ].draw( m_window, x + fudgex[0], y + fudgey[0], 29 );
     return; 
   }
 
@@ -134,7 +134,7 @@ void Application::draw_hud_number(int x, int y, unsigned int n ) {
     d = n % 10;
     sprite = d + S_HUD_NUM_0;
 
-    g_sprite_list[ sprite ].draw( m_window, x + fudgex[d], y + fudgey[d] );
+    g_sprite_list[ sprite ].draw( m_window, x + fudgex[d], y + fudgey[d], 29 );
 
     n /= 10;
     x -= 14;

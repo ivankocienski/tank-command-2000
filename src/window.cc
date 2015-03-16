@@ -2,23 +2,12 @@
 #include <cstring>
 #include <iostream>
 using std::cerr;
+using std::cout;
 using std::endl;
 
 #include "window.hh"
 #include "line.hh"
 #include <SDL/SDL_image.h>
-
-SDL_Color colors[] = {
-  { 0x00, 0x00, 0x00 },
-  { 0xff, 0x01, 0x35 }, // 1 red
-  { 0xd7, 0xfb, 0x37 }, // 2 yellow
-  { 0xfe, 0x01, 0xcd }, // 3 pink
-  { 0x02, 0x01, 0x9d }, // 4 blue
-  { 0x34, 0xDD, 0xDD }, // 5 turquoise
-  { 0xfb, 0x8e, 0x04 }, // 6 orange
-  { 0x00, 0xf2, 0x00 }, // 7 green
-  { 0x91, 0x02, 0xca }  // 8 purple
-};
 
 Window::Window() {
   m_screen = NULL;
@@ -45,17 +34,43 @@ bool Window::open( int xr, int yr, const char *t ) {
 
   SDL_WM_SetCaption( t, 0 );
   
-  SDL_Color palette[256];
-  int i;
-
-  for( i = 0; i < 256; i++ ) {
-    palette[i].r = i;
-    palette[i].g = i;
-    palette[i].b = i;
+  SDL_Color *palbuff = NULL;
+  FILE *file = fopen( "data/palette.bin", "r" );
+  if( !file ) {
+    cerr << "Window:: could not open palette file" << endl;
+    return false;
   }
 
-  memcpy( palette, colors, sizeof(colors));
-  SDL_SetPalette( m_screen, SDL_LOGPAL | SDL_PHYSPAL, palette, 0, 256 );
+  char buff[4];
+  fread( buff, 4, sizeof(char), file );
+  
+  if( strncmp( buff, "PAL8", 4 ) ) {
+    cerr << "Window: palette not of correct type" << endl;
+    return false;
+  }
+
+  unsigned char count;
+  fread( &count, 1, sizeof(unsigned char), file );
+  cout << "Window: palette has " << (int)count << " colors" << endl;
+
+  unsigned char readpal[256 * 3];
+  memset( readpal, 0xff, sizeof( readpal ));
+  fread( readpal, sizeof(unsigned char), (int)count * 3, file );
+  fclose(file);
+
+  SDL_Color palette[256];
+  memset( palette, 0, sizeof( palette ));
+
+  unsigned char *rpp = readpal;
+  for( int i = 0; i < count; i++ ) {
+
+    palette[i].r = *rpp; rpp++;
+    palette[i].g = *rpp; rpp++;
+    palette[i].b = *rpp; rpp++;
+  }
+
+  SDL_SetPalette( m_screen, SDL_LOGPAL, palette, 0, 256 ); 
+
   m_active = true;
   SDL_LockSurface(m_screen);
   m_vbuff = (unsigned char *)m_screen->pixels;

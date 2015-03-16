@@ -180,7 +180,7 @@ void World::setup( Application *a, Window &w, Camera &c, Player &p ) {
 
 void World::draw_hud( unsigned char anim_count ) {
 
-  m_hud_bg->draw( *m_window, 15, 10, 100 );
+  m_hud_bg->draw( *m_window, 15, 10, 22 );
 
   // score
   m_app->draw_hud_number( 94, 45, m_player->current_score() );
@@ -192,12 +192,12 @@ void World::draw_hud( unsigned char anim_count ) {
   m_app->draw_hud_number( 625, 46, m_player_tank->armour() );
 
   // radar
-  m_window->draw_pixel( 270,  0, 100 );
-  m_window->draw_pixel( 370,  0, 100 );
-  m_window->draw_pixel( 270, 79, 100 );
-  m_window->draw_pixel( 370, 79, 100 );
+  m_window->draw_pixel( 270,  0, 25 );
+  m_window->draw_pixel( 370,  0, 25 );
+  m_window->draw_pixel( 270, 79, 25 );
+  m_window->draw_pixel( 370, 79, 25 );
 
-  m_window->draw_pixel2( 319, 39, 7 );
+  m_window->draw_pixel2( 319, 39, 63 );
 
   // obstacles
   vector<Obstacle>::iterator ob_it;
@@ -215,7 +215,7 @@ void World::draw_hud( unsigned char anim_count ) {
     if( px < -49 || px > 49 ) continue;
     if( py < -39 || py > 39 ) continue;
 
-    m_window->draw_pixel( 320 + px, 40 + py, 150 );
+    m_window->draw_pixel( 320 + px, 40 + py, 25 );
   }
 
   // enemies
@@ -233,7 +233,7 @@ void World::draw_hud( unsigned char anim_count ) {
       if( px < -49 || px > 49 ) continue;
       if( py < -39 || py > 39 ) continue;
 
-      m_window->draw_pixel2( 320 + px, 40 + py, 1 );
+      m_window->draw_pixel2( 320 + px, 40 + py, 31 );
 
     }
   }
@@ -337,11 +337,11 @@ int World::do_play() {
 
     int bgo = 2560 - (tank_heading_to_bg_offset * m_player_tank->heading());
 
-    bg1.draw( *m_window,    0 - bgo, horizon_level - 80, 100 );
-    bg2.draw( *m_window,  640 - bgo, horizon_level - 80, 100 );
-    bg3.draw( *m_window, 1280 - bgo, horizon_level - 65, 100 );
-    bg4.draw( *m_window, 1920 - bgo, horizon_level - 45, 100 );
-    bg1.draw( *m_window, 2560 - bgo, horizon_level - 80, 100 );
+    bg1.draw( *m_window,    0 - bgo, horizon_level - 80, 132 );
+    bg2.draw( *m_window,  640 - bgo, horizon_level - 80, 132 );
+    bg3.draw( *m_window, 1280 - bgo, horizon_level - 65, 132 );
+    bg4.draw( *m_window, 1920 - bgo, horizon_level - 45, 132 );
+    bg1.draw( *m_window, 2560 - bgo, horizon_level - 80, 132 );
 
     draw_mesh_list.clear();
 
@@ -387,7 +387,7 @@ int World::do_play() {
     for( vector<DrawMesh>::iterator d_it = draw_mesh_list.begin(); d_it != draw_mesh_list.end(); d_it++ )
       d_it->draw();
 
-    aimer.draw( *m_window, 270, 173 );
+    aimer.draw( *m_window, 270, 173, 30 );
 
     draw_hud(anim_count);
 

@@ -31,6 +31,12 @@ Bullet::Bullet( const Vector2& pos, float an, int al, int ow ) : m_mesh_instance
   m_mesh_instance.set_rotation( M_PI - m_angle, 0, 0 );
   m_mesh_instance.set_translation( m_position.x, c_bullet_height, m_position.y );
 
+  if( ow == B_PLAYER ) 
+    m_mesh_instance.set_color( 63 ); // green
+
+  else
+    m_mesh_instance.set_color( 15 ); // red
+
   m_mesh_instance.transform();
 }
 

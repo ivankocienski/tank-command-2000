@@ -217,7 +217,7 @@ MidTank::MidTank( World *w ) : m_mesh_instance( &g_mesh_list[ A_MID_TANK ]) {
   m_height  = 0.5;
   m_active  = false;
   
-  m_mesh_instance.set_color(1); // red
+  m_mesh_instance.set_color(15); // red
 }
 
 void MidTank::fire() {

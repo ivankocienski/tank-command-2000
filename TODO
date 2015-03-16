@@ -13,7 +13,7 @@ x check enemy hit player
 features
 * z-sort
 - explosions
-- obstacle colors
+* obstacle colors
 - distance fog fadeout
 - distance based damage 
   - player / baddie

@@ -5,6 +5,18 @@
 #include <vector>
 #include <list>
 
+enum {
+  C_RED       = 15,
+  C_ORANGE    = 31,
+  C_YELLOW    = 47,
+  C_GREEN     = 63,
+  C_TURQUOISE = 79,
+  C_BLUE      = 95,
+  C_PURPLE    = 111,
+  C_PINK      = 127,
+  C_WHITE     = 143
+};
+
 class Window {
 public:
 
