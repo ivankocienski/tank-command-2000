@@ -7,8 +7,8 @@ fixie uppie :-
 * enemy AI tuning / debugging
 x check enemy hit player
 * player collision detection
-- player map bounding box
-- optimize bits
+* player map bounding box
+* optimize bits
 
 features
 - z-sort

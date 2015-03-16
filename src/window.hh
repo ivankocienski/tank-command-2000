@@ -44,7 +44,6 @@ private:
   static const int MAX_KEY_HISTORY = 32;
 
   SDL_Surface *m_screen;
-  SDL_Surface *m_font;
 
   unsigned char *m_vbuff;
   bool m_active;
@@ -66,8 +65,6 @@ public:
   bool open( int, int, const char * );
   void set_title( const char * );
   
-  void puts( int, int, const char* );
-
   void clear();
   int width();
   int height();
@@ -82,10 +79,8 @@ public:
   void flush_keys();
   int inkey();
 
-  void begin_raster();
   void draw_line( int, int, int, int, unsigned char );
   void draw_pixel( int, int, unsigned char );
   void draw_pixel2( int, int, unsigned char );
-  void end_raster();
 };
 

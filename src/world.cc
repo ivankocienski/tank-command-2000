@@ -325,8 +325,6 @@ int World::do_play() {
 
     m_player_tank->look( m_camera );
 
-    m_window->begin_raster();
-
     int bgo = 2560 - (tank_heading_to_bg_offset * m_player_tank->heading());
 
     bg1.draw( *m_window,    0 - bgo, horizon_level - 80, 100 );
@@ -379,7 +377,6 @@ int World::do_play() {
     if( is_paused )
       if( (anim_count >> 2) & 1 ) m_app->draw_text( 263, 250, "PAUSED" );
 
-    m_window->end_raster();
     m_window->tick();
 
     if( !is_paused ) {
@@ -446,13 +443,9 @@ void World::do_crash() {
 
     hold--;
 
-    m_window->begin_raster();
-
     draw_hud(255);
 
     screen_crack.draw( *m_window, 88, 80 );
-
-    m_window->end_raster();
 
     m_window->tick();
 
@@ -473,15 +466,11 @@ void World::do_game_over() {
 
     hold--;
 
-    m_window->begin_raster();
-
     m_app->draw_text( 263, 100, "GAME OVER" );
     m_app->draw_text( pos, 200, buffer );
 
     if( hold < 500 )
       m_app->draw_text( 177, 300, "PRESS SPACE BAR" );
-
-    m_window->end_raster();
 
     m_window->tick();
 

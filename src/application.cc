@@ -50,8 +50,6 @@ void Application::do_splash(Camera &cam) {
     tank_mesh.set_rotation( angle, 0, 0 );
     tank_mesh.transform();
 
-    m_window.begin_raster();
-
     DrawMesh dm( tank_mesh, &cam );
     dm.clip_to_frustum();
     dm.camera_transform();
@@ -65,8 +63,6 @@ void Application::do_splash(Camera &cam) {
     if( hold < 800 )
       if( (hold >> 2) & 1 ) draw_text( 92, 420, "PRESS SPACE BAR TO START" );
       
-    m_window.end_raster();
-
     m_window.tick();
 
     if( m_window.inkey() == Window::K_SPACE && hold < 800 )

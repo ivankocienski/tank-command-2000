@@ -55,20 +55,11 @@ bool Window::open( int xr, int yr, const char *t ) {
   }
 
   memcpy( palette, colors, sizeof(colors));
-
   SDL_SetPalette( m_screen, SDL_LOGPAL | SDL_PHYSPAL, palette, 0, 256 );
-
   m_active = true;
-
-  m_font = IMG_Load( "data/font.png" );
-  if( !m_font ) {
-    cerr << "Window::open could not load font" << endl;
-    return false;
-  }
-
-  //SDL_SetPalette( m_font, SDL_LOGPAL, palette, 0, 256 );
-
-  //SDL_SetAlpha( m_font, SDL_SRCALPHA, 0 );
+  SDL_LockSurface(m_screen);
+  m_vbuff = (unsigned char *)m_screen->pixels;
+  setup_line_drawer( m_vbuff, m_screen->w, m_screen->w-1, m_screen->h-1 );
 
   return true;
 }
@@ -101,9 +92,13 @@ void Window::tick() {
 
   SDL_Event event;
 
+  SDL_UnlockSurface(m_screen); 
   SDL_Flip(m_screen);
   SDL_FillRect( m_screen, NULL, 0 );
   SDL_Delay(20);
+
+  SDL_LockSurface(m_screen);
+  m_vbuff = (unsigned char *)m_screen->pixels;
 
   while(SDL_PollEvent( &event )) {
     switch( event.type ) {
@@ -202,24 +197,6 @@ int Window::mouse_y() {
 }
 
 
-void Window::puts( int x, int y, const char* t ) {
-  SDL_Rect dst = { x, y, 0, 0 };
-  SDL_Rect src = { 0, 0, 8, 8 };
-  
-  char c;
-
-  while( *t ) {
-    c = *t - 32;
-    src.x = (c & 0x0f) << 3;
-    src.y = (c & 0xf0) >> 1;
-
-    SDL_BlitSurface( m_font, &src, m_screen, &dst );
-
-    t++;
-    dst.x += 8;
-  } 
-}
-
 void Window::push_key( int k ) {
 
   m_key_buffer.push_back(k);
@@ -240,15 +217,6 @@ int Window::inkey() {
   m_key_buffer.pop_front();
 
   return k; 
-}
-
-void Window::begin_raster() {
-
-   SDL_LockSurface(m_screen);
-
-   m_vbuff = (unsigned char *)m_screen->pixels;
-
-   setup_line_drawer( m_vbuff, m_screen->w, m_screen->w-1, m_screen->h-1 );
 }
 
 void Window::draw_line( int x1, int y1, int x2, int y2, unsigned char c ) {
@@ -278,7 +246,3 @@ void Window::draw_pixel2( int x, int y, unsigned char c ) {
   *p = c;
 }
 
-void Window::end_raster() {
-   SDL_UnlockSurface(m_screen); 
-   m_vbuff = NULL;
-}
