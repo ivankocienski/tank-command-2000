@@ -3,6 +3,7 @@
 
 #include "player-tank.hh"
 #include "camera.hh"
+#include "bounding-box-2.hh"
 #include "world.hh"
 
 #include <cmath>
@@ -25,9 +26,12 @@ PlayerTank::PlayerTank(World *w) {
 }
 
 void PlayerTank::reset() {
-  m_heading = 0;
-  m_height  = tank_view_height;
-  m_armour  = 100;
+  m_heading    = 0;
+  m_height     = tank_view_height;
+  m_armour     = 100;
+  
+  m_hit_stun   = 0;
+  m_stun_speed = 0;
 
   m_want_walk  = 0;
   m_want_turn  = 0;
@@ -72,6 +76,68 @@ static float sign_clamp( float val, float max ) {
   return val;
 }
 
+void PlayerTank::do_move( std::vector<Obstacle> &wo ) {
+
+  if( m_stun_speed > 0 ) {
+
+    m_position = m_position + m_stun_dir * m_stun_speed; 
+
+    m_stun_speed *= 0.7; // decay
+    if( m_stun_speed < 0.01 ) m_stun_speed = 0;
+
+    return; 
+  }
+
+  if( m_walk_speed != 0 ) { // moving
+
+    Vector2 new_pos = m_position + m_direction * m_walk_speed;
+
+    Vector2 fwd = m_direction * (tank_length * 0.5);
+    Vector2 rgt = m_right     * (tank_width  * 0.5);
+
+    Vector2 front_left  = new_pos + fwd - rgt; 
+    Vector2 front_right = new_pos + fwd + rgt;
+    Vector2 back_left   = new_pos - fwd - rgt;
+    Vector2 back_right  = new_pos - fwd + rgt;
+
+    bool hit = false;
+
+    for( vector<Obstacle>::iterator it = wo.begin(); it != wo.end(); it++ ) {
+
+      const BoundingBox2D &bb = it->mesh().bounds();
+
+      if( bb.point_inside( front_left ))  {
+        hit = true;
+        break;
+      }
+
+      if( bb.point_inside( front_right )) {
+        hit = true;
+        break;
+      }
+
+      if( bb.point_inside( back_left )) {
+        hit = true;
+        break;
+      }
+
+      if( bb.point_inside( back_right)) {
+        hit = true;
+        break;
+      }
+    } 
+
+    if( hit ) {
+      m_stun_speed = m_walk_speed;
+      m_stun_dir   = -m_direction;
+
+      m_armour -= 1;
+
+    } else
+      m_position = new_pos; 
+  } 
+}
+
 void PlayerTank::move( vector<Obstacle> & wo ) {
 
   float walk_diff = m_want_walk - m_walk_speed;
@@ -80,6 +146,7 @@ void PlayerTank::move( vector<Obstacle> & wo ) {
   float turn_diff = m_want_turn - m_turn_speed;
   m_turn_speed += sign_clamp( turn_diff, tank_acc_turn );
 
+  if( m_hit_stun ) m_hit_stun--;
 
   if( m_turn_speed != 0 ) { // turning
 
@@ -112,32 +179,7 @@ void PlayerTank::move( vector<Obstacle> & wo ) {
     }
   }
 
-  if( m_walk_speed != 0 ) { // moving
-
-    Vector2 new_pos = m_position + m_direction * m_walk_speed;
-
-    Vector2 fwd = m_direction * (tank_length * 0.5);
-    Vector2 rgt = m_right     * (tank_width  * 0.5);
-
-    Vector2 front_left  = new_pos + fwd - rgt; 
-    Vector2 front_right = new_pos + fwd + rgt;
-    Vector2 back_left   = new_pos - fwd - rgt;
-    Vector2 back_right  = new_pos - fwd + rgt;
-
-
-
-    //  for( vector<Obstacle>::iterator it = wo.begin(); it != wo.end(); it++ ) {
-    //
-    //    const BoundingBox2 &bb = it->mesh()->bounds();
-    //     
-    //    if( bb.point_inside( front_left ))  return;
-    //    if( bb.point_inside( front_right )) return;
-    //    if( bb.point_inside( back_left ))   return;
-    //    if( bb.point_inside( back_right))   return;
-    //  } 
-
-    m_position = new_pos; 
-  } 
+  do_move(wo);
 
   m_inv_model.identity();
 

@@ -292,7 +292,7 @@ void MidTank::think_and_move( PlayerTank *pt, vector<Obstacle> &obs ) {
 
     if( move_toward_target(tm, h_inc, p_inc) ) break;
 
-    //if( shoot_at_target(tm, h_inc, p_inc ) ) break;
+    if( shoot_at_target(tm, h_inc, p_inc ) ) break;
 
     return; // no movement
   }

@@ -31,8 +31,14 @@ private:
   float m_heading;
   float m_height;
 
-  int m_armour;
+  int  m_hit_stun;
+  float m_stun_speed;
+  Vector2 m_stun_dir;
+  
+  int  m_armour;
   bool m_fire_now;
+  
+  void do_move( std::vector<Obstacle> & );
   
 public:
 
