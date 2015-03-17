@@ -224,13 +224,42 @@ void MidTank::fire() {
   m_world->shoot_enemy_bullet( m_position + m_direction * 2.3, m_heading );
 }
 
-void MidTank::activate( const Vector2 &p ) {
+void MidTank::activate( const Vector2 &p, int difficulty ) {
 
   cout << "baddie activated" << endl;
   
   m_heading = 0;
   m_position.set(p);
   m_obstacle.clear();
+
+  for( ;; ) {
+
+    // easy
+    if( difficulty < 2 ) {
+      m_move_speed = 0.2;
+      m_turn_speed = 0.04;
+      break;
+    }
+
+    // mid
+    if( difficulty < 7 ) {
+      m_move_speed = 0.45;
+      m_turn_speed = 0.085;
+      break;
+    }
+      
+    // hard 
+    if( difficulty < 15 ) {
+      m_move_speed = 0.6;
+      m_turn_speed = 0.2;
+      break;
+    }
+
+    // 'impossible'?
+    m_move_speed = 0.75;
+    m_turn_speed = 0.35;
+    break; 
+  }
 
   m_hit_points = 3;
   m_limbo = 50 + rand() % 100;
@@ -331,7 +360,7 @@ bool MidTank::sidestep_obstacle( TankMetric& tm, float &h_inc, Vector2 &p_inc ) 
   if( m_obstacle.mode() != TankObstacle::OM_MOVE ) return false;
 
   if( m_obstacle.distance_to( m_position ) < 8 ) {
-    p_inc = m_direction * 0.2;
+    p_inc = m_direction * m_move_speed;
     return true;
   }
 
@@ -350,9 +379,9 @@ bool MidTank::turn_away_from_obstacle( Vector2& dir, TankMetric& tm, float &h_in
   
   if( m_obstacle.angle_to( dir ) > 0.5 ) {
     if( m_obstacle.side() < 0 )
-      h_inc = 0.05;
+      h_inc = m_turn_speed;
     else
-      h_inc = -0.05;
+      h_inc = -m_turn_speed;
     
   } else
     m_obstacle.next_mode();
@@ -404,9 +433,9 @@ bool MidTank::turn_toward_target( TankMetric& tm, float &h_inc, Vector2 &p_inc )
   if( tm.target_angle() > tolerance ) return false;
 
   if( tm.target_side() > 0 )
-    h_inc = 0.01;
+    h_inc = m_turn_speed;
   else
-    h_inc = -0.01;
+    h_inc = -m_turn_speed;
 
   return true; 
 }
@@ -415,7 +444,7 @@ bool MidTank::move_toward_target( TankMetric& tm, float &h_inc, Vector2 &p_inc )
   
   if( tm.target_distance() < 5 ) return false;
 
-  p_inc = m_direction * 0.2;
+  p_inc = m_direction * m_move_speed;
 
   return true;
 }

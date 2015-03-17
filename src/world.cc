@@ -105,7 +105,7 @@ void World::spawn_tank( MidTank *mt ) {
     << " y=" << m_baddie_spawn_point[pos_i].y
     << endl;
 
-  mt->activate( m_baddie_spawn_point[pos_i] );
+  mt->activate( m_baddie_spawn_point[pos_i], m_player->difficulty() );
 }
 
 void World::setup( Application *a, Window &w, Camera &c, Player &p ) {
@@ -330,6 +330,7 @@ int World::do_play() {
             } else {
               make_boom(hit->position());
               m_player->add_score(15);
+              m_player->add_kill();
               spawn_tank( hit );
             }
 

@@ -12,6 +12,10 @@ private:
   
   int m_score;
   int m_lives;
+  int m_kills;
+  int m_kill_threshold;
+  
+  int m_difficulty;
 
   PlayerTank m_tank;
 
@@ -29,4 +33,6 @@ public:
   int current_score();
   void add_score(int);
 
+  void add_kill(); 
+  int difficulty();
 };
