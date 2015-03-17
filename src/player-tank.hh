@@ -2,6 +2,7 @@
 #pragma once
 
 #include <vector>
+#include <list>
 
 #include "math/vector2.hh"
 #include "math/matrix3.hh"
@@ -13,6 +14,13 @@ class World;
 
 class PlayerTank {
 private:
+
+  typedef struct _S_CRACK {
+    int sprite_id;
+    Vector2 pos;
+  } T_CRACK, *PT_CRACK;
+
+  std::list<T_CRACK> m_cracks;
 
   World *m_world;
 
@@ -40,6 +48,8 @@ private:
   
   void do_move( std::vector<Obstacle> & );
   
+  void adjust_cracks();
+  
 public:
 
   PlayerTank(World*);
@@ -63,6 +73,8 @@ public:
   void want_walk(float);
   void want_turn(float);
 
+  void draw_cracks(Window*);
+  
   Matrix3 & inv_model_matrix();
 };
 

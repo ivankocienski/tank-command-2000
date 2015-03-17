@@ -69,7 +69,7 @@ bool LineVectorSprite::load( const char* filepath ) {
 }
 
 void LineVectorSprite::draw( Window & w, int x, int y ) {
-  draw( w, x, y, 255 );
+  draw( w, x, y, 143 );
 }
 
 void LineVectorSprite::draw( Window& w, int x, int y, int c ) {
@@ -93,3 +93,14 @@ void LineVectorSprite::draw( Window& w, int x, int y, int c ) {
         );
   }
 }
+
+void LineVectorSprite::draw( Window* win, const Vector2& p, int c ) {
+  draw( *win, p.x, p.y, c );
+}
+
+void LineVectorSprite::draw( Window* win, const Vector2& p ) {
+
+  draw( *win, p.x, p.y, 143 );
+}
+
+

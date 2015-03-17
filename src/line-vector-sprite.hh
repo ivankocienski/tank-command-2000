@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "window.hh"
+#include "math/vector2.hh"
 
 class LineVectorSprite {
 private:
@@ -29,5 +30,7 @@ public:
 
   void draw( Window&, int, int );
   void draw( Window&, int, int, int );
+  void draw( Window*, const Vector2& );
+  void draw( Window*, const Vector2&, int );
 };
 

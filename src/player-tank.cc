@@ -5,6 +5,7 @@
 #include "camera.hh"
 #include "bounding-box-2.hh"
 #include "world.hh"
+#include "assets.hh"
 
 #include <cmath>
 
@@ -37,6 +38,8 @@ void PlayerTank::reset() {
   m_want_turn  = 0;
   m_walk_speed = 0;
   m_turn_speed = 0;
+
+  m_cracks.clear();
 }
 
 int PlayerTank::armour() {
@@ -46,11 +49,15 @@ int PlayerTank::armour() {
 void PlayerTank::do_damage(int d) {
   m_armour -= d;
   if(m_armour < 0) m_armour = 0;
+
+  adjust_cracks();
 }
 
 void PlayerTank::add_armour( int d ) {
   m_armour += d;
   if( m_armour > 100 ) m_armour = 100;
+
+  adjust_cracks();
 }
 
 void PlayerTank::set_pos( float x, float y ) { 
@@ -252,3 +259,34 @@ bool PlayerTank::is_touching( const Vector2& p ) {
   return true; 
 }
 
+void PlayerTank::draw_cracks( Window *win ) {
+
+  for( list<T_CRACK>::iterator it = m_cracks.begin(); it != m_cracks.end(); it++ ) 
+    g_sprite_list[ it->sprite_id ].draw( win, it->pos );
+}
+
+void PlayerTank::adjust_cracks() {
+
+  int count = m_cracks.size();
+  int dmg   = 10 - (m_armour / 10);
+
+  while( count < dmg ) {
+    m_cracks.push_back( T_CRACK() );
+
+    T_CRACK &c( m_cracks.back() );
+
+    c.sprite_id = S_SCREEN_CRACK_0 + rand() % 10;
+    c.pos.set(
+         20 + rand() % 600,
+        100 + rand() % 300
+    );
+    
+    count++;
+  }
+
+  while( count > dmg ) {
+    m_cracks.pop_front();
+    count--;
+  }
+  
+}

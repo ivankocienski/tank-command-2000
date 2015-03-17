@@ -249,6 +249,26 @@ void World::draw_hud( unsigned char anim_count ) {
     }
   }
 
+  // powerups
+  if( (anim_count >> 2) & 1 ) {
+
+    list<Powerup>::iterator pu_it;
+
+    for( pu_it = m_powerups.begin(); pu_it != m_powerups.end(); pu_it++ ) {
+
+      vec2_mat3_multiply( p, pu_it->position(), piv );
+
+      float px = p.y;
+      float py = p.x;
+
+      if( px < -49 || px > 49 ) continue;
+      if( py < -39 || py > 39 ) continue;
+
+      m_window->draw_pixel2( 320 + px, 40 + py, 111 );
+
+    }
+  }
+
   // hud
   //   radar
   //   lives
@@ -476,6 +496,9 @@ int World::do_play() {
 
     draw_hud(anim_count);
 
+    m_player_tank->draw_cracks(m_window);
+
+
     if( is_paused )
       if( (anim_count >> 2) & 1 ) m_app->draw_text( 263, 250, "PAUSED" );
 
@@ -549,6 +572,7 @@ void World::do_crash() {
 
     draw_hud(255);
 
+    m_player_tank->draw_cracks( m_window );
     screen_crack.draw( *m_window, 88, 80 );
 
     m_window->tick();

@@ -105,6 +105,17 @@ bool load_assets() {
   LOAD_SPRITE( S_CHAR_Y, "char-y.lvs" );
   LOAD_SPRITE( S_CHAR_Z, "char-z.lvs" );
 
+  LOAD_SPRITE( S_SCREEN_CRACK_0, "screen-crack-0.lvs" );
+  LOAD_SPRITE( S_SCREEN_CRACK_1, "screen-crack-1.lvs" );
+  LOAD_SPRITE( S_SCREEN_CRACK_2, "screen-crack-2.lvs" );
+  LOAD_SPRITE( S_SCREEN_CRACK_3, "screen-crack-3.lvs" );
+  LOAD_SPRITE( S_SCREEN_CRACK_4, "screen-crack-4.lvs" );
+  LOAD_SPRITE( S_SCREEN_CRACK_5, "screen-crack-5.lvs" );
+  LOAD_SPRITE( S_SCREEN_CRACK_6, "screen-crack-6.lvs" );
+  LOAD_SPRITE( S_SCREEN_CRACK_7, "screen-crack-7.lvs" );
+  LOAD_SPRITE( S_SCREEN_CRACK_8, "screen-crack-8.lvs" );
+  LOAD_SPRITE( S_SCREEN_CRACK_9, "screen-crack-9.lvs" );
+
   return true;
 }
 
