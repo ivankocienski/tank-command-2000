@@ -23,20 +23,49 @@ static const float P_FAR  = 100.0;
 static const float FOV    = 90.0; // horizontal
 
 #include "char-table.hh"
+#include "help-text.hh"
 
 Application::Application( int argc, char ** argv ) { 
 }
 
-void Application::do_splash(Camera &cam) {
+void Application::do_help() {
+
+  while( m_window.active() ) {
+
+    const char **text = help_text;
+    int ypos = 20;
+
+    while( *text ) {
+
+      draw_text( 25, ypos, *text );
+
+      text++;
+      ypos += 30;
+    }
+
+    m_window.tick();
+
+    if( m_window.inkey() == Window::K_SPACE ) return;
+  }
   
+
+}
+
+int Application::do_menu(Camera &cam) {
+  
+  int menu_opt = 0;
+
   LineVectorSprite &logo = g_sprite_list[S_SPLASH_LOGO];
   MeshInstance tank_mesh(&g_mesh_list[A_MID_TANK]);
 
   int hold = 1000;
   float angle = 0;
+  int xpos = 180;
+  float yoffs = 300;
 
-  tank_mesh.set_color(1);
-  tank_mesh.set_translation( 0, -1.5, -6 );
+
+  tank_mesh.set_color(15);
+  tank_mesh.set_translation( 0, -0.5, -5 );
 
   cam.look(
 	   Vector3(  0, 0,  0 ),
@@ -47,6 +76,7 @@ void Application::do_splash(Camera &cam) {
   while( hold && m_window.active() ) {
     hold--;
 
+    yoffs *= 0.95;
     angle += 0.02;
     
     tank_mesh.set_rotation( angle, 0, 0 );
@@ -57,20 +87,49 @@ void Application::do_splash(Camera &cam) {
     dm.camera_transform();
     dm.draw(); 
 
-    logo.draw( m_window, 25, 150 );
+    logo.draw( m_window, 25, 50 );
 
-    if( hold < 950 )
-      draw_text( 25, 70, "BY IVAN KOCIENSKI 2015" );
+    draw_text( 25, 20, "BY IVAN KOCIENSKI 2015" );
 
-    if( hold < 800 )
-      if( (hold >> 2) & 1 ) draw_text( 92, 420, "PRESS SPACE BAR TO START" );
+    if( menu_opt == 0 ) {
+      if( (hold >> 2) & 1 ) 
+        draw_text( xpos, yoffs + 200, "START GAME" );
+
+    } else
+      draw_text( xpos, yoffs + 200, "START GAME" );
+
+    if( menu_opt == 1 ) {
+      if( (hold >> 2) & 1 ) 
+        draw_text( xpos, yoffs + 240, "HELP" );
+
+    } else
+      draw_text( xpos, yoffs + 240, "HELP" );
+
+    if( menu_opt == 2 ) {
+      if( (hold >> 2) & 1 ) 
+        draw_text( xpos, yoffs + 280, "QUIT TO OS" );
+
+    } else
+      draw_text( xpos, yoffs + 280, "QUIT TO OS" );
       
     m_window.tick();
 
-    if( m_window.inkey() == Window::K_SPACE && hold < 800 )
-      break;
+    int key = m_window.inkey();
+
+    if( key == Window::K_UP ) {
+      menu_opt--;
+      if( menu_opt < 0 ) menu_opt = 2;
+    }
+
+    if( key == Window::K_DOWN ) {
+      menu_opt++;
+      if( menu_opt > 2 ) menu_opt = 0;
+    }
+
+    if( key == Window::K_ENTER ) return menu_opt; 
   }
 
+  return -1;
 }
 
 int Application::main() {
@@ -98,9 +157,19 @@ int Application::main() {
 
   while(m_window.active()) {
 
-    //do_splash(camera);
-    
-    world.run();
+    switch( do_menu(camera)) {
+      case MO_PLAY:
+        world.run();
+        break;
+
+      case MO_HELP:
+        do_help();
+        break;
+
+      case MO_QUIT:
+        return 0;
+        break;
+    }
   }
 
   return 0;

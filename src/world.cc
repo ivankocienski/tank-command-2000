@@ -282,6 +282,9 @@ void World::draw_hud( unsigned char anim_count ) {
 
 int World::do_play() {
 
+  int paused_opt = 0;
+  int inkey;
+
   LineVectorSprite &logo  = g_sprite_list[S_MINI_LOGO];
   LineVectorSprite &bg1   = g_sprite_list[S_BG1];
   LineVectorSprite &bg2   = g_sprite_list[S_BG2];
@@ -499,10 +502,28 @@ int World::do_play() {
     m_player_tank->draw_cracks(m_window);
 
 
-    if( is_paused )
-      if( (anim_count >> 2) & 1 ) m_app->draw_text( 263, 250, "PAUSED" );
+    if( is_paused ) {
+      m_app->draw_text( 240, 230, "GAME PAUSED" );
+
+      if( paused_opt == 0 ) {
+        if( (anim_count >> 2) & 1 )
+          m_app->draw_text( 160, 270, "RESUME" );
+        
+
+      } else
+        m_app->draw_text( 160, 270, "RESUME" );
+
+      if( paused_opt == 1 ) {
+        if( (anim_count >> 2) & 1 ) 
+          m_app->draw_text( 160, 310, "FORFEIT BACK TO MENU" );
+      }
+      else
+        m_app->draw_text( 160, 310, "FORFEIT BACK TO MENU" ); 
+    }
 
     m_window->tick();
+
+    inkey = m_window->inkey();
 
     if( !is_paused ) {
       if( keys[Window::K_LEFT] ) {
@@ -527,35 +548,23 @@ int World::do_play() {
       } else {
         m_player_tank->fire( false );
       }
+
+      if( inkey == Window::K_ESCAPE ) 
+        is_paused = true;
+
+    } else {
+
+      if( inkey == Window::K_DOWN || inkey == Window::K_UP ) {
+        paused_opt = 1 - paused_opt;
+      }
+
+      if( inkey == Window::K_ENTER ) {
+        if( paused_opt == 0 ) is_paused = false;
+        if( paused_opt == 1 ) return PO_QUIT;
+      }
+
     }
-    // if( keys[Window::K_S] ) 
-    //   m_player_tank->raise( 0.1 );
 
-    // if( keys[Window::K_X] )
-    //   m_player_tank->raise( -0.1 );
-
-    // if( keys[Window::K_Q] )
-    //   m_player_tank->zero_y();
-
-    // if( keys[Window::K_Z] ) {
-    //   m_player_tank->strafe( 0.1 );
-    // }
-
-    // if( keys[Window::K_C] ) {
-    //   m_player_tank->strafe( -0.1 );
-    // }
-
-    switch( m_window->inkey() ) {
-      case Window::K_TAB:
-        //spawn_tank( m_baddies.front() );
-        //make_boom( Vector2() );
-        spawn_powerup();
-        break;
-
-      case Window::K_ESCAPE:
-        is_paused = !is_paused;
-        break;
-    }
   }
 
   return PO_QUIT;

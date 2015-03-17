@@ -7,9 +7,16 @@
 class Application {
 private:
 
-  Window m_window;
+  enum { // menu outcome
+    MO_PLAY,
+    MO_HELP,
+    MO_QUIT
+  };
 
-  void do_splash( Camera& );
+  Window m_window;
+ 
+  int  do_menu( Camera& );
+  void do_help();
   
 public:
   
