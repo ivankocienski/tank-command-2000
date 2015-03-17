@@ -15,11 +15,15 @@ features
 * explosions
 * obstacle colors
 * distance fog fadeout
-- distance based damage 
-  - player / baddie
-- more enemies
+* distance based damage 
+  * player / baddie
+* enemy delayed respawn
 - enemies getting harder
+  - faster move, turn
+  - more agressive firing
 - powerups
+- more enemies
+- player screen cracks with more damage
 
 
 idea-

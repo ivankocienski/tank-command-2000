@@ -51,7 +51,7 @@ const char *zone_names [] = {
   "SZ_OUTER"
 };
 
-void World::spawn_tank( MidTank &mt ) {
+void World::spawn_tank( MidTank *mt ) {
 
   int zone = -1;
 
@@ -105,7 +105,7 @@ void World::spawn_tank( MidTank &mt ) {
     << " y=" << m_baddie_spawn_point[pos_i].y
     << endl;
 
-  mt.activate( m_baddie_spawn_point[pos_i] );
+  mt->activate( m_baddie_spawn_point[pos_i] );
 }
 
 void World::setup( Application *a, Window &w, Camera &c, Player &p ) {
@@ -274,7 +274,7 @@ int World::do_play() {
   m_player_tank->set_pos( 0, 0 );
 
   for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ )
-    spawn_tank( *b_it );
+    spawn_tank( &(*b_it) );
 
   cout << "map has " << m_baddies.size() << " baddies" << endl;
 
@@ -329,8 +329,8 @@ int World::do_play() {
 
             } else {
               make_boom(hit->position());
-              hit->deactivate();
               m_player->add_score(15);
+              spawn_tank( hit );
             }
 
             bu_it = m_bullets.erase(bu_it);
@@ -349,9 +349,9 @@ int World::do_play() {
         bu_it++;
       }
 
-      for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ )
-        if( !b_it->is_active() )
-          spawn_tank( *b_it );
+      //for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ )
+      //  if( !b_it->is_active() )
+      //    spawn_tank( *b_it );
     }
 
     m_player_tank->look( m_camera );

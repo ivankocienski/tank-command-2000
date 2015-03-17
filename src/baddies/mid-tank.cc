@@ -233,6 +233,7 @@ void MidTank::activate( const Vector2 &p ) {
   m_obstacle.clear();
 
   m_hit_points = 3;
+  m_limbo = 50 + rand() % 100;
 
   m_direction.set_as_angle( m_heading );
 
@@ -243,12 +244,7 @@ void MidTank::activate( const Vector2 &p ) {
 }
 
 bool MidTank::is_active() {
-  return m_hit_points > 0;
-}
-
-void MidTank::deactivate() {
-  cout << "baddie de-activated" << endl;
-  m_active = false;
+  return !m_limbo && m_hit_points > 0;
 }
 
 void MidTank::give_damage( int d ) {
@@ -270,7 +266,12 @@ MeshInstance & MidTank::mesh_instance() {
 
 void MidTank::think_and_move( PlayerTank *pt, vector<Obstacle> &obs ) {
 
-  if( !m_active ) return;
+  if( m_limbo ) {
+    m_limbo--;
+    return;
+  }
+
+  if( !m_hit_points ) return;
 
   float h_inc = 0;
   Vector2 p_inc;

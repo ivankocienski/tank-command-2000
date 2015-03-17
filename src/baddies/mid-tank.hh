@@ -108,7 +108,7 @@ private:
   float m_heading;
   float m_height;
   int   m_hit_points;
-  bool  m_active;
+  int   m_limbo;
 
   MeshInstance m_mesh_instance;
   
@@ -135,7 +135,6 @@ public:
   void activate( const Vector2& );
   void give_damage( int );
   bool is_active();
-  void deactivate();
 
   MeshInstance & mesh_instance();
 

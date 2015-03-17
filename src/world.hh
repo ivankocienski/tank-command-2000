@@ -53,7 +53,7 @@ private:
 
   void spawn_obstacle( float, float, int );
   void spawn_obstacle( int, int );
-  void spawn_tank( MidTank& );
+  void spawn_tank( MidTank* );
 
   void draw_hud(unsigned char);
   int  do_play();
