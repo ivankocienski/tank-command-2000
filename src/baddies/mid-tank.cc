@@ -88,15 +88,20 @@ float TankMetric::target_side()       { return m_tgt_side; }
  */
 
 TankFireControl::T_FIRE_TABLE TankFireControl::s_fire_table [] = {
-  /* distance, hold */
-  {  0,  2, 500 },
-  {  1,  5, 300 },
-  {  2, 10, 200 },
-  {  3, 20, 100 },
-  { -1,  0,  0 }
+  /* i, distance, hold */
+  {  -1,  -1 },
+  {   5, 500 },
+  {  10, 300 },
+  {  20, 200 },
+  {  40, 100 },
+  {   0,   0 }
 };
 
 TankFireControl::TankFireControl() {
+  reset();
+}
+
+void TankFireControl::reset() {
   m_fire_entry = NULL;
   m_fire_hold  = 0;
 }
@@ -106,49 +111,52 @@ void TankFireControl::scan( TankMetric& tm ) {
   m_is_locked_on = false;
   m_should_fire  = false;
 
+  // just shoot the target
+  if( m_fire_hold ) {
+    m_is_locked_on = true;
+    m_should_fire  = (m_fire_hold % 30) == 0;
+    m_fire_hold--;
+
+    // move target distance closer when done
+    if( !m_fire_hold ) {
+      m_fire_entry--;
+      cout << "mid_tank: entry.distance=" << m_fire_entry->distance << endl;
+    }
+
+    return;
+  }
+
   float dtt = tm.target_distance();
 
+  // do we need to set up trigger distance?
   if( !m_fire_entry ) {
 
     T_FIRE_TABLE * entry(s_fire_table);
 
-    while( entry->pos >= 0 ) {
+    while( entry->hold ) {
 
       if( dtt < entry->distance ) {
-        entry++;
-        continue;
+        break;
       }
 
-      break; 
+      entry++;
     }
 
-    if( entry->pos == -1 ) entry--;
+    // we hit the end, use last entry
+    if( !entry->hold ) entry--;
 
     m_fire_entry = entry; 
+    cout << "mid_tank: entry.distance=" << m_fire_entry->distance << endl;
   }
 
-  // when in range- fire at them
-  if( dtt <= m_fire_entry->distance ) {
-    if( m_fire_hold ) {
-      m_is_locked_on = true;
-      m_should_fire  = (m_fire_hold % 30) == 0;
-      m_fire_hold--;
-      return;
-    }
-    m_fire_hold = m_fire_entry->hold;
-  }
+  // too far away?
+  if( dtt > m_fire_entry->distance ) return;
 
-  // moving towards?
-  if( dtt < m_fire_entry->distance ) {
-    if( m_fire_entry->pos > 0 ) m_fire_entry--;
-    m_fire_hold = m_fire_entry->hold;
-  }
+  cout << "mid_tank: going to fire" << endl;
 
-  // moving away?
-  if( dtt > m_fire_entry->distance ) {
-    if( m_fire_entry->pos < 3 ) m_fire_entry++;
-    m_fire_hold = m_fire_entry->hold;
-  }
+  // no? then shoot at target
+  m_fire_hold = m_fire_entry->hold;
+
 }
 
 bool TankFireControl::is_locked_on() { return m_is_locked_on; } 
@@ -231,6 +239,7 @@ void MidTank::activate( const Vector2 &p, int difficulty ) {
   m_heading = 0;
   m_position.set(p);
   m_obstacle.clear();
+  m_fire_control.reset();
 
   for( ;; ) {
 
@@ -324,11 +333,11 @@ void MidTank::think_and_move( PlayerTank *pt, vector<Obstacle> &obs ) {
 
     if( detect_obstacle( tm )) break;
 	
+    if( shoot_at_target(tm, h_inc, p_inc ) ) break;
+
     if( turn_toward_target(tm, h_inc, p_inc) ) break;
 
     if( move_toward_target(tm, h_inc, p_inc) ) break;
-
-    if( shoot_at_target(tm, h_inc, p_inc ) ) break;
 
     return; // no movement
   }
@@ -349,6 +358,15 @@ bool MidTank::shoot_at_target( TankMetric& tm, float &h_inc, Vector2 &p_inc ) {
   m_fire_control.scan(tm);
 
   if( !m_fire_control.is_locked_on() ) return false;
+
+  // point exactly at target
+  float d = tm.target_angle();
+  if( d < 0.9999 ) {
+    if( d > m_turn_speed ) d = m_turn_speed;
+    if( tm.target_side() < 0 ) d = -d;
+
+    h_inc = d;
+  }
 
   if( m_fire_control.should_fire() ) fire();
 

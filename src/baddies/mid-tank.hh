@@ -45,7 +45,6 @@ class TankFireControl {
 private:
 
   typedef struct _S_FIRE_TABLE {
-    int   pos;
     float distance;
     int   hold;
   } T_FIRE_TABLE, *PT_FIRE_TABLE;
@@ -62,6 +61,7 @@ public:
   TankFireControl();
 
   void scan( TankMetric& );
+  void reset();
 
   bool is_locked_on();
   bool should_fire();
