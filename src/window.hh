@@ -74,7 +74,7 @@ public:
   Window();
   ~Window();
 
-  bool open( int, int, const char * );
+  bool open( int, int, const char *, bool );
   void set_title( const char * );
   
   void clear();

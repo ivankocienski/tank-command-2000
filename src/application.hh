@@ -13,6 +13,8 @@ private:
     MO_QUIT
   };
 
+  bool m_full_screen;
+  
   Window m_window;
  
   int  do_menu( Camera& );

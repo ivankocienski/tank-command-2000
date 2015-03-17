@@ -19,14 +19,17 @@ Window::~Window() {
   SDL_Quit();
 }
 
-bool Window::open( int xr, int yr, const char *t ) {
+bool Window::open( int xr, int yr, const char *t, bool fullscreen ) {
 
   if(SDL_Init(SDL_INIT_VIDEO) != 0) {
     cerr << "Window::open could not init SDL" << endl;
     return false;
   }
 
-  m_screen = SDL_SetVideoMode( xr, yr, 8, SDL_DOUBLEBUF | SDL_SWSURFACE );
+  int flags = SDL_DOUBLEBUF | SDL_SWSURFACE;
+  if( fullscreen ) flags |= SDL_FULLSCREEN;
+
+  m_screen = SDL_SetVideoMode( xr, yr, 8, flags );
   if(!m_screen) {
     cerr << "Window::open could not open screen" << endl;
     return false;

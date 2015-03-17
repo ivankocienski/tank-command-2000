@@ -26,6 +26,16 @@ static const float FOV    = 90.0; // horizontal
 #include "help-text.hh"
 
 Application::Application( int argc, char ** argv ) { 
+
+  m_full_screen = false;
+
+  while( argc ) {
+
+    if( !strcmp( *argv, "-fs" )) m_full_screen = true;
+
+    argc--;
+    argv++;
+  }
 }
 
 void Application::do_help() {
@@ -136,7 +146,7 @@ int Application::main() {
 
   srand(time(NULL));
 
-  if( !m_window.open( XRES, YRES, "tc2k" )) {
+  if( !m_window.open( XRES, YRES, "tc2k", m_full_screen )) {
     cerr << "could not open window" << endl;
     return -1;
   }
