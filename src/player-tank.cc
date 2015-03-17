@@ -40,6 +40,10 @@ void PlayerTank::reset() {
   m_turn_speed = 0;
 
   m_cracks.clear();
+
+  m_position.set( 0, 0 );
+  m_direction.set( 1, 0 );
+  m_right.set( 0, 1 );
 }
 
 int PlayerTank::armour() {
