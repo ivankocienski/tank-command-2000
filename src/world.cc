@@ -108,6 +108,17 @@ void World::spawn_tank( MidTank *mt ) {
   mt->activate( m_baddie_spawn_point[pos_i], m_player->difficulty() );
 }
 
+void World::spawn_powerup( const Vector2 &p ) {
+  m_powerups.push_back( Powerup( p, rand() % 2 ));
+}
+
+void World::spawn_powerup( ) {
+
+  int pi = rand() % m_baddie_spawn_point.size();
+
+  spawn_powerup( m_baddie_spawn_point[pi] );
+}
+
 void World::setup( Application *a, Window &w, Camera &c, Player &p ) {
 
   m_app    = a;
@@ -267,9 +278,13 @@ int World::do_play() {
   vector<MidTank>::iterator     b_it;
   list<Bullet>::iterator        bu_it;
   list<ExplodingPart>::iterator ep_it;
+  list<Powerup>::iterator       pu_it;
 
   vector<DrawMesh> draw_mesh_list;
   draw_mesh_list.reserve( 200 ); // MAGIC
+
+  m_powerup_coundown = 100;
+  m_powerup_delay    = 300;
 
   m_player_tank->set_pos( 0, 0 );
 
@@ -296,9 +311,38 @@ int World::do_play() {
         if(ep_it->active()) {
           ep_it++;
         } else
-          ep_it = m_exploding_parts.erase(ep_it);
-
+          ep_it = m_exploding_parts.erase(ep_it); 
       }
+
+      for( pu_it = m_powerups.begin(); pu_it != m_powerups.end(); ) {
+
+        pu_it->update();
+
+        if( pu_it->is_active() ) {
+
+          if( m_player_tank->is_touching( pu_it->position())) {
+
+            switch( pu_it->type() ) {
+              case Powerup::PT_SCORE: m_player->add_score(50); break;
+              case Powerup::PT_ARMOUR: m_player_tank->add_armour(5); break;
+            }
+
+            pu_it = m_powerups.erase( pu_it );
+            continue; 
+          }
+
+          pu_it++;
+
+        } else
+          pu_it = m_powerups.erase( pu_it );
+      }
+
+      if( m_powerup_coundown == 0 ) {
+        spawn_powerup();
+        m_powerup_coundown = m_powerup_delay;
+
+      } else
+        m_powerup_coundown--;
 
       for( b_it = m_baddies.begin(); b_it != m_baddies.end(); b_it++ )
         b_it->think_and_move( m_player_tank, m_obstacles );
@@ -329,6 +373,8 @@ int World::do_play() {
 
             } else {
               make_boom(hit->position());
+              spawn_powerup( hit->position());
+
               m_player->add_score(15);
               m_player->add_kill();
               spawn_tank( hit );
@@ -376,6 +422,16 @@ int World::do_play() {
 
       dm.camera_transform();
       draw_mesh_list.push_back( dm );
+    }
+
+    for( pu_it = m_powerups.begin(); pu_it != m_powerups.end(); pu_it++ ) {
+      DrawMesh dm( &(pu_it->mesh_instance()), m_camera );
+
+      dm.clip_to_frustum();
+      if( !dm.is_visible() ) continue;
+
+      dm.camera_transform();
+      draw_mesh_list.push_back( dm ); 
     }
 
     for( ep_it = m_exploding_parts.begin(); ep_it != m_exploding_parts.end(); ep_it++ ) {
@@ -469,7 +525,8 @@ int World::do_play() {
     switch( m_window->inkey() ) {
       case Window::K_TAB:
         //spawn_tank( m_baddies.front() );
-        make_boom( Vector2() );
+        //make_boom( Vector2() );
+        spawn_powerup();
         break;
 
       case Window::K_ESCAPE:

@@ -26,6 +26,9 @@ enum {
 
   A_MID_TANK,
   A_BULLET,
+
+  A_POWERUP_SCORE,
+  A_POWERUP_ARMOUR,
   
   A_MAX
 };

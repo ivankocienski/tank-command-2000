@@ -13,6 +13,7 @@
 #include "bullet.hh"
 #include "line-vector-sprite.hh"
 #include "exploding-part.hh"
+#include "powerup.hh"
 
 class Player;
 class PlayerTank;
@@ -31,11 +32,15 @@ private:
   std::vector<MidTank>     m_baddies;
   std::list<Bullet>        m_bullets;
   std::list<ExplodingPart> m_exploding_parts;
+  std::list<Powerup>       m_powerups;
 
   std::vector<Vector2> m_baddie_spawn_point;
   std::vector< std::vector<int> > m_spawn_zones;
 
   LineVectorSprite *m_hud_bg;
+
+  int m_powerup_coundown;
+  int m_powerup_delay;
 
   enum { // spawn zone
     SZ_TOP_LEFT,
@@ -54,6 +59,8 @@ private:
   void spawn_obstacle( float, float, int );
   void spawn_obstacle( int, int );
   void spawn_tank( MidTank* );
+  void spawn_powerup( const Vector2& );
+  void spawn_powerup();
 
   void draw_hud(unsigned char);
   int  do_play();

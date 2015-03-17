@@ -40,6 +40,9 @@ bool load_assets() {
   LOAD_MESH( A_MID_TANK, "tank.vex" );
   LOAD_MESH( A_BULLET, "bullet.vex" );
 
+  LOAD_MESH( A_POWERUP_SCORE, "powerup-0-score.vex" );
+  LOAD_MESH( A_POWERUP_ARMOUR, "powerup-1-armour.vex" );
+
   g_sprite_list.resize( S_MAX );
 
   LOAD_SPRITE( S_MINI_LOGO, "mini-logo.lvs" );

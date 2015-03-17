@@ -37,6 +37,7 @@ set (SRC
   src/bullet.cc
   src/bounding-box-2.cc
   src/exploding-part.cc
+  src/powerup.cc
 
   src/baddies/mid-tank.cc
 

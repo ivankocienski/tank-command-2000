@@ -48,6 +48,11 @@ void PlayerTank::do_damage(int d) {
   if(m_armour < 0) m_armour = 0;
 }
 
+void PlayerTank::add_armour( int d ) {
+  m_armour += d;
+  if( m_armour > 100 ) m_armour = 100;
+}
+
 void PlayerTank::set_pos( float x, float y ) { 
   m_position.set( x, y );
 }

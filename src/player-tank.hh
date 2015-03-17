@@ -47,6 +47,7 @@ public:
 
   int armour();
   void do_damage(int);
+  void add_armour(int);
   
   Vector2& position();
   void set_pos( float, float );
